@@ -17,7 +17,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform orientation;
     [SerializeField] float playerHeight;
 
-    [SerializeField] float currentSpeed;
+    // [SerializeField] float currentSpeed; Debugging purposes
 
     private bool jumpReady;
 
@@ -92,7 +92,7 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
-        currentSpeed = curVelocity.magnitude;
+        // currentSpeed = curVelocity.magnitude; Used for debugging
 
         if (curVelocity.magnitude > moveSpeed)
         {
