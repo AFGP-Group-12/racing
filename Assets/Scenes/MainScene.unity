@@ -717,17 +717,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 57b1fac92217f9848b005ea31d231c33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 20
+  moveSpeed: 12
   maxSpeed: 20
   groundDrag: 5
   jumpForce: 30
-  jumpMultiplier: 0.5
+  jumpMultiplier: 2
   jumpCooldown: 0.25
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
   orientation: {fileID: 180516268}
   playerHeight: 1.96
+  currentSpeed: 0
 --- !u!114 &697519735
 MonoBehaviour:
   m_ObjectHideFlags: 0

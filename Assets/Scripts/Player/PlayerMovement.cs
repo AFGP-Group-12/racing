@@ -17,6 +17,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform orientation;
     [SerializeField] float playerHeight;
 
+    [SerializeField] float currentSpeed;
+
     private bool jumpReady;
 
     private bool isOnGround;
@@ -62,6 +64,7 @@ public class PlayerMovement : MonoBehaviour
         }
 
         SpeedControl();
+
     }
 
 
@@ -76,9 +79,10 @@ public class PlayerMovement : MonoBehaviour
 
         if (isOnGround)
         {
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+            // Multiplying the drag means it will only affect the player when they stop holding a movement button
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * rb.linearDamping, ForceMode.Force);
         }
-        else
+        else if (!isOnGround)
         {
             rb.AddForce(moveDirection.normalized * moveSpeed * 10f * jumpMultiplier, ForceMode.Force);
         }
@@ -88,7 +92,14 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
-        if (curVelocity.magnitude > maxSpeed)
+        currentSpeed = curVelocity.magnitude;
+
+        if (curVelocity.magnitude > moveSpeed)
+        {
+            Vector3 limitedVel = curVelocity.normalized * moveSpeed;
+            rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+        }
+        else if(curVelocity.magnitude > maxSpeed)
         {
             Vector3 limitedVel = curVelocity.normalized * maxSpeed;
             rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
