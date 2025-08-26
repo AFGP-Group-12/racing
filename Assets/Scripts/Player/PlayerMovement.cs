@@ -5,22 +5,26 @@ public class PlayerMovement : MonoBehaviour
 {
     [Header("Movement")]
     [SerializeField] float moveSpeed;
-
+    [SerializeField] float maxSpeed; // Should always be greater than moveSpeed
     [SerializeField] float groundDrag;
+    [SerializeField] float jumpForce;
+    [SerializeField] float jumpMultiplier;
+    [SerializeField] float jumpCooldown;
+
 
     [Header("Ground Check")]
     [SerializeField] LayerMask groundLayer;
-
     [SerializeField] Transform orientation;
-
     [SerializeField] float playerHeight;
 
-    bool isOnGround;
+    private bool jumpReady;
 
-    PlayerInput input;
+    private bool isOnGround;
 
-    float horizontalInput;
-    float verticalInput;
+    private PlayerInput input;
+
+    private float horizontalInput;
+    private float verticalInput;
 
     Vector3 moveDirection;
 
@@ -33,15 +37,20 @@ public class PlayerMovement : MonoBehaviour
         input = GetComponent<PlayerInput>();
 
         input.actions["Move"].performed += OnMove;
-        input.actions["Move"].canceled += OnStop;
-        
-        rb.freezeRotation = true; 
-        
+        input.actions["Move"].canceled += OnMoveStop;
+
+        input.actions["Jump"].started += OnJump;
+
+        rb.freezeRotation = true;
+
+        jumpReady = true;
+
     }
 
     void Update()
     {
         isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
+        Debug.DrawRay(transform.position, Vector3.down * 1f, Color.green);
 
         if (isOnGround)
         {
@@ -51,9 +60,11 @@ public class PlayerMovement : MonoBehaviour
         {
             rb.linearDamping = 0f;
         }
+
+        SpeedControl();
     }
 
-    
+
     void FixedUpdate()
     {
         MovePlayer();
@@ -63,17 +74,55 @@ public class PlayerMovement : MonoBehaviour
     {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
-        rb.AddForce(moveDirection.normalized * moveSpeed, ForceMode.Force);
+        if (isOnGround)
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
+        }
+        else
+        {
+            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * jumpMultiplier, ForceMode.Force);
+        }
     }
+
+    void SpeedControl()
+    {
+        Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+
+        if (curVelocity.magnitude > maxSpeed)
+        {
+            Vector3 limitedVel = curVelocity.normalized * maxSpeed;
+            rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
+        }
+    }
+
     void OnMove(InputAction.CallbackContext context)
     {
         horizontalInput = context.ReadValue<Vector2>().x;
         verticalInput = context.ReadValue<Vector2>().y;
     }
-    void OnStop(InputAction.CallbackContext context)
+    void OnMoveStop(InputAction.CallbackContext context)
     {
         horizontalInput = 0;
         verticalInput = 0;
+    }
+
+    void OnJump(InputAction.CallbackContext context)
+    {
+        if (jumpReady && isOnGround)
+        {
+            jumpReady = false;
+
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+            Invoke(nameof(JumpCooldown), jumpCooldown);
+        }
+    }
+
+    void JumpCooldown()
+    {
+        jumpReady = true;
     }
 
 

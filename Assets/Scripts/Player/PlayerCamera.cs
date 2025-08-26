@@ -8,8 +8,8 @@ public class PlayerCamera : MonoBehaviour
 
     public Transform orientation;
 
-    float xRotation;
-    float yRotation;
+    private float xRotation;
+    private float yRotation;
 
     [SerializeField] InputActionReference mouse;
 
@@ -17,7 +17,7 @@ public class PlayerCamera : MonoBehaviour
     void Start()
     {
         // Cursor is locked to the middle of the screen. Use unlock cursor function to unlock it.
-        lockCursor();
+        LockCursor();
     }
 
     // Update is called once per frame
@@ -37,12 +37,12 @@ public class PlayerCamera : MonoBehaviour
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
-    public void lockCursor()
+    public void LockCursor()
     {
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
-    public void unlockCursor()
+    public void UnlockCursor()
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
