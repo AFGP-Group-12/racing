@@ -24,14 +24,18 @@ public class SquiggleBorderAnimator : MonoBehaviour
     private List<Sprite> _frames;
     private StyleBackground[] _styleFrames;
 
-    private class Target
-    {
-        public VisualElement ve;
-        public IVisualElementScheduledItem ticker;
-        public int frame;
-    }
 
-    private readonly List<Target> _targets = new();
+    [Header("Text wobble")]
+    public bool animateText = true;
+    public float textJitterPixels = 0.8f;
+    public float textRotateDegrees = 0.6f;
+    public float textFps = 30f;
+
+    private class BorderAnim { public Button btn; public IVisualElementScheduledItem ticker; public int frame; }
+    private class TextAnim { public Label lbl; public IVisualElementScheduledItem ticker; public float tAccum; }
+
+    private readonly List<BorderAnim> _borderAnims = new();
+    private readonly List<TextAnim> _textAnims = new();
 
     void Awake()
     {
@@ -55,43 +59,68 @@ public class SquiggleBorderAnimator : MonoBehaviour
 
         var root = uiDocument.rootVisualElement;
 
-        // Find all target buttons by class
         var buttons = root.Query<Button>(className: buttonClass).ToList();
 
         foreach (var b in buttons)
         {
-            // Use USS for repeat/size — just give it the class
-            b.AddToClassList("squiggle-bg");
-
-            // Start on first frame
+            b.AddToClassList("squiggle-bg");          // USS handles size/repeat
             b.style.backgroundImage = _styleFrames[0];
 
-            var t = new Target { ve = b, frame = 0 };
+            var anim = new BorderAnim { btn = b, frame = 0 };
+            long ms = Mathf.Max(1, Mathf.RoundToInt(1000f / Mathf.Max(1f, fps)));
 
-            long intervalMs = Mathf.Max(1, Mathf.RoundToInt(1000f / Mathf.Max(1f, fps)));
-            t.ticker = b.schedule.Execute(() =>
+            anim.ticker = b.schedule.Execute(() =>
             {
-                if (_styleFrames.Length == 0) return;
-                t.frame = (t.frame + 1) % _styleFrames.Length;
-                b.style.backgroundImage = _styleFrames[t.frame];
-            }).Every(intervalMs);
+                anim.frame = (anim.frame + 1) % _styleFrames.Length;
+                b.style.backgroundImage = _styleFrames[anim.frame];
+            }).Every(ms);
 
             if (animateOnHoverOnly)
             {
-                t.ticker.Pause();
-                b.RegisterCallback<MouseEnterEvent>(_ => t.ticker.Resume());
-                b.RegisterCallback<MouseLeaveEvent>(_ => t.ticker.Pause());
-                b.RegisterCallback<DetachFromPanelEvent>(_ => t.ticker.Pause());
+                anim.ticker.Pause();
+                b.RegisterCallback<MouseEnterEvent>(_ => anim.ticker.Resume());
+                b.RegisterCallback<MouseLeaveEvent>(_ => anim.ticker.Pause());
+                b.RegisterCallback<DetachFromPanelEvent>(_ => anim.ticker.Pause());
             }
 
-            _targets.Add(t);
+            _borderAnims.Add(anim);
         }
-    }
 
-    void OnDisable()
-    {
-        foreach (var t in _targets)
-            t.ticker?.Pause();
-        _targets.Clear();
+        if (animateText)
+        {
+            _textAnims.Clear();
+
+            foreach (var b in buttons)
+            {
+                // Prefer a label with class "wobble-text"; otherwise first Label child.
+                var lbl = b.Q<Label>(className: "wobble-text") ?? b.Q<Label>();
+                if (lbl == null) continue;
+
+                var tAnim = new TextAnim { lbl = lbl, tAccum = 0f };
+                long textMs = Mathf.Max(1, Mathf.RoundToInt(1000f / Mathf.Max(1f, textFps)));
+                float seed = UnityEngine.Random.value * 1000f;   // per-label phase
+
+                tAnim.ticker = lbl.schedule.Execute(() =>
+                {
+                    tAnim.tAccum += textMs / 1000f;
+                    float dx = Mathf.Sin(tAnim.tAccum * 6.2f + seed) * textJitterPixels;
+                    float dy = Mathf.Cos(tAnim.tAccum * 5.1f + seed * 1.3f) * textJitterPixels;
+                    float ang = Mathf.Sin(tAnim.tAccum * 3.7f + seed * 2.0f) * textRotateDegrees;
+
+                    lbl.style.translate = new Translate(dx, dy, 0);
+                    lbl.style.rotate = new Rotate(Angle.Degrees(ang));
+                }).Every(textMs);
+
+                if (animateOnHoverOnly)
+                {
+                    tAnim.ticker.Pause();
+                    b.RegisterCallback<MouseEnterEvent>(_ => tAnim.ticker.Resume());
+                    b.RegisterCallback<MouseLeaveEvent>(_ => tAnim.ticker.Pause());
+                    b.RegisterCallback<DetachFromPanelEvent>(_ => tAnim.ticker.Pause());
+                }
+
+                _textAnims.Add(tAnim);
+            }
+        }
     }
 }
