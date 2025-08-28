@@ -11,6 +11,23 @@ Button.mainbutton {
     -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
     -unity-font-style: bold;
     font-size: 32px;
+    padding: 18px 24px;
+    background-repeat: no-repeat no-repeat;
+    background-size: 100% 100%;
+    -unity-background-scale-mode: stretch-to-fill;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    background-image: resource('UI/Textures/Squiggle/squiggle_00');
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-position-x: left 0;
+    background-position-y: top 0;
+    -unity-slice-left: 9;
+    -unity-slice-top: 9;
+    -unity-slice-right: 9;
+    -unity-slice-bottom: 9;
+    -unity-slice-type: sliced;
 }
 
 .button-box {
@@ -47,4 +64,10 @@ Button.mainbutton {
     -unity-text-align: upper-center;
     -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
     -unity-font-style: bold;
+}
+
+.squiggle-bg {
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+    background-color: rgb(255, 255, 255);
 }
