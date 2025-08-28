@@ -70,12 +70,6 @@ Button.mainbutton:hover {
     -unity-font-style: bold;
 }
 
-.squiggle-bg {
-    background-repeat: no-repeat;
-    background-size: 100% 100%;
-    background-color: rgb(255, 255, 255);
-}
-
 .wobble-text {
     position: relative;
     font-size: 32px;
