@@ -1,0 +1,41 @@
+Button.sketch {
+    padding: 10px 16px;
+    border-radius: 10px;
+    background-repeat: repeat;
+    color: rgb(34, 34, 34);
+    letter-spacing: 0.2px;
+    background-color: rgb(212, 123, 123);
+    width: 130px;
+    margin-top: 5px;
+    margin-bottom: 7px;
+}
+
+.button-box {
+    bottom: auto;
+    left: 0%;
+    position: relative;
+    top: 33%;
+    right: auto;
+    align-self: center;
+    align-content: auto;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: auto;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+.root {
+    width: 100%;
+    height: 100%;
+}
+
+.title {
+    align-self: center;
+    top: 64px;
+    font-size: 48px;
+    -unity-text-align: upper-center;
+}
