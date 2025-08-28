@@ -5,9 +5,12 @@ Button.sketch {
     color: rgb(34, 34, 34);
     letter-spacing: 0.2px;
     background-color: rgb(212, 123, 123);
-    width: 130px;
+    width: 305px;
     margin-top: 5px;
     margin-bottom: 7px;
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+    -unity-font-style: bold;
+    font-size: 32px;
 }
 
 .button-box {
@@ -36,6 +39,8 @@ Button.sketch {
 .title {
     align-self: center;
     top: 64px;
-    font-size: 48px;
+    font-size: 125px;
     -unity-text-align: upper-center;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    -unity-font-style: bold;
 }
