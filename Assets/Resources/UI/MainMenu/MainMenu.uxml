@@ -3,10 +3,10 @@
     <ui:VisualElement name="root" class="root">
         <ui:Label text="UNTITLED RACING GAME" name="title" class="title" />
         <ui:GroupBox name="buttonBox" class="button-box">
-            <ui:Button text="CREATE LOBBY" name="createLobbyButton" selectable="true" class="sketch" />
-            <ui:Button text="JOIN LOBBY" name="joinLobbyButton" selectable="true" class="sketch" />
-            <ui:Button text="OPTIONS" name="optionsButton" selectable="true" class="sketch" />
-            <ui:Button text="EXIT GAME" name="exitGameButton" selectable="true" class="sketch" />
+            <ui:Button text="CREATE LOBBY" name="createLobbyButton" selectable="true" class="mainbutton" />
+            <ui:Button text="JOIN LOBBY" name="joinLobbyButton" selectable="true" class="mainbutton" />
+            <ui:Button text="OPTIONS" name="optionsButton" selectable="true" class="mainbutton" />
+            <ui:Button text="EXIT GAME" name="exitGameButton" selectable="true" class="mainbutton" />
         </ui:GroupBox>
     </ui:VisualElement>
 </ui:UXML>
