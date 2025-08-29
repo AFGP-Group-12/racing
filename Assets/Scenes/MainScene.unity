@@ -976,6 +976,7 @@ MonoBehaviour:
   moveSpeed: 0
   basicSpeed: 12
   sprintSpeed: 18
+  accelerationIncrement: 1
   acceleration: 0
   groundDrag: 5
   jumpForce: 30
@@ -988,6 +989,7 @@ MonoBehaviour:
   orientation: {fileID: 180516268}
   playerHeight: 1.96
   speedLinesImage: {fileID: 366768802}
+  transparency: 0
 --- !u!114 &697519735
 MonoBehaviour:
   m_ObjectHideFlags: 0

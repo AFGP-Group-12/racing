@@ -1,5 +1,6 @@
 using System;
 using System.Threading;
+using Unity.Mathematics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -11,13 +12,20 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float moveSpeed; // Make this private its only like this for debugging purposes
     [SerializeField] float basicSpeed;
     [SerializeField] float sprintSpeed; // Should always be greater than moveSpeed
+    [SerializeField] float accelerationIncrement; // Amount the acceleration will be incremented by 
     [SerializeField] float acceleration; // Make this private its only like this for debugging purposes
     [SerializeField] float groundDrag;
+
+    private bool isOnGround;
+
+    [Header("Jump")]
     [SerializeField] float jumpForce;
     [SerializeField] float jumpMultiplier;
     [SerializeField] float jumpCooldown;
 
-    [SerializeField] float currentSpeed; //Debugging purposes
+    private bool jumpReady;
+
+    // [SerializeField] float currentSpeed; //Debugging purposes
 
     bool isAccelerating;
 
@@ -31,10 +39,15 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Speed Lines")]
     [SerializeField] Image speedLinesImage;
+    [SerializeField] Camera playerCamera;
 
-    private bool jumpReady;
+    [SerializeField] float addedFov; // How much fov do you want to be added to the field of view
 
-    private bool isOnGround;
+    private float startingFov;
+
+    private float transparency;
+
+    private float currentAddedFov;
 
     private PlayerInput input;
 
@@ -67,6 +80,8 @@ public class PlayerMovement : MonoBehaviour
 
         isAccelerating = false;
 
+        startingFov = playerCamera.fieldOfView;
+
     }
 
     void Update()
@@ -87,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
         Accelerate();
         SpeedCheck();
         StopMomentumJump();
-        SetSpeedLines();
+        SetSpeedVisuals();
 
     }
 
@@ -98,15 +113,20 @@ public class PlayerMovement : MonoBehaviour
     }
     void SpeedCheck()
     {
-        currentSpeed = rb.linearVelocity.magnitude;
+        // currentSpeed = rb.linearVelocity.magnitude;
     }
 
-    void SetSpeedLines()
+    void SetSpeedVisuals()
     {
-        float transparency = acceleration / 100;
-        Color transparentImage = speedLinesImage.color;
-        transparentImage.a = transparency;
-        speedLinesImage.color = transparentImage;
+        float speedDifference = sprintSpeed - basicSpeed;
+        float moveDifference = moveSpeed - basicSpeed;
+
+        transparency = moveDifference / speedDifference;
+        speedLinesImage.color = new Color(speedLinesImage.color.r, speedLinesImage.color.g, speedLinesImage.color.b, transparency);
+
+
+        currentAddedFov = transparency;
+        playerCamera.fieldOfView = startingFov + (addedFov * currentAddedFov);
     }
 
     void MovePlayer()
@@ -115,21 +135,24 @@ public class PlayerMovement : MonoBehaviour
 
         if (isOnGround)
         {
-            moveSpeed = basicSpeed + ((sprintSpeed - basicSpeed) * (acceleration / 100));
-    
-            // Multiplying the drag means it will only affect the player when they stop holding a movement button
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * rb.linearDamping , ForceMode.Force);
+            MovementForce(rb.linearDamping);
         }
         else if (!isOnGround)
         {
-            moveSpeed = basicSpeed + ((sprintSpeed - basicSpeed) * (acceleration / 100));
-
-            rb.AddForce(moveDirection.normalized * moveSpeed * 10f * jumpMultiplier, ForceMode.Force);
+            MovementForce(jumpMultiplier);
         }
     }
 
+    void MovementForce(float multiplier)
+    {
+        moveSpeed = basicSpeed + ((sprintSpeed - basicSpeed) * (acceleration / 100));
     
+        // Multiplying the drag means it will only affect the player when they stop holding a movement button
+        rb.AddForce(moveDirection.normalized * moveSpeed * 10f * multiplier , ForceMode.Force);
+    }
 
+
+    // Makes sure the movement speed doesnt go over a certain amount
     void SpeedControl()
     {
         Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
@@ -169,8 +192,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnSprint(InputAction.CallbackContext context)
     {
-        acceleration = 0;
-        moveSpeed = sprintSpeed;
+        accelerationIncrement = math.abs(accelerationIncrement);
         isAccelerating = true;
         isKeepingMomentum = false;
     }
@@ -179,8 +201,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isOnGround)
         {
-            acceleration = 0;
-            moveSpeed = basicSpeed;
+            accelerationIncrement = -math.abs(accelerationIncrement);
             isAccelerating = false;
         }
         else
@@ -197,8 +218,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (isKeepingMomentum && isOnGround)
         {
-            acceleration = 0;
-            moveSpeed = basicSpeed;
+            accelerationIncrement = -math.abs(accelerationIncrement);
             isAccelerating = false;
         }
     }
@@ -210,9 +230,21 @@ public class PlayerMovement : MonoBehaviour
 
     void Accelerate()
     {
-        if (isAccelerating && acceleration < 100)
+        if (isAccelerating && acceleration < 100 && acceleration >= 0)
         {
-            acceleration += 1;
+            acceleration += accelerationIncrement;
+        }
+        else if (!isAccelerating && acceleration > 0)
+        {
+            acceleration -= math.abs(accelerationIncrement);
+        }
+        else if (acceleration >= 100)
+        {
+            acceleration = 99;
+        }
+        else if (acceleration < 0)
+        {
+            acceleration = 0;
         }
     }
 
