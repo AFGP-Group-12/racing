@@ -1,0 +1,105 @@
+Button.mainbutton {
+    padding: 10px 16px;
+    border-radius: 10px;
+    background-repeat: repeat;
+    color: rgb(34, 34, 34);
+    letter-spacing: 0.2px;
+    background-color: rgba(255, 255, 255, 0);
+    width: 305px;
+    margin-top: 5px;
+    margin-bottom: 7px;
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+    -unity-font-style: bold;
+    font-size: 32px;
+    padding: 18px 24px;
+    background-repeat: no-repeat no-repeat;
+    background-size: 100% 100%;
+    -unity-background-scale-mode: stretch-to-fill;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    background-image: resource('UI/Textures/Squiggle/squiggle_00');
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-position-x: left 0;
+    background-position-y: top 0;
+    -unity-slice-left: 9;
+    -unity-slice-top: 9;
+    -unity-slice-right: 9;
+    -unity-slice-bottom: 9;
+    -unity-slice-type: sliced;
+}
+
+Button.mainbutton:hover {
+    scale: 1.03;
+}
+
+.button-box {
+    bottom: auto;
+    left: 0%;
+    position: relative;
+    top: 33%;
+    right: auto;
+    align-self: center;
+    align-content: auto;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: auto;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+.root {
+    width: 100%;
+    height: 100%;
+    background-repeat: repeat repeat;
+    background-size: 256px 256px;
+    background-image: resource('UI/Textures/lined_paper');
+    background-color: rgb(255, 255, 255);
+}
+
+.title {
+    align-self: center;
+    top: 64px;
+    font-size: 125px;
+    -unity-text-align: upper-center;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    -unity-font-style: bold;
+}
+
+.wobble-text {
+    position: relative;
+    font-size: 32px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    -unity-text-align: middle-center;
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+}
+
+.hidden { display: none; }
+
+.overlay {
+    position: absolute; left: 0; right: 0; top: 0; bottom: 0;
+    z-index: 100;
+    background-color: rgba(0,0,0,.25);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-panel {
+    width: 600px; min-height: 300px;
+    padding: 16px;
+    background-color: white;
+    border-radius: 12px;
+}
+
+.modal-title { 
+    -unity-font-style: bold; 
+    font-size: 28px; 
+    margin-bottom: 12px; 
+}

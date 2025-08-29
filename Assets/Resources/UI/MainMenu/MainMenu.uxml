@@ -1,0 +1,30 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
+    <Style src="project://database/Assets/Resources/UI/MainMenu/MainMenu.uss?fileID=7433441132597879392&amp;guid=e3c861fdf0a5bca4a8c8258d2aa772e0&amp;type=3#MainMenu" />
+    <ui:VisualElement name="root" class="root">
+        <ui:VisualElement style="flex-grow: 1; background-image: resource(&apos;UI/Textures/ConceptArt/robot1&apos;); height: 641px; position: absolute; top: 30%; left: 11%; width: 20%;" />
+        <ui:VisualElement name="VisualElement" style="flex-grow: 1; background-image: resource(&apos;UI/Textures/ConceptArt/robot2&apos;); height: 641px; position: absolute; top: 30%; left: 70%; width: 17%;" />
+        <ui:Label text="UNTITLED RACING GAME" name="title" class="title" />
+        <ui:GroupBox name="buttonBox" class="button-box">
+            <ui:Button name="createLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
+                <ui:Label text="CREATE" enabled="true" class="wobble-text" />
+            </ui:Button>
+            <ui:Button name="joinLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
+                <ui:Label text="JOIN" class="wobble-text" />
+            </ui:Button>
+            <ui:Button name="optionsButton" selectable="false" double-click-selects-word="false" class="mainbutton">
+                <ui:Label text="OPTIONS" class="wobble-text" />
+            </ui:Button>
+            <ui:Button name="exitGameButton" selectable="false" double-click-selects-word="false" class="mainbutton">
+                <ui:Label text="EXIT" class="wobble-text" />
+            </ui:Button>
+        </ui:GroupBox>
+
+    <ui:VisualElement name="optionsOverlay" class="overlay hidden">
+        <ui:GroupBox name="optionsPanel" class="modal-panel">
+            <ui:Label text="Options" class="modal-title" />
+            <ui:Button text="Close" name="optionsCloseButton" />
+        </ui:GroupBox>
+    </ui:VisualElement>
+
+    </ui:VisualElement>
+</ui:UXML>
