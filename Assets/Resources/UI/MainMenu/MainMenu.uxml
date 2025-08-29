@@ -18,5 +18,13 @@
                 <ui:Label text="EXIT" class="wobble-text" />
             </ui:Button>
         </ui:GroupBox>
+
+    <ui:VisualElement name="optionsOverlay" class="overlay hidden">
+        <ui:GroupBox name="optionsPanel" class="modal-panel">
+            <ui:Label text="Options" class="modal-title" />
+            <ui:Button text="Close" name="optionsCloseButton" />
+        </ui:GroupBox>
+    </ui:VisualElement>
+
     </ui:VisualElement>
 </ui:UXML>
