@@ -43,6 +43,21 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float addedFov; // How much fov do you want to be added to the field of view
 
+    [Header("Rotation on Move")]
+
+    [SerializeField] PlayerCamera playerCameraScript;
+
+    [SerializeField] float movementRotation; // How much fov do you want to be added to the field of view
+
+    [SerializeField] float rotationIncrement;
+
+    [SerializeField] float rotationAdditive;
+
+    private float targetRotation;
+
+    private float curRotation = 0;
+
+
     private float startingFov;
 
     private float transparency;
@@ -51,7 +66,7 @@ public class PlayerMovement : MonoBehaviour
 
     private PlayerInput input;
 
-    private float horizontalInput;
+    public float horizontalInput;
     private float verticalInput;
 
     Vector3 moveDirection;
@@ -103,6 +118,7 @@ public class PlayerMovement : MonoBehaviour
         SpeedCheck();
         StopMomentumJump();
         SetSpeedVisuals();
+        MoveRotation();
 
     }
 
@@ -129,9 +145,54 @@ public class PlayerMovement : MonoBehaviour
         playerCamera.fieldOfView = startingFov + (addedFov * currentAddedFov);
     }
 
+    void MoveRotation()
+    {
+        if (math.abs(targetRotation) > math.abs(rotationAdditive))
+        {
+            targetRotation = rotationAdditive;
+        }
+
+        if (horizontalInput != 0)
+        {
+            targetRotation = rotationAdditive * (-horizontalInput / math.abs(horizontalInput));
+            rotationIncrement = math.abs(rotationIncrement) * (-horizontalInput / math.abs(horizontalInput));
+            curRotation = playerCameraScript.getRotationZ();
+
+            if (curRotation != targetRotation)
+            {
+                curRotation += rotationIncrement;
+            }
+
+            playerCameraScript.setRotationZ(curRotation);
+        }
+        else
+        {
+            targetRotation = 0;
+            rotationIncrement = math.abs(rotationIncrement);
+            curRotation = playerCameraScript.getRotationZ();
+
+            if (curRotation > targetRotation)
+            {
+                curRotation -= rotationIncrement;
+            }
+            else if (curRotation < targetRotation)
+            {
+                curRotation += rotationIncrement;
+            }
+
+            playerCameraScript.setRotationZ(curRotation);
+        }
+        
+    }
+
+    void SetRotation()
+    {
+        playerCameraScript.setRotationZ(curRotation);
+    }   
+
     void MovePlayer()
     {
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;      
 
         if (isOnGround)
         {

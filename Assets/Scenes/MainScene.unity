@@ -982,14 +982,19 @@ MonoBehaviour:
   jumpForce: 30
   jumpMultiplier: 2
   jumpCooldown: 0.25
-  currentSpeed: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
   orientation: {fileID: 180516268}
   playerHeight: 1.96
   speedLinesImage: {fileID: 366768802}
-  transparency: 0
+  playerCamera: {fileID: 330585545}
+  addedFov: 20
+  playerCameraScript: {fileID: 330585548}
+  movementRotation: 0
+  rotationIncrement: 0.25
+  rotationAdditive: 5
+  horizontalInput: 0
 --- !u!114 &697519735
 MonoBehaviour:
   m_ObjectHideFlags: 0
