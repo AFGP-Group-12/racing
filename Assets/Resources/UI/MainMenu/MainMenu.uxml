@@ -18,7 +18,7 @@
                 <ui:Label text="EXIT" class="wobble-text" />
             </ui:Button>
         </ui:GroupBox>
-        <ui:VisualElement name="optionsOverlay" enabled="true" class="overlay">
+        <ui:VisualElement name="optionsOverlay" enabled="true" class="overlay hidden">
             <ui:GroupBox name="optionsPanel" class="modal-panel">
                 <ui:VisualElement name="optionsScribble" picking-mode="Ignore" class="scribble-layer" />
                 <ui:VisualElement class="title-row">

@@ -38,9 +38,9 @@ public class OptionsMenuController : MonoBehaviour
     private readonly List<Resolution> _resolutions = new();
     private readonly (string label, FullScreenMode mode)[] _modes = new[]
     {
-        ("Windowed",             FullScreenMode.Windowed),
-        ("Borderless",           FullScreenMode.FullScreenWindow),
-        ("Exclusive Fullscreen", FullScreenMode.ExclusiveFullScreen),
+        ("Windowed",    FullScreenMode.Windowed),
+        ("Borderless",  FullScreenMode.FullScreenWindow),
+        ("Fullscreen",  FullScreenMode.ExclusiveFullScreen),
     };
 
     void Awake()
@@ -120,7 +120,7 @@ public class OptionsMenuController : MonoBehaviour
         {
             var r = _resolutions[i];
             int hz = Mathf.RoundToInt((float)r.refreshRateRatio.value);
-            labels.Add($"{r.width} x {r.height} @ {hz}Hz");
+            labels.Add($"{r.width}x{r.height}");
         }
 
         resolutionDropdown.choices = labels;
