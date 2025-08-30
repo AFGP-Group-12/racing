@@ -18,13 +18,31 @@
                 <ui:Label text="EXIT" class="wobble-text" />
             </ui:Button>
         </ui:GroupBox>
-
-    <ui:VisualElement name="optionsOverlay" class="overlay hidden">
-        <ui:GroupBox name="optionsPanel" class="modal-panel">
-            <ui:Label text="Options" class="modal-title" />
-            <ui:Button text="Close" name="optionsCloseButton" />
-        </ui:GroupBox>
-    </ui:VisualElement>
-
+        <ui:VisualElement name="optionsOverlay" enabled="true" class="overlay hidden">
+            <ui:GroupBox name="optionsPanel" class="modal-panel">
+                <ui:VisualElement name="optionsScribble" picking-mode="Ignore" class="scribble-layer" />
+                <ui:VisualElement class="title-row">
+                    <ui:Label name="optionsTitle" text="Options" class="marker-title" />
+                </ui:VisualElement>
+                <ui:VisualElement class="form">
+                    <ui:VisualElement class="row">
+                        <ui:Label text="Master Volume" class="form-label" />
+                        <ui:Slider name="volumeSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="row">
+                        <ui:Label text="Resolution" class="form-label" />
+                        <ui:DropdownField name="resolutionDropdown" class="form-field" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="row">
+                        <ui:Label text="Display Mode" class="form-label" />
+                        <ui:DropdownField name="displayModeDropdown" class="form-field" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="row buttons">
+                        <ui:Button name="applyButton" text="Apply" />
+                        <ui:Button name="optionsCloseButton" text="Close" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:GroupBox>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

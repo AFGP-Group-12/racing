@@ -81,25 +81,220 @@ Button.mainbutton:hover {
     -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
 }
 
-.hidden { display: none; }
+.hidden {
+    display: none;
+}
 
 .overlay {
-    position: absolute; left: 0; right: 0; top: 0; bottom: 0;
-    z-index: 100;
-    background-color: rgba(0,0,0,.25);
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.25);
     justify-content: center;
     align-items: center;
 }
 
 .modal-panel {
-    width: 600px; min-height: 300px;
+    width: 600px;
+    min-height: 300px;
     padding: 16px;
     background-color: white;
     border-radius: 12px;
 }
 
-.modal-title { 
-    -unity-font-style: bold; 
-    font-size: 28px; 
-    margin-bottom: 12px; 
+.modal-title {
+    -unity-font-style: bold;
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.row > Label {
+    width: 160px;
+}
+
+.row.buttons {
+    justify-content: flex-end;
+}
+
+.modal-panel {
+    position: relative;
+    overflow: visible;
+}
+
+.scribble-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.doodle-corner {
+    position: absolute;
+    width: 56px;
+    height: 56px;
+    opacity: 0.85;
+}
+
+.doodle-corner.tl {
+    left: -8px;
+    top: -8px;
+}
+
+.doodle-corner.tr {
+    right: -8px;
+    top: -8px;
+}
+
+.doodle-corner.bl {
+    left: -8px;
+    bottom: -8px;
+}
+
+.doodle-corner.br {
+    right: -8px;
+    bottom: -8px;
+}
+
+.title-row {
+    margin-bottom: 12px;
+}
+
+.marker-title {
+    position: relative;
+    font-size: 28px;
+    -unity-font-style: bold;
+    padding: 4px 6px;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+}
+
+.modal-panel {
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+}
+
+.modal-panel * {
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+}
+
+.marker-title {
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+    -unity-font-style: bold;
+    font-size: 36px;
+    padding: 6px 8px;
+}
+
+.modal-panel {
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+}
+
+.modal-panel * {
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+}
+
+.marker-title {
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+    -unity-font-style: bold;
+    font-size: 38px;
+    margin-bottom: 8px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.form-label {
+    flex: 0 0 200px;
+    -unity-text-align: middle-left;
+    letter-spacing: 0.2px;
+}
+
+.form-field {
+    flex: 1 1 auto;
+    max-width: 360px;
+}
+
+DropdownField.form-field {
+    min-height: 36px;
+}
+
+DropdownField.form-field .unity-base-field__input {
+    padding: 6px 10px;
+    font-size: 20px;
+}
+
+DropdownField.form-field .unity-popup-field__input {
+    padding: 6px 10px;
+    font-size: 20px;
+}
+
+Slider.form-field {
+    min-height: 36px;
+    padding: 6px 0;
+}
+
+Slider.form-field .unity-slider__tracker {
+    height: 10px;
+    border-radius: 6px;
+}
+
+Slider.form-field .unity-base-slider__tracker {
+    height: 10px;
+    border-radius: 6px;
+}
+
+Slider.form-field .unity-slider__dragger {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    align-items: stretch;
+    justify-content: space-evenly;
+    align-self: auto;
+    align-content: auto;
+    top: 15px;
+}
+
+Slider.form-field .unity-base-slider__dragger {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    align-items: stretch;
+    justify-content: space-evenly;
+    align-self: auto;
+    align-content: auto;
+    top: 15px;
+}
+
+.row.buttons {
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.row.buttons > Button {
+    min-height: 36px;
+    padding: 6px 12px;
+    font-size: 20px;
 }

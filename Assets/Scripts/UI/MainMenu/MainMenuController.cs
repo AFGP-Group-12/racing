@@ -13,12 +13,12 @@ public class MainMenuController : MonoBehaviour
     private VisualElement optionsOverlay;
     private Button optionsCloseButton;
 
+    private OptionsMenuController optionsController;
+
     public event Action OnCreateLobbyPressed;
     public event Action OnJoinLobbyPressed;
     public event Action OnOptionsPressed;
     public event Action OnExitGamePressed;
-
-
 
     void Awake()
     {
@@ -31,26 +31,25 @@ public class MainMenuController : MonoBehaviour
         optionsOverlay = root.Q<VisualElement>("optionsOverlay");
         optionsCloseButton = root.Q<Button>("optionsCloseButton");
 
+        optionsController = GetComponent<OptionsMenuController>();
+
         createLobbyButton.clicked += () => OnCreateLobbyPressed?.Invoke();
         joinLobbyButton.clicked += () => OnJoinLobbyPressed?.Invoke();
         optionsButton.clicked += () => OnOptionsPressed?.Invoke();
         exitGameButton.clicked += () => OnExitGamePressed?.Invoke();
 
-        // Show/Hide the modal
         OnOptionsPressed += ShowOptions;
+
         optionsCloseButton.clicked += HideOptions;
 
-        // Click backdrop to close
         optionsOverlay.RegisterCallback<ClickEvent>(evt =>
         {
-            // If click landed directly on the overlay (not the panel), close
             if (evt.target == optionsOverlay) HideOptions();
         });
 
-        // Esc to close (works when overlay has focus or you’re not inside Play)
         root.RegisterCallback<KeyDownEvent>(evt =>
         {
-            if (evt.keyCode == KeyCode.Escape && optionsOverlay.style.display != DisplayStyle.None)
+            if (evt.keyCode == KeyCode.Escape && !optionsOverlay.ClassListContains("hidden"))
                 HideOptions();
         });
 
@@ -59,14 +58,12 @@ public class MainMenuController : MonoBehaviour
 
     private void ShowOptions()
     {
-        optionsOverlay.RemoveFromClassList("hidden");
-        // Optionally block scroll/tab on background or set focus to a control inside:
-        optionsCloseButton.Focus();
+        optionsController.Show();
     }
 
     private void HideOptions()
     {
-        optionsOverlay.AddToClassList("hidden");
+        optionsController.CancelAndClose();
     }
 
     public void TestSubscribeEvents()
