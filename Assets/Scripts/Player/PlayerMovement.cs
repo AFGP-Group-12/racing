@@ -37,36 +37,12 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform orientation;
     [SerializeField] float playerHeight;
 
-    [Header("Speed Lines")]
-    [SerializeField] Image speedLinesImage;
-    [SerializeField] Camera playerCamera;
-
-    [SerializeField] float addedFov; // How much fov do you want to be added to the field of view
-
-    [Header("Rotation on Move")]
-
-    [SerializeField] PlayerCamera playerCameraScript;
-
-    [SerializeField] float movementRotation; // How much fov do you want to be added to the field of view
-
-    [SerializeField] float rotationIncrement;
-
-    [SerializeField] float rotationAdditive;
-
-    private float targetRotation;
-
-    private float curRotation = 0;
-
-
-    private float startingFov;
-
-    private float transparency;
-
-    private float currentAddedFov;
+    [Header("Other Scripts")]
+    [SerializeField] PlayerScreenVisuals visualScript;
 
     private PlayerInput input;
 
-    public float horizontalInput;
+    private float horizontalInput;
     private float verticalInput;
 
     Vector3 moveDirection;
@@ -95,8 +71,6 @@ public class PlayerMovement : MonoBehaviour
 
         isAccelerating = false;
 
-        startingFov = playerCamera.fieldOfView;
-
     }
 
     void Update()
@@ -117,8 +91,8 @@ public class PlayerMovement : MonoBehaviour
         Accelerate();
         SpeedCheck();
         StopMomentumJump();
-        SetSpeedVisuals();
-        MoveRotation();
+        visualScript.SetSpeedVisuals(basicSpeed, sprintSpeed, moveSpeed);
+        visualScript.MoveRotation(horizontalInput);
 
     }
 
@@ -131,64 +105,6 @@ public class PlayerMovement : MonoBehaviour
     {
         // currentSpeed = rb.linearVelocity.magnitude;
     }
-
-    void SetSpeedVisuals()
-    {
-        float speedDifference = sprintSpeed - basicSpeed;
-        float moveDifference = moveSpeed - basicSpeed;
-
-        transparency = moveDifference / speedDifference;
-        speedLinesImage.color = new Color(speedLinesImage.color.r, speedLinesImage.color.g, speedLinesImage.color.b, transparency);
-
-
-        currentAddedFov = transparency;
-        playerCamera.fieldOfView = startingFov + (addedFov * currentAddedFov);
-    }
-
-    void MoveRotation()
-    {
-        if (math.abs(targetRotation) > math.abs(rotationAdditive))
-        {
-            targetRotation = rotationAdditive;
-        }
-
-        if (horizontalInput != 0)
-        {
-            targetRotation = rotationAdditive * (-horizontalInput / math.abs(horizontalInput));
-            rotationIncrement = math.abs(rotationIncrement) * (-horizontalInput / math.abs(horizontalInput));
-            curRotation = playerCameraScript.getRotationZ();
-
-            if (curRotation != targetRotation)
-            {
-                curRotation += rotationIncrement;
-            }
-
-            playerCameraScript.setRotationZ(curRotation);
-        }
-        else
-        {
-            targetRotation = 0;
-            rotationIncrement = math.abs(rotationIncrement);
-            curRotation = playerCameraScript.getRotationZ();
-
-            if (curRotation > targetRotation)
-            {
-                curRotation -= rotationIncrement;
-            }
-            else if (curRotation < targetRotation)
-            {
-                curRotation += rotationIncrement;
-            }
-
-            playerCameraScript.setRotationZ(curRotation);
-        }
-        
-    }
-
-    void SetRotation()
-    {
-        playerCameraScript.setRotationZ(curRotation);
-    }   
 
     void MovePlayer()
     {
