@@ -44,5 +44,36 @@
                 </ui:VisualElement>
             </ui:GroupBox>
         </ui:VisualElement>
+
+<ui:VisualElement name="profileDock" class="profile-dock">
+  <!-- Compact card (click to edit) -->
+  <ui:Button name="profileButton" class="profile-card">
+    <ui:VisualElement name="profileAvatar" class="avatar" />
+    <ui:Label name="profileName" class="profile-name" text="Player" />
+  </ui:Button>
+  </ui:VisualElement>
+
+
+        <ui:VisualElement name="profileOverlay" class="overlay hidden">
+  <ui:GroupBox name="profilePanel" class="modal-panel">
+    <ui:VisualElement name="profileScribble" class="scribble-layer" picking-mode="Ignore" />
+
+    <ui:VisualElement class="title-row">
+      <ui:Label class="marker-title" text="Edit Name" />
+    </ui:VisualElement>
+
+    <ui:VisualElement class="form">
+      <ui:VisualElement class="row">
+        <ui:Label text="Name" class="form-label" />
+        <ui:TextField name="profileNameField" class="form-field" />
+      </ui:VisualElement>
+
+      <ui:VisualElement class="row buttons">
+        <ui:Button name="profileApply" text="Apply" />
+        <ui:Button name="profileCancel" text="Cancel" />
+      </ui:VisualElement>
+    </ui:VisualElement>
+  </ui:GroupBox>
+</ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

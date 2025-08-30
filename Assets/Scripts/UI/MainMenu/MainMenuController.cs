@@ -14,6 +14,8 @@ public class MainMenuController : MonoBehaviour
     private Button optionsCloseButton;
 
     private OptionsMenuController optionsController;
+    private ProfileBoxController profileBox;
+
 
     public event Action OnCreateLobbyPressed;
     public event Action OnJoinLobbyPressed;
@@ -37,6 +39,11 @@ public class MainMenuController : MonoBehaviour
         joinLobbyButton.clicked += () => OnJoinLobbyPressed?.Invoke();
         optionsButton.clicked += () => OnOptionsPressed?.Invoke();
         exitGameButton.clicked += () => OnExitGamePressed?.Invoke();
+
+
+        profileBox = GetComponent<ProfileBoxController>();
+        if (profileBox != null)
+            profileBox.OnProfileNameApplied += name => Debug.Log($"New profile name: {name}");
 
         OnOptionsPressed += ShowOptions;
 
