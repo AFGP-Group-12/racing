@@ -1,0 +1,320 @@
+Button.mainbutton {
+    padding: 10px 16px;
+    border-radius: 10px;
+    background-repeat: repeat;
+    color: rgb(34, 34, 34);
+    letter-spacing: 0.2px;
+    background-color: rgba(255, 255, 255, 0);
+    width: 305px;
+    margin-top: 5px;
+    margin-bottom: 7px;
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+    -unity-font-style: bold;
+    font-size: 32px;
+    padding: 18px 24px;
+    background-repeat: no-repeat no-repeat;
+    background-size: 100% 100%;
+    -unity-background-scale-mode: stretch-to-fill;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    background-image: resource('UI/Textures/Squiggle/squiggle_00');
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-position-x: left 0;
+    background-position-y: top 0;
+    -unity-slice-left: 9;
+    -unity-slice-top: 9;
+    -unity-slice-right: 9;
+    -unity-slice-bottom: 9;
+    -unity-slice-type: sliced;
+}
+
+Button.mainbutton:hover {
+    scale: 1.03;
+}
+
+.button-box {
+    bottom: auto;
+    left: 0%;
+    position: relative;
+    top: 33%;
+    right: auto;
+    align-self: center;
+    align-content: auto;
+    justify-content: center;
+    align-items: center;
+    width: 50%;
+    height: auto;
+    margin-top: 0;
+    margin-right: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+}
+
+.root {
+    width: 100%;
+    height: 100%;
+    background-repeat: repeat repeat;
+    background-size: 256px 256px;
+    background-image: resource('UI/Textures/lined_paper');
+    background-color: rgb(255, 255, 255);
+}
+
+.title {
+    align-self: center;
+    top: 64px;
+    font-size: 125px;
+    -unity-text-align: upper-center;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    -unity-font-style: bold;
+}
+
+.wobble-text {
+    position: relative;
+    font-size: 32px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    -unity-text-align: middle-center;
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+}
+
+.overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-panel {
+    width: 600px;
+    min-height: 300px;
+    padding: 16px;
+    background-color: white;
+    border-radius: 12px;
+    position: relative;
+    overflow: visible;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+}
+
+.modal-title {
+    -unity-font-style: bold;
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.row > Label {
+    width: 160px;
+}
+
+.row.buttons {
+    justify-content: flex-end;
+}
+
+.scribble-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.title-row {
+    margin-bottom: 12px;
+}
+
+.marker-title {
+    position: relative;
+    font-size: 28px;
+    -unity-font-style: bold;
+    padding: 4px 6px;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+}
+
+.modal-panel * {
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+}
+
+.marker-title {
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+    -unity-font-style: bold;
+    font-size: 38px;
+    margin-bottom: 8px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.form-label {
+    flex: 0 0 200px;
+    -unity-text-align: middle-left;
+    letter-spacing: 0.2px;
+}
+
+.form-field {
+    flex: 1 1 auto;
+    max-width: 360px;
+}
+
+DropdownField.form-field {
+    min-height: 36px;
+}
+
+DropdownField.form-field .unity-base-field__input {
+    padding: 6px 10px;
+    font-size: 20px;
+}
+
+DropdownField.form-field .unity-popup-field__input {
+    padding: 6px 10px;
+    font-size: 20px;
+}
+
+Slider.form-field {
+    min-height: 36px;
+    padding: 6px 0;
+}
+
+Slider.form-field .unity-base-slider__tracker {
+    height: 10px;
+    border-radius: 6px;
+}
+
+Slider.form-field .unity-base-slider__dragger {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    align-items: stretch;
+    justify-content: space-evenly;
+    align-self: auto;
+    align-content: auto;
+    top: 15px;
+}
+
+.row.buttons {
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.row.buttons > Button {
+    min-height: 36px;
+    padding: 6px 12px;
+    font-size: 20px;
+}
+
+.profile-dock {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    z-index: 200;
+}
+
+.profile-card {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background-color: rgba(0, 0, 0, 0.06);
+    border-radius: 10px;
+    min-width: 180px;
+}
+
+.profile-card:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgb(221, 221, 221);
+    background-size: cover;
+    background-position: center;
+}
+
+.profile-name {
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+    font-size: 31px;
+    letter-spacing: 0.2px;
+    padding-left: 8px;
+}
+
+.profile-editor {
+    position: absolute;
+    right: 0;
+    bottom: 58px;
+    width: 340px;
+    padding: 12px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.profile-editor__buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.profile-editor TextField {
+    width: 100%;
+    min-width: 0;
+}
+
+.profile-editor TextField .unity-base-field__label {
+    width: 64px;
+    margin-right: 8px;
+}
+
+.profile-editor TextField .unity-base-field__input {
+    flex: 1 1 auto;
+    min-height: 32px;
+    padding: 6px 8px;
+    font-size: 18px;
+}
+
+.profile-editor__buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+
+.profile-editor__buttons > Button {
+    min-height: 28px;
+    padding: 4px 10px;
+    font-size: 16px;
+    line-height: 1;
+}
+
+.hidden {
+    display: none;
+}
