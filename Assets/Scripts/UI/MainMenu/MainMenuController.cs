@@ -70,7 +70,7 @@ public class MainMenuController : MonoBehaviour
 
     private void HideOptions()
     {
-        optionsController.CancelAndClose();
+        optionsController.Hide();
     }
 
     public void TestSubscribeEvents()

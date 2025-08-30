@@ -18,62 +18,71 @@
                 <ui:Label text="EXIT" class="wobble-text" />
             </ui:Button>
         </ui:GroupBox>
-        <ui:VisualElement name="optionsOverlay" enabled="true" class="overlay hidden">
+        <ui:VisualElement name="optionsOverlay" enabled="true" class="overlay">
             <ui:GroupBox name="optionsPanel" class="modal-panel">
                 <ui:VisualElement name="optionsScribble" picking-mode="Ignore" class="scribble-layer" />
                 <ui:VisualElement class="title-row">
-                    <ui:Label name="optionsTitle" text="Options" class="marker-title" />
+                    <ui:Label name="optionsTitle" text="OPTIONS" class="marker-title" />
                 </ui:VisualElement>
-                <ui:VisualElement class="form">
-                    <ui:VisualElement class="row">
-                        <ui:Label text="Master Volume" class="form-label" />
-                        <ui:Slider name="volumeSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                <ui:VisualElement style="flex-grow: 1; justify-content: flex-start; align-self: stretch; align-items: auto; flex-direction: row; align-content: auto;">
+                    <ui:VisualElement class="form" style="align-items: stretch; flex-basis: auto; width: 325px; justify-content: flex-start; align-self: stretch;">
+                        <ui:VisualElement class="row">
+                            <ui:Label text="Master Volume" class="form-label" />
+                            <ui:Slider name="masterSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="row">
+                            <ui:Label text="Music Volume" class="form-label" />
+                            <ui:Slider name="musicSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="row">
+                            <ui:Label text="SFX Volume" class="form-label" />
+                            <ui:Slider name="sfxSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="row">
+                            <ui:Label text="Ambient Volume" class="form-label" />
+                            <ui:Slider name="ambienceSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
-                    <ui:VisualElement class="row">
-                        <ui:Label text="Resolution" class="form-label" />
-                        <ui:DropdownField name="resolutionDropdown" class="form-field" />
-                    </ui:VisualElement>
-                    <ui:VisualElement class="row">
-                        <ui:Label text="Display Mode" class="form-label" />
-                        <ui:DropdownField name="displayModeDropdown" class="form-field" />
-                    </ui:VisualElement>
-                    <ui:VisualElement class="row buttons">
-                        <ui:Button name="applyButton" text="Apply" />
-                        <ui:Button name="optionsCloseButton" text="Close" />
+                    <ui:VisualElement class="form" style="width: 325px;">
+                        <ui:VisualElement class="row">
+                            <ui:Label text="Resolution" class="form-label" />
+                            <ui:DropdownField name="resolutionDropdown" class="form-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="row">
+                            <ui:Label text="Display Mode" class="form-label" />
+                            <ui:DropdownField name="displayModeDropdown" class="form-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="row buttons">
+                            <ui:Button name="applyButton" text="Apply" />
+                            <ui:Button name="optionsCloseButton" text="Close" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:GroupBox>
         </ui:VisualElement>
-
-<ui:VisualElement name="profileDock" class="profile-dock">
-  <!-- Compact card (click to edit) -->
-  <ui:Button name="profileButton" class="profile-card">
-    <ui:VisualElement name="profileAvatar" class="avatar" />
-    <ui:Label name="profileName" class="profile-name" text="Player" />
-  </ui:Button>
-  </ui:VisualElement>
-
-
+        <ui:VisualElement name="profileDock" class="profile-dock">
+            <ui:Button name="profileButton" class="profile-card">
+                <ui:VisualElement name="profileAvatar" class="avatar" />
+                <ui:Label name="profileName" text="Player" class="profile-name" />
+            </ui:Button>
+        </ui:VisualElement>
         <ui:VisualElement name="profileOverlay" class="overlay hidden">
-  <ui:GroupBox name="profilePanel" class="modal-panel">
-    <ui:VisualElement name="profileScribble" class="scribble-layer" picking-mode="Ignore" />
-
-    <ui:VisualElement class="title-row">
-      <ui:Label class="marker-title" text="Edit Name" />
-    </ui:VisualElement>
-
-    <ui:VisualElement class="form">
-      <ui:VisualElement class="row">
-        <ui:Label text="Name" class="form-label" />
-        <ui:TextField name="profileNameField" class="form-field" />
-      </ui:VisualElement>
-
-      <ui:VisualElement class="row buttons">
-        <ui:Button name="profileApply" text="Apply" />
-        <ui:Button name="profileCancel" text="Cancel" />
-      </ui:VisualElement>
-    </ui:VisualElement>
-  </ui:GroupBox>
-</ui:VisualElement>
+            <ui:GroupBox name="profilePanel" class="modal-panel">
+                <ui:VisualElement name="profileScribble" picking-mode="Ignore" class="scribble-layer" />
+                <ui:VisualElement class="title-row">
+                    <ui:Label text="Edit Name" class="marker-title" />
+                </ui:VisualElement>
+                <ui:VisualElement class="form">
+                    <ui:VisualElement class="row">
+                        <ui:Label text="Name" class="form-label" />
+                        <ui:TextField name="profileNameField" class="form-field" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="row buttons">
+                        <ui:Button name="profileApply" text="Apply" />
+                        <ui:Button name="profileCancel" text="Cancel" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:GroupBox>
+        </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

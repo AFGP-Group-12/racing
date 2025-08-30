@@ -93,7 +93,7 @@ Button.mainbutton:hover {
 }
 
 .modal-panel {
-    width: 600px;
+    width: 710px;
     min-height: 300px;
     padding: 16px;
     background-color: white;
@@ -103,6 +103,7 @@ Button.mainbutton:hover {
     -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
     color: rgb(34, 34, 34);
     font-size: 20px;
+    align-items: center;
 }
 
 .modal-title {
@@ -116,6 +117,9 @@ Button.mainbutton:hover {
     flex-direction: row;
     align-items: center;
     margin-bottom: 8px;
+    justify-content: flex-start;
+    align-content: flex-start;
+    align-self: stretch;
 }
 
 .row > Label {
@@ -162,6 +166,10 @@ Button.mainbutton:hover {
 .form {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-self: stretch;
+    align-content: flex-start;
 }
 
 .row {
@@ -174,6 +182,7 @@ Button.mainbutton:hover {
     flex: 0 0 200px;
     -unity-text-align: middle-left;
     letter-spacing: 0.2px;
+    flex-basis: 140px;
 }
 
 .form-field {
@@ -311,5 +320,3 @@ Slider.form-field .unity-base-slider__dragger {
 .hidden {
     display: none;
 }
-
-

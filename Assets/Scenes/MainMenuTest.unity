@@ -480,7 +480,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 1615518618}
-  masterMixer: {fileID: 0}
+  masterMixer: {fileID: 24100000, guid: c643ebb4f64cd8041a66c66a92121170, type: 2}
 --- !u!114 &1615518624
 MonoBehaviour:
   m_ObjectHideFlags: 0
