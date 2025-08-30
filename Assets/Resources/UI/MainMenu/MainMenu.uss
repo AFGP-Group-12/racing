@@ -102,6 +102,11 @@ Button.mainbutton:hover {
     padding: 16px;
     background-color: white;
     border-radius: 12px;
+    position: relative;
+    overflow: visible;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
 }
 
 .modal-title {
@@ -125,10 +130,6 @@ Button.mainbutton:hover {
     justify-content: flex-end;
 }
 
-.modal-panel {
-    position: relative;
-    overflow: visible;
-}
 
 .scribble-layer {
     position: absolute;
@@ -136,33 +137,6 @@ Button.mainbutton:hover {
     right: 0;
     top: 0;
     bottom: 0;
-}
-
-.doodle-corner {
-    position: absolute;
-    width: 56px;
-    height: 56px;
-    opacity: 0.85;
-}
-
-.doodle-corner.tl {
-    left: -8px;
-    top: -8px;
-}
-
-.doodle-corner.tr {
-    right: -8px;
-    top: -8px;
-}
-
-.doodle-corner.bl {
-    left: -8px;
-    bottom: -8px;
-}
-
-.doodle-corner.br {
-    right: -8px;
-    bottom: -8px;
 }
 
 .title-row {
@@ -175,31 +149,6 @@ Button.mainbutton:hover {
     -unity-font-style: bold;
     padding: 4px 6px;
     -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
-}
-
-.modal-panel {
-    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
-    color: rgb(34, 34, 34);
-    font-size: 20px;
-}
-
-.modal-panel * {
-    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
-    color: rgb(34, 34, 34);
-    font-size: 20px;
-}
-
-.marker-title {
-    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
-    -unity-font-style: bold;
-    font-size: 36px;
-    padding: 6px 8px;
-}
-
-.modal-panel {
-    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
-    color: rgb(34, 34, 34);
-    font-size: 20px;
 }
 
 .modal-panel * {
@@ -256,25 +205,9 @@ Slider.form-field {
     padding: 6px 0;
 }
 
-Slider.form-field .unity-slider__tracker {
-    height: 10px;
-    border-radius: 6px;
-}
-
 Slider.form-field .unity-base-slider__tracker {
     height: 10px;
     border-radius: 6px;
-}
-
-Slider.form-field .unity-slider__dragger {
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    align-items: stretch;
-    justify-content: space-evenly;
-    align-self: auto;
-    align-content: auto;
-    top: 15px;
 }
 
 Slider.form-field .unity-base-slider__dragger {
