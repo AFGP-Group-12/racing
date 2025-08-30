@@ -54,6 +54,10 @@ public class MainMenuController : MonoBehaviour
                 HideOptions();
         });
 
+        // Link networking code to buttons
+        OnCreateLobbyPressed += LobbyClient.instance.CreateLobby;
+        OnJoinLobbyPressed += LobbyClient.instance.JoinLobby;
+
         TestSubscribeEvents();
     }
 
