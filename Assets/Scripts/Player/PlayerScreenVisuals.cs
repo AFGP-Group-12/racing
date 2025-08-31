@@ -10,10 +10,13 @@ public class PlayerScreenVisuals : MonoBehaviour
 {
 
     [Header("Speed Lines")]
-    [SerializeField] Image speedLinesImage;
+
+    [SerializeField] GameObject speedLineGameObject;
     [SerializeField] Camera playerCamera;
 
     [SerializeField] float addedFov; // How much fov do you want to be added to the field of view
+
+    private RawImage speedLineRawImage;
 
     [Header("Rotation on Move")]
 
@@ -45,6 +48,8 @@ public class PlayerScreenVisuals : MonoBehaviour
 
         startingFov = playerCamera.fieldOfView;
 
+        speedLineRawImage = speedLineGameObject.GetComponent<RawImage>();
+
     }
 
     public void SetSpeedVisuals(float basicSpeed, float sprintSpeed, float moveSpeed)
@@ -53,8 +58,8 @@ public class PlayerScreenVisuals : MonoBehaviour
         float moveDifference = moveSpeed - basicSpeed;
 
         transparency = moveDifference / speedDifference;
-        speedLinesImage.color = new Color(speedLinesImage.color.r, speedLinesImage.color.g, speedLinesImage.color.b, transparency);
 
+        speedLineRawImage.material.SetFloat("_Transparency", transparency);
 
         currentAddedFov = transparency;
         playerCamera.fieldOfView = startingFov + (addedFov * currentAddedFov);
