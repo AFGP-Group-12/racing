@@ -29,8 +29,15 @@ public class ScribbleBorderSimple : MonoBehaviour
         if (r.width <= 0 || r.height <= 0) return;
 
         var pts = BuildJitteredRectPath(r, 48);
+
         var p = ctx.painter2D;
         p.fillColor = Color.clear;
+
+        // Safer joins to avoid spikes (available in recent Unity versions)
+        // If your version does not expose these, you can remove these three lines.
+        p.lineJoin = LineJoin.Round;
+        p.lineCap  = LineCap.Round;
+        p.miterLimit = 1.5f;
 
         // Fat pass
         p.strokeColor = inkColor;
@@ -41,16 +48,18 @@ public class ScribbleBorderSimple : MonoBehaviour
 
         // Offset pass for marker feel
         p.lineWidth = stroke * 1.2f;
-        p.BeginPath(); p.MoveTo(pts[0] + new Vector2(0.8f, 0.5f));
-        for (int i = 1; i < pts.Count; i++) p.LineTo(pts[i] + new Vector2(0.8f, 0.5f));
+        Vector2 off = new Vector2(0.8f, 0.5f);
+        p.BeginPath(); p.MoveTo(pts[0] + off);
+        for (int i = 1; i < pts.Count; i++) p.LineTo(pts[i] + off);
         p.ClosePath(); p.Stroke();
     }
 
-    // Static jittered rectangle (no animation)
+    // Jittered rectangle with no duplicated corner points
     private List<Vector2> BuildJitteredRectPath(Rect r, int segPerEdge)
     {
-        var pts = new List<Vector2>(segPerEdge * 4 + 1);
-        Vector2[] corners = {
+        var pts = new List<Vector2>(segPerEdge * 4);
+        Vector2[] corners =
+        {
             new Vector2(r.xMin, r.yMin), new Vector2(r.xMax, r.yMin),
             new Vector2(r.xMax, r.yMax), new Vector2(r.xMin, r.yMax)
         };
@@ -60,22 +69,33 @@ public class ScribbleBorderSimple : MonoBehaviour
             Vector2 s = corners[e];
             Vector2 ept = corners[(e + 1) % 4];
             Vector2 dir = ept - s;
+            Vector2 n = new Vector2(-dir.y, dir.x).normalized;
 
-            for (int i = 0; i <= segPerEdge; i++)
+            // Note: i < segPerEdge (do not add the corner twice)
+            for (int i = 0; i < segPerEdge; i++)
             {
                 float u = i / (float)segPerEdge;
+
+                // Exact corner at the start of each edge to keep corners consistent
+                if (i == 0) { pts.Add(s); continue; }
+
                 Vector2 p = s + dir * u;
 
-                Vector2 n = new Vector2(-dir.y, dir.x).normalized;
-                float wob = Mathf.Sin((u + e) * 6.283f * 1.6f) * 0.5f
-                          + Mathf.Sin((u + e * 0.37f) * 6.283f * 3.7f) * 0.35f;
+                // Fade jitter near corners so joins remain stable
+                float fade = Mathf.SmoothStep(0f, 1f, Mathf.InverseLerp(0.05f, 0.95f, u));
+
+                float wob =
+                    (Mathf.Sin((u + e) * 6.283f * 1.6f) * 0.5f +
+                     Mathf.Sin((u + e * 0.37f) * 6.283f * 3.7f) * 0.35f) * fade;
 
                 p += n * wob * jitterAmplitude;
-                p += dir.normalized * Mathf.Sin(u * 6.283f * 2.0f) * 0.4f;
+                p += dir.normalized * Mathf.Sin(u * 6.283f * 2.0f) * 0.4f * fade;
+
                 pts.Add(p);
             }
         }
-        pts.Add(pts[0]); // close
+
+        // Do not append pts[0]; ClosePath will close the path.
         return pts;
     }
 }

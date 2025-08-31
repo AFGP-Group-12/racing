@@ -13,6 +13,11 @@ public class MainMenuController : MonoBehaviour
     private VisualElement optionsOverlay;
     private Button optionsCloseButton;
 
+    private VisualElement loadingOverlay;
+
+    private VisualElement mainScreen;
+    private VisualElement lobbyScreen;
+
     private OptionsMenuController optionsController;
 
 
@@ -32,6 +37,11 @@ public class MainMenuController : MonoBehaviour
         optionsOverlay = root.Q<VisualElement>("optionsOverlay");
         optionsCloseButton = root.Q<Button>("optionsCloseButton");
 
+        loadingOverlay = root.Q<VisualElement>("loadingOverlay");
+
+        mainScreen = root.Q<VisualElement>("mainScreen");
+        lobbyScreen = root.Q<VisualElement>("lobbyScreen");
+
         optionsController = GetComponent<OptionsMenuController>();
 
         createLobbyButton.clicked += () => OnCreateLobbyPressed?.Invoke();
@@ -40,8 +50,16 @@ public class MainMenuController : MonoBehaviour
         exitGameButton.clicked += () => OnExitGamePressed?.Invoke();
 
         OnOptionsPressed += ShowOptions;
-
         optionsCloseButton.clicked += HideOptions;
+
+        OnCreateLobbyPressed += () => loadingOverlay.RemoveFromClassList("hidden");
+
+        /*
+        <CLASSNAME>.OnLobbyJoined += () => {
+            mainScreen.AddToClassList("hidden");
+            lobbyScreen.RemoveFromClassList("hidden");
+        }
+        */
 
         optionsOverlay.RegisterCallback<ClickEvent>(evt =>
         {

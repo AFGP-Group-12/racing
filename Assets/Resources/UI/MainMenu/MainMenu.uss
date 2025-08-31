@@ -320,3 +320,18 @@ Slider.form-field .unity-base-slider__dragger {
 .hidden {
     display: none;
 }
+
+.loading-panel {
+    width: 392px;
+    min-height: auto;
+    padding: 16px;
+    background-color: white;
+    border-radius: 12px;
+    position: relative;
+    overflow: visible;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+    align-items: center;
+    height: 200px;
+}

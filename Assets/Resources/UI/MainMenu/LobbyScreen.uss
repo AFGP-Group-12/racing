@@ -1,0 +1,69 @@
+.player-list-panel {
+    width: 550px;
+    min-height: auto;
+    padding: 16px;
+    background-color: white;
+    border-radius: 12px;
+    position: relative;
+    overflow: visible;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+    align-items: center;
+    top: 0%;
+    left: 3%;
+    height: 750px;
+    align-self: center;
+    flex-direction: column;
+}
+
+.player-list-title-row {
+    flex-direction: row;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    font-size: 40px;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.player-list-title-row > Label {
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+.player-list-join-code-row {
+    flex-direction: row;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    font-size: 40px;
+    width: 100%;
+    justify-content: flex-start;
+}
+
+.player-list {
+    height: 515px;
+    top: 20px;
+    width: 100%;
+    flex-direction: column;
+    align-self: center;
+    align-items: flex-start;
+}
+
+.player-row {
+    height: 66px;
+    width: 100%;
+    background-color: rgb(255, 255, 255);
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.player-name {
+    -unity-text-align: middle-left;
+    font-size: 40px;
+    margin-left: 25px;
+}
+
+.player-ping {
+    font-size: 40px;
+    -unity-text-align: middle-left;
+    align-self: center;
+    margin-right: 25px;
+}

@@ -1,87 +1,130 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
-    <Style src="project://database/Assets/Resources/UI/MainMenu/MainMenu.uss?fileID=7433441132597879392&amp;guid=e3c861fdf0a5bca4a8c8258d2aa772e0&amp;type=3#MainMenu" />
+    <Style src="project://database/Assets/Resources/UI/MainMenu/MainMenu.uss?fileID=7433441132597879392&amp;guid=e3c861fdf0a5bca4a8c8258d2aa772e0&amp;type=3" />
+    <Style src="project://database/Assets/Resources/UI/MainMenu/LobbyScreen.uss?fileID=7433441132597879392&amp;guid=492333ebbe5530d46805ca24c09dacd7&amp;type=3#LobbyScreen" />
     <ui:VisualElement name="root" class="root">
-        <ui:VisualElement style="flex-grow: 1; background-image: resource(&apos;UI/Textures/ConceptArt/robot1&apos;); height: 641px; position: absolute; top: 30%; left: 11%; width: 20%;" />
-        <ui:VisualElement name="VisualElement" style="flex-grow: 1; background-image: resource(&apos;UI/Textures/ConceptArt/robot2&apos;); height: 641px; position: absolute; top: 30%; left: 70%; width: 17%;" />
-        <ui:Label text="UNTITLED RACING GAME" name="title" class="title" />
-        <ui:GroupBox name="buttonBox" class="button-box">
-            <ui:Button name="createLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
-                <ui:Label text="CREATE" enabled="true" class="wobble-text" />
-            </ui:Button>
-            <ui:Button name="joinLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
-                <ui:Label text="JOIN" class="wobble-text" />
-            </ui:Button>
-            <ui:Button name="optionsButton" selectable="false" double-click-selects-word="false" class="mainbutton">
-                <ui:Label text="OPTIONS" class="wobble-text" />
-            </ui:Button>
-            <ui:Button name="exitGameButton" selectable="false" double-click-selects-word="false" class="mainbutton">
-                <ui:Label text="EXIT" class="wobble-text" />
-            </ui:Button>
-        </ui:GroupBox>
-        <ui:VisualElement name="profileDock" class="profile-dock">
-            <ui:Button name="profileButton" class="profile-card">
-                <ui:VisualElement name="profileAvatar" class="avatar" />
-                <ui:Label name="profileName" text="Player" class="profile-name" />
-            </ui:Button>
-        </ui:VisualElement>
-        <ui:VisualElement name="optionsOverlay" enabled="true" class="overlay hidden">
-            <ui:GroupBox name="optionsPanel" class="modal-panel">
-                <ui:VisualElement name="optionsScribble" picking-mode="Ignore" class="scribble-layer" />
-                <ui:VisualElement class="title-row">
-                    <ui:Label name="optionsTitle" text="OPTIONS" class="marker-title" />
-                </ui:VisualElement>
-                <ui:VisualElement style="flex-grow: 1; justify-content: flex-start; align-self: stretch; align-items: auto; flex-direction: row; align-content: auto;">
-                    <ui:VisualElement class="form" style="align-items: stretch; flex-basis: auto; width: 325px; justify-content: flex-start; align-self: stretch;">
-                        <ui:VisualElement class="row">
-                            <ui:Label text="Master Volume" class="form-label" />
-                            <ui:Slider name="masterSlider" low-value="0" high-value="100" value="80" class="form-field" />
+        <ui:VisualElement name="mainScreen" enabled="true" class="hidden" style="width: 100%; height: 100%; position: absolute;">
+            <ui:VisualElement style="flex-grow: 1; background-image: resource(&apos;UI/Textures/ConceptArt/robot1&apos;); height: 641px; position: absolute; top: 30%; left: 11%; width: 20%;" />
+            <ui:VisualElement style="flex-grow: 1; background-image: resource(&apos;UI/Textures/ConceptArt/robot2&apos;); height: 641px; position: absolute; top: 30%; left: 70%; width: 17%;" />
+            <ui:Label text="UNTITLED RACING GAME" name="title" class="title" />
+            <ui:GroupBox name="buttonBox" class="button-box">
+                <ui:Button name="createLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
+                    <ui:Label text="CREATE" enabled="true" class="wobble-text" />
+                </ui:Button>
+                <ui:Button name="joinLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
+                    <ui:Label text="JOIN" class="wobble-text" />
+                </ui:Button>
+                <ui:Button name="optionsButton" selectable="false" double-click-selects-word="false" class="mainbutton">
+                    <ui:Label text="OPTIONS" class="wobble-text" />
+                </ui:Button>
+                <ui:Button name="exitGameButton" selectable="false" double-click-selects-word="false" class="mainbutton">
+                    <ui:Label text="EXIT" class="wobble-text" />
+                </ui:Button>
+            </ui:GroupBox>
+            <ui:VisualElement name="profileDock" class="profile-dock">
+                <ui:Button name="profileButton" class="profile-card">
+                    <ui:VisualElement name="profileAvatar" class="avatar" />
+                    <ui:Label name="profileName" text="Player" class="profile-name" />
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement name="optionsOverlay" enabled="true" class="overlay hidden">
+                <ui:GroupBox name="optionsPanel" class="modal-panel">
+                    <ui:VisualElement name="optionsScribble" picking-mode="Ignore" class="scribble-layer" />
+                    <ui:VisualElement class="title-row">
+                        <ui:Label name="optionsTitle" text="OPTIONS" class="marker-title" />
+                    </ui:VisualElement>
+                    <ui:VisualElement style="flex-grow: 1; justify-content: flex-start; align-self: stretch; align-items: auto; flex-direction: row; align-content: auto;">
+                        <ui:VisualElement class="form" style="align-items: stretch; flex-basis: auto; width: 325px; justify-content: flex-start; align-self: stretch;">
+                            <ui:VisualElement class="row">
+                                <ui:Label text="Master Volume" name="Label" class="form-label" />
+                                <ui:Slider name="masterSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="row">
+                                <ui:Label text="Music Volume" class="form-label" />
+                                <ui:Slider name="musicSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="row">
+                                <ui:Label text="SFX Volume" class="form-label" />
+                                <ui:Slider name="sfxSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="row">
+                                <ui:Label text="Ambient Volume" class="form-label" />
+                                <ui:Slider name="ambienceSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                            </ui:VisualElement>
                         </ui:VisualElement>
-                        <ui:VisualElement class="row">
-                            <ui:Label text="Music Volume" class="form-label" />
-                            <ui:Slider name="musicSlider" low-value="0" high-value="100" value="80" class="form-field" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="row">
-                            <ui:Label text="SFX Volume" class="form-label" />
-                            <ui:Slider name="sfxSlider" low-value="0" high-value="100" value="80" class="form-field" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="row">
-                            <ui:Label text="Ambient Volume" class="form-label" />
-                            <ui:Slider name="ambienceSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                        <ui:VisualElement class="form" style="width: 325px;">
+                            <ui:VisualElement class="row">
+                                <ui:Label text="Resolution" class="form-label" />
+                                <ui:DropdownField name="resolutionDropdown" class="form-field" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="row">
+                                <ui:Label text="Display Mode" class="form-label" />
+                                <ui:DropdownField name="displayModeDropdown" class="form-field" />
+                            </ui:VisualElement>
+                            <ui:VisualElement class="row buttons">
+                                <ui:Button name="applyButton" text="Apply" />
+                                <ui:Button name="optionsCloseButton" text="Close" />
+                            </ui:VisualElement>
                         </ui:VisualElement>
                     </ui:VisualElement>
-                    <ui:VisualElement class="form" style="width: 325px;">
+                </ui:GroupBox>
+            </ui:VisualElement>
+            <ui:VisualElement name="profileOverlay" class="overlay hidden">
+                <ui:GroupBox name="profilePanel" class="modal-panel">
+                    <ui:VisualElement name="profileScribble" picking-mode="Ignore" class="scribble-layer" />
+                    <ui:VisualElement class="title-row">
+                        <ui:Label text="Edit Name" class="marker-title" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="form">
                         <ui:VisualElement class="row">
-                            <ui:Label text="Resolution" class="form-label" />
-                            <ui:DropdownField name="resolutionDropdown" class="form-field" />
-                        </ui:VisualElement>
-                        <ui:VisualElement class="row">
-                            <ui:Label text="Display Mode" class="form-label" />
-                            <ui:DropdownField name="displayModeDropdown" class="form-field" />
+                            <ui:Label text="Name" class="form-label" />
+                            <ui:TextField name="profileNameField" class="form-field" />
                         </ui:VisualElement>
                         <ui:VisualElement class="row buttons">
-                            <ui:Button name="applyButton" text="Apply" />
-                            <ui:Button name="optionsCloseButton" text="Close" />
+                            <ui:Button name="profileApply" text="Apply" />
+                            <ui:Button name="profileCancel" text="Cancel" />
                         </ui:VisualElement>
                     </ui:VisualElement>
-                </ui:VisualElement>
-            </ui:GroupBox>
+                </ui:GroupBox>
+            </ui:VisualElement>
+            <ui:VisualElement name="loadingOverlay" class="overlay hidden" style="flex-grow: 1;">
+                <ui:GroupBox name="loadingPanel" class="loading-panel" style="flex-direction: row-reverse; justify-content: center;">
+                    <ui:VisualElement name="loadingScribble" class="scribble-layer" style="flex-grow: 1;" />
+                    <ui:VisualElement name="VisualElement" class="row" style="align-self: center; flex-direction: row;">
+                        <ui:Label text="Loading..." name="Label" double-click-selects-word="false" class="form-label" style="align-self: flex-start; font-size: 36px; -unity-text-align: middle-center; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                    </ui:VisualElement>
+                </ui:GroupBox>
+            </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="profileOverlay" class="overlay hidden">
-            <ui:GroupBox name="profilePanel" class="modal-panel">
-                <ui:VisualElement name="profileScribble" picking-mode="Ignore" class="scribble-layer" />
-                <ui:VisualElement class="title-row">
-                    <ui:Label text="Edit Name" class="marker-title" />
-                </ui:VisualElement>
-                <ui:VisualElement class="form">
-                    <ui:VisualElement class="row">
-                        <ui:Label text="Name" class="form-label" />
-                        <ui:TextField name="profileNameField" class="form-field" />
+        <ui:VisualElement name="lobbyScreen" style="width: 100%; height: 100%; position: absolute; flex-direction: row;">
+            <ui:GroupBox name="playerListPanel" class="player-list-panel">
+                <ui:VisualElement name="playerListScribble" class="scribble-layer" style="flex-grow: 1;" />
+                <ui:GroupBox class="player-list-title-row">
+                    <ui:Label text="aaaaaaaaaaaaaaaaa Lobby" name="lobbyNameLabel" emoji-fallback-support="true" double-click-selects-word="false" />
+                    <ui:Label text="0/4" name="playerCountLabel" />
+                </ui:GroupBox>
+                <ui:GroupBox class="player-list-join-code-row">
+                    <ui:Label text="Join Code:" emoji-fallback-support="true" double-click-selects-word="false" style="margin-left: 25px;" />
+                    <ui:Label text="ABCDEF" name="joinCodeLabel" selectable="true" style="margin-left: 10px;" />
+                </ui:GroupBox>
+                <ui:VisualElement style="border-top-width: 3px; border-right-width: 3px; border-bottom-width: 3px; border-left-width: 3px; width: 95%; border-top-left-radius: 3px; border-top-right-radius: 3px; border-bottom-right-radius: 3px; border-bottom-left-radius: 3px; background-color: rgb(0, 0, 0);" />
+                <ui:GroupBox class="player-list">
+                    <ui:VisualElement class="player-row" style="flex-grow: 1;">
+                        <ui:Label text="Austin" name="playerNameLabel1" class="player-name" />
+                        <ui:Label text="34ms" name="playerPingLabel1" class="player-ping" />
                     </ui:VisualElement>
-                    <ui:VisualElement class="row buttons">
-                        <ui:Button name="profileApply" text="Apply" />
-                        <ui:Button name="profileCancel" text="Cancel" />
+                    <ui:VisualElement class="player-row" style="flex-grow: 1;">
+                        <ui:Label text="SuperCoolGuy21" name="playerNameLabel2" class="player-name" />
+                        <ui:Label text="149ms" name="playerPingLabel2" class="player-ping" />
                     </ui:VisualElement>
-                </ui:VisualElement>
+                    <ui:VisualElement class="player-row" style="flex-grow: 1;">
+                        <ui:Label text="FoutchGoat" name="playerNameLabel3" class="player-name" />
+                        <ui:Label text="29ms" name="playerPingLabel3" class="player-ping" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="player-row" style="flex-grow: 1;">
+                        <ui:Label text="MyNameBob" name="playerNameLabel4" class="player-name" />
+                        <ui:Label text="72ms" name="playerPingLabel4" class="player-ping" />
+                    </ui:VisualElement>
+                </ui:GroupBox>
             </ui:GroupBox>
         </ui:VisualElement>
     </ui:VisualElement>
