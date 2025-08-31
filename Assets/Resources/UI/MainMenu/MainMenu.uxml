@@ -18,6 +18,12 @@
                 <ui:Label text="EXIT" class="wobble-text" />
             </ui:Button>
         </ui:GroupBox>
+        <ui:VisualElement name="profileDock" class="profile-dock">
+            <ui:Button name="profileButton" class="profile-card">
+                <ui:VisualElement name="profileAvatar" class="avatar" />
+                <ui:Label name="profileName" text="Player" class="profile-name" />
+            </ui:Button>
+        </ui:VisualElement>
         <ui:VisualElement name="optionsOverlay" enabled="true" class="overlay hidden">
             <ui:GroupBox name="optionsPanel" class="modal-panel">
                 <ui:VisualElement name="optionsScribble" picking-mode="Ignore" class="scribble-layer" />
@@ -59,12 +65,6 @@
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:GroupBox>
-        </ui:VisualElement>
-        <ui:VisualElement name="profileDock" class="profile-dock">
-            <ui:Button name="profileButton" class="profile-card">
-                <ui:VisualElement name="profileAvatar" class="avatar" />
-                <ui:Label name="profileName" text="Player" class="profile-name" />
-            </ui:Button>
         </ui:VisualElement>
         <ui:VisualElement name="profileOverlay" class="overlay hidden">
             <ui:GroupBox name="profilePanel" class="modal-panel">

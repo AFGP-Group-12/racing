@@ -7,7 +7,7 @@ public class ProfileBoxController : MonoBehaviour
     [SerializeField] private UIDocument uiDocument;
 
     private Button profileButton;
-    private VisualElement profileEditor;
+    private VisualElement profileEditor;      // overlay
     private TextField profileNameField;
     private Button applyBtn, cancelBtn;
     private Label nameLabel;
@@ -32,20 +32,32 @@ public class ProfileBoxController : MonoBehaviour
         applyBtn.clicked += ApplyAndClose;
         cancelBtn.clicked += HideEditor;
 
-        // Keyboard: Enter to apply, Esc to cancel
-        profileEditor.RegisterCallback<KeyDownEvent>(evt =>
+        // Backdrop click -> close
+        profileEditor.RegisterCallback<ClickEvent>(evt =>
         {
+            if (evt.target == profileEditor) HideEditor();
+        });
+
+        root.RegisterCallback<KeyDownEvent>(evt =>
+        {
+            if (profileEditor.ClassListContains("hidden")) return;
+
+            var focused = root.focusController?.focusedElement as VisualElement;
+            if (focused == null || !profileEditor.Contains(focused)) return;
+
             if (evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter)
             {
                 ApplyAndClose();
-                evt.StopPropagation();
+                evt.StopImmediatePropagation();
             }
             else if (evt.keyCode == KeyCode.Escape)
             {
                 HideEditor();
-                evt.StopPropagation();
+                evt.StopImmediatePropagation();
             }
-        });
+        }, TrickleDown.TrickleDown);
+
+        profileEditor.AddToClassList("hidden");
     }
 
     private void ShowEditor()
@@ -73,14 +85,12 @@ public class ProfileBoxController : MonoBehaviour
         HideEditor();
     }
 
-    // Integrate with Foutch
     public void SetDisplayedName(string name)
     {
         nameLabel.text = name;
         profileNameField.SetValueWithoutNotify(name);
     }
 
-    // For headshot: pass a Texture2D or Sprite
     public void SetAvatar(Texture2D tex) => avatar.style.backgroundImage = new StyleBackground(tex);
     public void SetAvatar(Sprite spr) => avatar.style.backgroundImage = new StyleBackground(spr);
 }
