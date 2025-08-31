@@ -276,12 +276,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c0f47016eee94f4881773dcf0dbeef3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speedLinesImage: {fileID: 0}
+  speedLineGameObject: {fileID: 0}
   playerCamera: {fileID: 0}
   addedFov: 5
   playerCameraScript: {fileID: 0}
   rotationIncrement: 0.25
-  rotationAdditive: 4
+  rotationAdditive: 3
 --- !u!114 &8566347814016398955
 MonoBehaviour:
   m_ObjectHideFlags: 0
