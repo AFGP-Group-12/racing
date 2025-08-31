@@ -3,13 +3,14 @@ using UnityEngine.InputSystem;
 
 public class PlayerCamera : MonoBehaviour
 {
-    public float sensitivityX;
-    public float sensitivityY;
+    [SerializeField] float sensitivityX;
+    [SerializeField] float sensitivityY;
 
-    public Transform orientation;
+    [SerializeField] Transform orientation;
 
     private float xRotation;
     private float yRotation;
+    private float zRotation;
 
     [SerializeField] InputActionReference mouse;
 
@@ -33,7 +34,7 @@ public class PlayerCamera : MonoBehaviour
 
 
         // rotate the camera
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, 0);
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, zRotation);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
@@ -46,5 +47,14 @@ public class PlayerCamera : MonoBehaviour
     {
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
+    }
+
+    public void setRotationZ(float zRotation)
+    {
+        this.zRotation = zRotation;
+    }
+    public float getRotationZ()
+    {
+        return zRotation;
     }
 }
