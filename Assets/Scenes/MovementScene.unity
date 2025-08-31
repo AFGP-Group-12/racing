@@ -858,10 +858,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1890586515}
-    - target: {fileID: 5586101020294835842, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
-      propertyPath: m_Material
-      value: 
-      objectReference: {fileID: 2100000, guid: 32bf9c2345c634b4d9359499dba65163, type: 2}
     - target: {fileID: 6429450066480939843, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1355,18 +1351,6 @@ PrefabInstance:
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 2004549323}
-    - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: rotationAdditive
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: rotationIncrement
-      value: 0.25
-      objectReference: {fileID: 0}
-    - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: speedLineMaterial
-      value: 
-      objectReference: {fileID: 2100000, guid: 32bf9c2345c634b4d9359499dba65163, type: 2}
     - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: playerCameraScript
       value: 
@@ -2184,8 +2168,7 @@ PrefabInstance:
       propertyPath: orientation
       value: 
       objectReference: {fileID: 24258137}
-    m_RemovedComponents:
-    - {fileID: 2022855785362922746, guid: fb4079fd5f6f5304ba1292301b6b4bef, type: 3}
+    m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

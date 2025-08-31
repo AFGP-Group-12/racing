@@ -281,7 +281,7 @@ MonoBehaviour:
   addedFov: 5
   playerCameraScript: {fileID: 0}
   rotationIncrement: 0.25
-  rotationAdditive: 2
+  rotationAdditive: 3
 --- !u!114 &8566347814016398955
 MonoBehaviour:
   m_ObjectHideFlags: 0
