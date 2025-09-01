@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -6,70 +7,74 @@ public class LobbyMenuController : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDocument;
 
-    private Label playerNameLabel1;
-    private Label playerNameLabel2;
-    private Label playerNameLabel3;
-    private Label playerNameLabel4;
+    private Label[] playerNameLabel;
+    private Label[] playerPingLabel;
+    private Label playerCountLabel;
 
-    private Label playerPingLabel1;
-    private Label playerPingLabel2;
-    private Label playerPingLabel3;
-    private Label playerPingLabel4;
+    private int playerCount = 0;
+    private Dictionary<string, int> index_by_username = new Dictionary<string, int>();
 
     private void Awake()
     {
         var root = uiDocument.rootVisualElement;
 
-        playerNameLabel1 = root.Q<Label>("playerNameLabel1");
-        playerNameLabel2 = root.Q<Label>("playerNameLabel2");
-        playerNameLabel3 = root.Q<Label>("playerNameLabel3");
-        playerNameLabel4 = root.Q<Label>("playerNameLabel4");
+        playerNameLabel = new Label[4];
+        playerPingLabel = new Label[4];
+        for (int i = 0; i < 4; i++)
+        {
+            playerNameLabel[i] = root.Q<Label>("playerNameLabel" + (i + 1));
+            playerPingLabel[i] = root.Q<Label>("playerPingLabel" + (i + 1));
 
-        playerPingLabel1 = root.Q<Label>("playerPingLabel1");
-        playerPingLabel2 = root.Q<Label>("playerPingLabel2");
-        playerPingLabel3 = root.Q<Label>("playerPingLabel3");
-        playerPingLabel4 = root.Q<Label>("playerPingLabel4");
+            playerNameLabel[i].AddToClassList("hidden");
+            playerPingLabel[i].AddToClassList("hidden");
+        }
+        playerCountLabel = root.Q<Label>("playerCountLabel");
     }
 
-    private void UpdatePlayerName(string newName, int playerIndex)
+    public void Start()
     {
-        switch (playerIndex)
-        {
-            case 1:
-                playerNameLabel1.text = newName;
-                break;
-            case 2:
-                playerNameLabel2.text = newName;
-                break;
-            case 3:
-                playerNameLabel3.text = newName;
-                break;
-            case 4:
-                playerNameLabel4.text = newName;
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(playerIndex), "Invalid player index");
-        }
+        LobbyClient.instance.OnPlayerJoinLobby += OnPlayerJoin;
+        LobbyClient.instance.OnPlayerLeaveLobby += OnPlayerLeave;
     }
 
-    private void UpdatePlayerPing(int newPing, int playerIndex)
+    private void OnPlayerJoin(string username)
     {
-        switch (playerIndex)
-        {
-            case 1:
-                playerPingLabel1.text = newPing.ToString();
-                break;
-            case 2:
-                playerPingLabel2.text = newPing.ToString();
-                break;
-            case 3:
-                playerPingLabel3.text = newPing.ToString();
-                break;
-            case 4:
-                playerPingLabel4.text = newPing.ToString();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException(nameof(playerIndex), "Invalid player index");
+        index_by_username[username] = playerCount;
+        UpdatePlayerName(username, playerCount++);
+        playerCountLabel.text = playerCount.ToString() + "/4";
+    }
+    private void OnPlayerLeave(string username)
+    {
+        int player_index = index_by_username[username];
+
+        foreach (var pair in index_by_username) {
+            if (pair.Value > player_index) {
+                index_by_username[pair.Key] = pair.Value - 1;
+                UpdatePlayerName(pair.Key, pair.Value);
+            }
         }
+
+        UpdatePlayerName("", --playerCount);
+        UpdatePlayerPing(-1, playerCount);
+
+        playerCountLabel.text = playerCount.ToString() + "/4";
+    }
+
+    public void UpdatePlayerName(string newName, int playerIndex)
+    {
+        if (playerIndex >= 4) throw new ArgumentOutOfRangeException(nameof(playerIndex), "Invalid player index");
+
+        playerNameLabel[playerIndex].text = newName;
+        if (newName.Length == 0) playerNameLabel[playerIndex].AddToClassList("hidden");
+        else playerNameLabel[playerIndex].RemoveFromClassList("hidden");
+    }
+
+    public void UpdatePlayerPing(int newPing, int playerIndex)
+    {
+        if (playerIndex >= 4) throw new ArgumentOutOfRangeException(nameof(playerIndex), "Invalid player index");
+
+        playerPingLabel[playerIndex].text = newPing.ToString();
+        if (newPing == -1) playerPingLabel[playerIndex].AddToClassList("hidden");
+        else playerPingLabel[playerIndex].RemoveFromClassList("hidden");
     }
 }

@@ -20,7 +20,6 @@ public class MainMenuController : MonoBehaviour
 
     private OptionsMenuController optionsController;
 
-
     public event Action OnCreateLobbyPressed;
     public event Action OnJoinLobbyPressed;
     public event Action OnOptionsPressed;
@@ -52,14 +51,7 @@ public class MainMenuController : MonoBehaviour
         OnOptionsPressed += ShowOptions;
         optionsCloseButton.clicked += HideOptions;
 
-        OnCreateLobbyPressed += () => loadingOverlay.RemoveFromClassList("hidden");
-
-        /*
-        <CLASSNAME>.OnLobbyJoined += () => {
-            mainScreen.AddToClassList("hidden");
-            lobbyScreen.RemoveFromClassList("hidden");
-        }
-        */
+        OnCreateLobbyPressed += () => loadingOverlay.RemoveFromClassList("hidden"); 
 
         optionsOverlay.RegisterCallback<ClickEvent>(evt =>
         {
@@ -72,11 +64,21 @@ public class MainMenuController : MonoBehaviour
                 HideOptions();
         });
 
-        // Link networking code to buttons
+        TestSubscribeEvents();
+    }
+
+    public void Start()
+    {
+        // Link networking code to buttons.
+        // This is done in Start instead of Awake since we need the 'instance' variable to be populated.
+        LobbyClient.instance.OnLobbyJoined += () =>
+        {
+            mainScreen.AddToClassList("hidden");
+            lobbyScreen.RemoveFromClassList("hidden");
+        };
         OnCreateLobbyPressed += LobbyClient.instance.CreateLobby;
         OnJoinLobbyPressed += LobbyClient.instance.JoinLobby;
 
-        TestSubscribeEvents();
     }
 
     private void ShowOptions()

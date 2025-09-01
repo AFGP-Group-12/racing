@@ -1,5 +1,6 @@
 
 using System;
+using System.Drawing;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -20,7 +21,15 @@ namespace Messages
         player_load_data,
         request_last_position,
         request_last_position_reply,
-        player_disconnect
+        player_disconnect,
+        // Unimplemented
+        entity_target_move_id,
+        entity_target_move_vec,
+        player_registration_reply,
+        // End unimplemented
+        racing_lobby_action,
+        racing_lobby_update,
+
     };
 
     public enum server_t
@@ -53,6 +62,10 @@ namespace Messages
                     return player_load_data_m.size;
                 case message_t.player_disconnect:
                     return player_disconnect_m.size;
+                case message_t.racing_lobby_action:
+                    return racing_lobby_action_m.size;
+                case message_t.racing_lobby_update:
+                    return racing_lobby_update_m.size;
                 default:
                     return -1;
             }
@@ -128,6 +141,8 @@ namespace Messages
         [FieldOffset(0)] public movement_m movement;
         [FieldOffset(0)] public movement_m_reply movement_reply;
         [FieldOffset(0)] public player_disconnect_m player_disconnect;
+        [FieldOffset(0)] public racing_lobby_action_m racing_lobby_action;
+        [FieldOffset(0)] public racing_lobby_update_m racing_lobby_update;
 
 
         public void from(byte[] data, int n)
@@ -277,4 +292,30 @@ namespace Messages
         [FieldOffset(0)] public UInt16 type;
         [FieldOffset(2)] public UInt16 id;
     }
+
+    [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
+    public unsafe struct racing_lobby_action_m
+    {
+        public const int size = 26;
+        [FieldOffset(0)] public fixed byte bytes[size];
+        [FieldOffset(0)] public UInt16 type;
+
+        [FieldOffset(2)] public UInt16 action; // 0 create lobby, 1 join random, 2 join specific, 3 exit lobby, 4 change username
+        [FieldOffset(4)] public fixed byte lobby_code[6];
+        [FieldOffset(10)] public username_sm username;
+    };
+
+    [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
+    public unsafe struct racing_lobby_update_m
+    {
+        public const int size = 30;
+        [FieldOffset(0)] public fixed byte bytes[size];
+        [FieldOffset(0)] public UInt16 type;
+
+        [FieldOffset(2)] public UInt16 update; // 0 lobby joined, 1 other player joined lobby, 2 other player left lobby, 3 invalid lobby code, 4 ping
+        [FieldOffset(4)] public UInt16 other_player_id;
+        [FieldOffset(6)] public UInt16 ping;
+        [FieldOffset(8)] public fixed byte lobby_code[6];
+        [FieldOffset(14)] public username_sm username;
+    };
 }

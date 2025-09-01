@@ -60,6 +60,11 @@ public class ProfileBoxController : MonoBehaviour
         profileEditor.AddToClassList("hidden");
     }
 
+    public void Start()
+    {
+        OnProfileNameApplied += LobbyClient.instance.UpdateUsername;
+    }
+
     private void ShowEditor()
     {
         profileEditor.RemoveFromClassList("hidden");
