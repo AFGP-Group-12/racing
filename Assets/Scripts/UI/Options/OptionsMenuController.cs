@@ -7,100 +7,106 @@ using UnityEngine.Audio;
 public class OptionsMenuController : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDocument;
-    [SerializeField] private AudioMixer masterMixer;   // expose param: "MasterVolume"
+    [SerializeField] private AudioMixer masterMixer;   // Expose these params in the mixer!
+
+    // Mixer parameter names (must match exposed params on your AudioMixer)
+    private const string MIXER_MASTER_PARAM   = "MasterVolume";
+    private const string MIXER_MUSIC_PARAM    = "MusicVolume";
+    private const string MIXER_SFX_PARAM      = "SFXVolume";
+    private const string MIXER_AMBIENCE_PARAM = "AmbienceVolume";
+
+    // PlayerPrefs keys
+    private const string PP_VOL_MASTER   = "opt_masterVol";
+    private const string PP_VOL_MUSIC    = "opt_musicVol";
+    private const string PP_VOL_SFX      = "opt_sfxVol";
+    private const string PP_VOL_AMBIENCE = "opt_ambienceVol";
+    private const string PP_RES          = "opt_resIndex";
+    private const string PP_MODE         = "opt_modeIndex";
 
     // UI refs
     private VisualElement optionsOverlay;
-    private Slider volumeSlider;
+    private Slider masterSlider;
+    private Slider musicSlider;
+    private Slider sfxSlider;
+    private Slider ambienceSlider;
     private DropdownField resolutionDropdown;
     private DropdownField displayModeDropdown;
     private Button applyButton;
     private Button closeButton;
 
     // Data
-    private List<Resolution> _resolutions = new();
+    private readonly List<Resolution> _resolutions = new();
     private readonly (string label, FullScreenMode mode)[] _modes = new[]
     {
-        ("Windowed",            FullScreenMode.Windowed),
-        ("Borderless",          FullScreenMode.FullScreenWindow),
-        ("Exclusive Fullscreen",FullScreenMode.ExclusiveFullScreen),
+        ("Windowed",    FullScreenMode.Windowed),
+        ("Borderless",  FullScreenMode.FullScreenWindow),
+        ("Fullscreen",  FullScreenMode.ExclusiveFullScreen),
     };
-
-    // PlayerPrefs keys
-    const string PP_VOL = "opt_masterVol";
-    const string PP_RES = "opt_resIndex";
-    const string PP_MODE = "opt_modeIndex";
-
-    // Snapshot of saved values when the modal opens (used to revert on Cancel)
-    private float _snapVol;
-    private int _snapResIndex;
-    private int _snapModeIndex;
 
     void Awake()
     {
         if (!uiDocument) uiDocument = GetComponent<UIDocument>();
         var root = uiDocument.rootVisualElement;
 
-        optionsOverlay = root.Q<VisualElement>("optionsOverlay");
-        volumeSlider = root.Q<Slider>("volumeSlider");
-        resolutionDropdown = root.Q<DropdownField>("resolutionDropdown");
+        optionsOverlay      = root.Q<VisualElement>("optionsOverlay");
+        masterSlider        = root.Q<Slider>("masterSlider");
+        musicSlider         = root.Q<Slider>("musicSlider");
+        sfxSlider           = root.Q<Slider>("sfxSlider");
+        ambienceSlider      = root.Q<Slider>("ambienceSlider");
+        resolutionDropdown  = root.Q<DropdownField>("resolutionDropdown");
         displayModeDropdown = root.Q<DropdownField>("displayModeDropdown");
-        applyButton = root.Q<Button>("applyButton");
-        closeButton = root.Q<Button>("optionsCloseButton");
+        applyButton         = root.Q<Button>("applyButton");
+        closeButton         = root.Q<Button>("optionsCloseButton");
 
-        // Populate choices
         PopulateResolutions();
         PopulateModes();
 
-        // Load saved -> UI and apply to engine once at boot
-        LoadSettingsIntoUI();
-        ApplyCurrentSettings(applyToEngine: true, save: false);
+        // Load saved UI state
+        LoadSavedIntoUI();
 
-        // Wire events
-        applyButton.clicked += OnApplyClicked;         // apply & close
-        closeButton.clicked += CancelAndClose;         // revert preview & close
+        // Apply saved engine state once at boot
+        ApplySavedVolumes();
+        ApplyDisplaySettings(applyToEngine: true, save: false);
 
-        // Live preview for volume only (no saving)
-        volumeSlider.RegisterValueChangedCallback(_ =>
-            ApplyCurrentSettings(applyToEngine: true, save: false)
-        );
+        // Wire live volume preview + save
+        BindVolumeSlider(masterSlider,   PP_VOL_MASTER,   MIXER_MASTER_PARAM);
+        BindVolumeSlider(musicSlider,    PP_VOL_MUSIC,    MIXER_MUSIC_PARAM);
+        BindVolumeSlider(sfxSlider,      PP_VOL_SFX,      MIXER_SFX_PARAM);
+        BindVolumeSlider(ambienceSlider, PP_VOL_AMBIENCE, MIXER_AMBIENCE_PARAM);
+
+        // Apply (display only) and close
+        applyButton.clicked += OnApplyClicked;
+        closeButton.clicked += () => optionsOverlay.AddToClassList("hidden");
     }
 
     // Called by MainMenuController when opening
     public void Show()
     {
-        // Take a snapshot of SAVED settings (from PlayerPrefs) so Cancel can revert preview.
-        _snapVol = PlayerPrefs.GetFloat(PP_VOL, 0.8f);
-        _snapResIndex = PlayerPrefs.GetInt(PP_RES, FindCurrentResolutionIndex());
-        _snapModeIndex = PlayerPrefs.GetInt(PP_MODE, displayModeDropdown.index);
-
         optionsOverlay.RemoveFromClassList("hidden");
-
-        // Reset UI to saved values (do NOT trigger callbacks)
-        LoadSettingsIntoUI();
-
+        LoadSavedIntoUI();  // refresh UI to saved
+        ApplySavedVolumes(); // ensure engine matches saved
         applyButton.Focus();
     }
 
-    // Hide without reverting (rarely used now; prefer CancelAndClose for backdrop/Esc).
     public void Hide() => optionsOverlay.AddToClassList("hidden");
 
-    // Close button / Cancel path: revert live preview to the saved snapshot, then hide.
-    public void CancelAndClose()
+    private void BindVolumeSlider(Slider slider, string prefKey, string mixerParam)
     {
-        // Revert engine preview (only volume is live-previewed)
-        SetMasterVolume(_snapVol);
+        if (slider == null) return;
 
-        // Reset UI to saved values so reopening shows the saved state
-        LoadSettingsIntoUI();
-
-        Hide();
+        slider.RegisterValueChangedCallback(evt =>
+        {
+            float normalized = Mathf.Clamp01(evt.newValue / 100f);
+            SetVolume(mixerParam, normalized);      // live preview
+            PlayerPrefs.SetFloat(prefKey, normalized); // save immediately
+            PlayerPrefs.Save();
+        });
     }
 
     private void OnApplyClicked()
     {
-        // Apply & save, then close
-        ApplyCurrentSettings(applyToEngine: true, save: true);
+        // Only apply + save DISPLAY settings
+        ApplyDisplaySettings(applyToEngine: true, save: true);
         Hide();
     }
 
@@ -112,12 +118,11 @@ public class OptionsMenuController : MonoBehaviour
         var labels = new List<string>(_resolutions.Count);
         for (int i = 0; i < _resolutions.Count; i++)
         {
-#if UNITY_2022_2_OR_NEWER
-            labels.Add($"{_resolutions[i].width} x {_resolutions[i].height} @ {Mathf.RoundToInt((float)_resolutions[i].refreshRateRatio.value)}Hz");
-#else
-            labels.Add($"{_resolutions[i].width} x {_resolutions[i].height} @ {_resolutions[i].refreshRate}Hz");
-#endif
+            var r = _resolutions[i];
+            int hz = Mathf.RoundToInt((float)r.refreshRateRatio.value);
+            labels.Add($"{r.width}x{r.height}");
         }
+
         resolutionDropdown.choices = labels;
         resolutionDropdown.index = FindCurrentResolutionIndex();
     }
@@ -136,6 +141,7 @@ public class OptionsMenuController : MonoBehaviour
     {
         var cur = Screen.currentResolution;
         int best = 0, bestScore = int.MaxValue;
+
         for (int i = 0; i < _resolutions.Count; i++)
         {
             var r = _resolutions[i];
@@ -145,52 +151,67 @@ public class OptionsMenuController : MonoBehaviour
         return best;
     }
 
-    private void LoadSettingsIntoUI()
+    private void LoadSavedIntoUI()
     {
-        float vol = PlayerPrefs.GetFloat(PP_VOL, 0.8f);
-        volumeSlider.SetValueWithoutNotify(vol * 100f);
+        // Volume sliders
+        masterSlider?.SetValueWithoutNotify(PlayerPrefs.GetFloat(PP_VOL_MASTER,   0.8f) * 100f);
+        musicSlider?.SetValueWithoutNotify(PlayerPrefs.GetFloat(PP_VOL_MUSIC,     0.8f) * 100f);
+        sfxSlider?.SetValueWithoutNotify(PlayerPrefs.GetFloat(PP_VOL_SFX,         0.8f) * 100f);
+        ambienceSlider?.SetValueWithoutNotify(PlayerPrefs.GetFloat(PP_VOL_AMBIENCE,0.8f) * 100f);
 
-        int resIdx = Mathf.Clamp(PlayerPrefs.GetInt(PP_RES, FindCurrentResolutionIndex()), 0, _resolutions.Count - 1);
+        // Display dropdowns
+        int resDefault = FindCurrentResolutionIndex();
+        int resIdx = _resolutions.Count > 0
+            ? Mathf.Clamp(PlayerPrefs.GetInt(PP_RES, resDefault), 0, _resolutions.Count - 1)
+            : 0;
         resolutionDropdown.index = resIdx;
 
-        int modeIdx = Mathf.Clamp(PlayerPrefs.GetInt(PP_MODE, displayModeDropdown.index), 0, _modes.Length - 1);
+        int modeDefault = Mathf.Max(0, Array.FindIndex(_modes, m => m.mode == Screen.fullScreenMode));
+        int modeIdx = Mathf.Clamp(PlayerPrefs.GetInt(PP_MODE, modeDefault), 0, _modes.Length - 1);
         displayModeDropdown.index = modeIdx;
     }
 
-    private void ApplyCurrentSettings(bool applyToEngine, bool save)
+    private void ApplySavedVolumes()
     {
-        float normVol = Mathf.Clamp01(volumeSlider.value / 100f);
-        SetMasterVolume(normVol);
+        SetVolume(MIXER_MASTER_PARAM,   PlayerPrefs.GetFloat(PP_VOL_MASTER,   0.8f));
+        SetVolume(MIXER_MUSIC_PARAM,    PlayerPrefs.GetFloat(PP_VOL_MUSIC,    0.8f));
+        SetVolume(MIXER_SFX_PARAM,      PlayerPrefs.GetFloat(PP_VOL_SFX,      0.8f));
+        SetVolume(MIXER_AMBIENCE_PARAM, PlayerPrefs.GetFloat(PP_VOL_AMBIENCE, 0.8f));
+    }
 
-        var r = _resolutions[Mathf.Clamp(resolutionDropdown.index, 0, _resolutions.Count - 1)];
+    private void ApplyDisplaySettings(bool applyToEngine, bool save)
+    {
+        if (_resolutions.Count == 0) return;
+
+        var r    = _resolutions[Mathf.Clamp(resolutionDropdown.index, 0, _resolutions.Count - 1)];
         var mode = _modes[Mathf.Clamp(displayModeDropdown.index, 0, _modes.Length - 1)].mode;
 
-        if (applyToEngine) Screen.SetResolution(r.width, r.height, mode);
+        if (applyToEngine)
+            Screen.SetResolution(r.width, r.height, mode);
 
         if (save)
         {
-            PlayerPrefs.SetFloat(PP_VOL, normVol);
-            PlayerPrefs.SetInt(PP_RES, resolutionDropdown.index);
+            PlayerPrefs.SetInt(PP_RES,  resolutionDropdown.index);
             PlayerPrefs.SetInt(PP_MODE, displayModeDropdown.index);
             PlayerPrefs.Save();
-
-            // Update the snapshot so an immediate Close doesn't "revert" the thing we just saved
-            _snapVol = normVol;
-            _snapResIndex = resolutionDropdown.index;
-            _snapModeIndex = displayModeDropdown.index;
         }
     }
 
-    private void SetMasterVolume(float normalized01)
+    private void SetVolume(string mixerParam, float normalized01)
     {
+        normalized01 = Mathf.Clamp01(normalized01);
+
         if (masterMixer)
         {
-            float db = Mathf.Log10(Mathf.Clamp(normalized01, 0.0001f, 1f)) * 20f;
-            masterMixer.SetFloat("MasterVolume", db);
+            // Map 0..1 to ~-80dB..0dB (avoid -Infinity at 0)
+            float db = normalized01 <= 0f ? -80f : Mathf.Log10(Mathf.Max(0.0001f, normalized01)) * 20f;
+            masterMixer.SetFloat(mixerParam, db);
         }
         else
         {
-            AudioListener.volume = normalized01;
+            // Fallback: only Master affects AudioListener
+            if (mixerParam == MIXER_MASTER_PARAM)
+                AudioListener.volume = normalized01;
         }
     }
 }

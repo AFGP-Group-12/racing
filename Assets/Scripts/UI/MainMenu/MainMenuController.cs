@@ -13,9 +13,12 @@ public class MainMenuController : MonoBehaviour
     private VisualElement optionsOverlay;
     private Button optionsCloseButton;
 
-    private OptionsMenuController optionsController;
-    private ProfileBoxController profileBox;
+    private VisualElement loadingOverlay;
 
+    private VisualElement mainScreen;
+    private VisualElement lobbyScreen;
+
+    private OptionsMenuController optionsController;
 
     public event Action OnCreateLobbyPressed;
     public event Action OnJoinLobbyPressed;
@@ -33,6 +36,11 @@ public class MainMenuController : MonoBehaviour
         optionsOverlay = root.Q<VisualElement>("optionsOverlay");
         optionsCloseButton = root.Q<Button>("optionsCloseButton");
 
+        loadingOverlay = root.Q<VisualElement>("loadingOverlay");
+
+        mainScreen = root.Q<VisualElement>("mainScreen");
+        lobbyScreen = root.Q<VisualElement>("lobbyScreen");
+
         optionsController = GetComponent<OptionsMenuController>();
 
         createLobbyButton.clicked += () => OnCreateLobbyPressed?.Invoke();
@@ -40,14 +48,10 @@ public class MainMenuController : MonoBehaviour
         optionsButton.clicked += () => OnOptionsPressed?.Invoke();
         exitGameButton.clicked += () => OnExitGamePressed?.Invoke();
 
-
-        profileBox = GetComponent<ProfileBoxController>();
-        if (profileBox != null)
-            profileBox.OnProfileNameApplied += name => Debug.Log($"New profile name: {name}");
-
         OnOptionsPressed += ShowOptions;
-
         optionsCloseButton.clicked += HideOptions;
+
+        OnCreateLobbyPressed += () => loadingOverlay.RemoveFromClassList("hidden"); 
 
         optionsOverlay.RegisterCallback<ClickEvent>(evt =>
         {
@@ -63,6 +67,20 @@ public class MainMenuController : MonoBehaviour
         TestSubscribeEvents();
     }
 
+    public void Start()
+    {
+        // Link networking code to buttons.
+        // This is done in Start instead of Awake since we need the 'instance' variable to be populated.
+        LobbyClient.instance.OnLobbyJoined += () =>
+        {
+            mainScreen.AddToClassList("hidden");
+            lobbyScreen.RemoveFromClassList("hidden");
+        };
+        OnCreateLobbyPressed += LobbyClient.instance.CreateLobby;
+        OnJoinLobbyPressed += LobbyClient.instance.JoinLobby;
+
+    }
+
     private void ShowOptions()
     {
         optionsController.Show();
@@ -70,7 +88,7 @@ public class MainMenuController : MonoBehaviour
 
     private void HideOptions()
     {
-        optionsController.CancelAndClose();
+        optionsController.Hide();
     }
 
     public void TestSubscribeEvents()
