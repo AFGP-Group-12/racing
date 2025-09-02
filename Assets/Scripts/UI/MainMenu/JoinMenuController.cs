@@ -22,7 +22,7 @@ public class JoinMenuController : MonoBehaviour
         joinOverlay = uiDocument.rootVisualElement.Q<VisualElement>("joinOverlay");
         joinTextField = uiDocument.rootVisualElement.Q<TextField>("joinTextField");
         matchmakeButton = uiDocument.rootVisualElement.Q<Button>("matchmakeButton");
-        joinButton = uiDocument.rootVisualElement.Q<Button>("joinButton");
+        joinButton = uiDocument.rootVisualElement.Q<Button>("joinLobbyButton");
         joinPrivateButton = uiDocument.rootVisualElement.Q<Button>("joinPrivateButton");
         cancelButton = uiDocument.rootVisualElement.Q<Button>("cancelButton");
 

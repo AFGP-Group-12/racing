@@ -393,9 +393,10 @@ GameObject:
   - component: {fileID: 1615518624}
   - component: {fileID: 1615518626}
   - component: {fileID: 1615518625}
-  - component: {fileID: 1615518628}
   - component: {fileID: 1615518629}
   - component: {fileID: 1615518627}
+  - component: {fileID: 1615518631}
+  - component: {fileID: 1615518630}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -548,23 +549,6 @@ MonoBehaviour:
   stroke: 6
   inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
   jitterAmplitude: 4
---- !u!114 &1615518628
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1615518617}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0644188d536959c43aaa072f7e723a89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiDocument: {fileID: 1615518618}
-  targetElementName: profileScribble
-  stroke: 6
-  inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
-  jitterAmplitude: 4
 --- !u!114 &1615518629
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -578,6 +562,36 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 1615518618}
+--- !u!114 &1615518630
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615518617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0644188d536959c43aaa072f7e723a89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 0}
+  targetElementName: joinScribble
+  stroke: 6
+  inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
+  jitterAmplitude: 4
+--- !u!114 &1615518631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615518617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 935c5f86ef0419c458434dd3b87a5f95, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

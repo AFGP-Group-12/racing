@@ -358,7 +358,7 @@ Slider.form-field .unity-base-slider__dragger {
     flex-direction: row;
     align-self: flex-start;
     height: 250px;
-    background-color: rgb(233, 233, 233);
+    background-color: rgb(255, 255, 255);
 }
 
 .join-subgroup {
