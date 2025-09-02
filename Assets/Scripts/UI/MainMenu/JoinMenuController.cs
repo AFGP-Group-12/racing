@@ -29,6 +29,7 @@ public class JoinMenuController : MonoBehaviour
 
         joinButton.clicked += () => ShowJoinMenu();
         joinPrivateButton.clicked += () => OnJoinPrivateButtonClicked?.Invoke(joinTextField.value);
+        matchmakeButton.clicked += () => OnMatchmakeButtonClicked?.Invoke();
 
         joinOverlay.RegisterCallback<ClickEvent>(evt =>
         {
