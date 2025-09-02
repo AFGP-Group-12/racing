@@ -37,6 +37,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] Transform orientation;
     [SerializeField] float playerHeight;
 
+    [Header("Wall Running")]
+
+    [SerializeField] float wallRunningForce;
+
+    private RaycastHit leftWallHit;
+
+    private RaycastHit rightWallHit;
+
+    private bool isWallLeft;
+
+    private bool isWallRight;
+
     [Header("Other Scripts")]
     [SerializeField] PlayerScreenVisuals visualScript;
 
@@ -48,6 +60,30 @@ public class PlayerMovement : MonoBehaviour
     Vector3 moveDirection;
 
     Rigidbody rb;
+
+    private MovementState state;
+
+    public enum MovementState
+    {
+        walking,
+        sprinting,
+        wallrunning,
+        sliding,
+        air,
+        dashing
+    }
+
+    private bool walking;
+
+    private bool sprinting;
+
+    private bool wallrunning;
+
+    private bool sliding;
+
+    private bool air;
+
+    private bool dashing;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -87,20 +123,54 @@ public class PlayerMovement : MonoBehaviour
             rb.linearDamping = 0f;
         }
 
+        StateHandler();
         SpeedControl();
         Accelerate();
-        SpeedCheck();
+        // SpeedCheck();
         StopMomentumJump();
         visualScript.SetSpeedVisuals(basicSpeed, sprintSpeed, moveSpeed);
         visualScript.MoveRotation(horizontalInput);
-
     }
 
 
     void FixedUpdate()
     {
-        MovePlayer();
+        if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air)
+        {
+            MovePlayer();
+        }
     }
+
+    void StateHandler()
+    {
+
+        if (wallrunning)
+        {
+            state = MovementState.wallrunning;
+            WallRun();
+        }
+        else if (dashing)
+        {
+            state = MovementState.dashing;
+        }
+        else if (!isOnGround)
+        {
+            state = MovementState.air;
+        }
+        else if (sliding)
+        {
+            state = MovementState.sliding;
+        }
+        else if (isOnGround && sprinting)
+        {
+            state = MovementState.sprinting;
+        }
+        else if (isOnGround && walking)
+        {
+            state = MovementState.walking;
+        }
+    }
+
     void SpeedCheck()
     {
         // currentSpeed = rb.linearVelocity.magnitude;
@@ -142,6 +212,32 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
+    void WallRun()
+    {
+        rb.useGravity = false;
+        Vector3 positionWithOffset = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
+
+        isWallLeft = Physics.Raycast(positionWithOffset, -orientation.right, out leftWallHit, 1f, groundLayer);
+        isWallRight = Physics.Raycast(positionWithOffset, orientation.right, out rightWallHit, 1f, groundLayer);
+
+        Vector3 wallNormal = new Vector3(0,0,0);
+
+        Vector3 wallForward = new Vector3(0,0,0);
+        if (isWallRight && horizontalInput > 0)
+        {
+            wallNormal = rightWallHit.normal;
+            wallForward = Vector3.Cross(wallNormal,transform.up);
+            // Debug.Log("WallRight");
+        }
+
+        if (isWallLeft && horizontalInput < 0)
+        {
+            wallNormal = leftWallHit.normal;
+            wallForward = Vector3.Cross(wallNormal, transform.up);
+            // Debug.Log("WallLeft");
+        }
+    }
+
     void OnMove(InputAction.CallbackContext context)
     {
         horizontalInput = context.ReadValue<Vector2>().x;
@@ -169,6 +265,7 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnSprint(InputAction.CallbackContext context)
     {
+        sprinting = true;
         accelerationIncrement = math.abs(accelerationIncrement);
         isAccelerating = true;
         isKeepingMomentum = false;
@@ -178,6 +275,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isOnGround)
         {
+            sprinting = false;
             accelerationIncrement = -math.abs(accelerationIncrement);
             isAccelerating = false;
         }
@@ -195,6 +293,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (isKeepingMomentum && isOnGround)
         {
+            sprinting = false;
             accelerationIncrement = -math.abs(accelerationIncrement);
             isAccelerating = false;
         }
