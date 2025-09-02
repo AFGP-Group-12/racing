@@ -263,6 +263,7 @@ MonoBehaviour:
     m_Bits: 512
   orientation: {fileID: 6213159212276226189}
   playerHeight: 1.96
+  wallRunningForce: 5
   visualScript: {fileID: 2228908584671281163}
 --- !u!114 &2228908584671281163
 MonoBehaviour:
