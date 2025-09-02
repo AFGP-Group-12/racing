@@ -397,6 +397,7 @@ GameObject:
   - component: {fileID: 1615518627}
   - component: {fileID: 1615518631}
   - component: {fileID: 1615518630}
+  - component: {fileID: 1615518632}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -592,6 +593,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 1615518618}
+--- !u!114 &1615518632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1615518617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0644188d536959c43aaa072f7e723a89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 0}
+  targetElementName: loadingScribble
+  stroke: 6
+  inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
+  jitterAmplitude: 4
 --- !u!1 &1789224860
 GameObject:
   m_ObjectHideFlags: 0

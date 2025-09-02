@@ -7,7 +7,7 @@ public class JoinMenuController : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDocument;
 
-    private VisualElement joinOverlay;
+    private VisualElement joinOverlay, loadingOverlay;
     private TextField joinTextField;
     private Button matchmakeButton, joinButton, joinPrivateButton, cancelButton;
 
@@ -25,11 +25,17 @@ public class JoinMenuController : MonoBehaviour
         joinButton = uiDocument.rootVisualElement.Q<Button>("joinLobbyButton");
         joinPrivateButton = uiDocument.rootVisualElement.Q<Button>("joinPrivateButton");
         cancelButton = uiDocument.rootVisualElement.Q<Button>("cancelButton");
+        loadingOverlay = uiDocument.rootVisualElement.Q<VisualElement>("loadingOverlay");
 
 
         joinButton.clicked += () => ShowJoinMenu();
         joinPrivateButton.clicked += () => OnJoinPrivateButtonClicked?.Invoke(joinTextField.value);
         matchmakeButton.clicked += () => OnMatchmakeButtonClicked?.Invoke();
+
+        matchmakeButton.clicked += () =>
+        {
+            loadingOverlay.RemoveFromClassList("hidden");
+        };
 
         joinOverlay.RegisterCallback<ClickEvent>(evt =>
         {
