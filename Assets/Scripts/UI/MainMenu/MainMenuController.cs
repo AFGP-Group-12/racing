@@ -44,7 +44,6 @@ public class MainMenuController : MonoBehaviour
         optionsController = GetComponent<OptionsMenuController>();
 
         createLobbyButton.clicked += () => OnCreateLobbyPressed?.Invoke();
-        joinLobbyButton.clicked += () => OnJoinLobbyPressed?.Invoke();
         optionsButton.clicked += () => OnOptionsPressed?.Invoke();
         exitGameButton.clicked += () => OnExitGamePressed?.Invoke();
 
@@ -77,8 +76,6 @@ public class MainMenuController : MonoBehaviour
             lobbyScreen.RemoveFromClassList("hidden");
         };
         OnCreateLobbyPressed += LobbyClient.instance.CreateLobby;
-        OnJoinLobbyPressed += LobbyClient.instance.JoinLobby;
-
     }
 
     private void ShowOptions()
