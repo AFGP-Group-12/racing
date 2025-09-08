@@ -1265,7 +1265,7 @@ Transform:
   m_GameObject: {fileID: 1291569370}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: -22, y: 10.8, z: -16}
+  m_LocalPosition: {x: -22, y: 8.89, z: -13.65}
   m_LocalScale: {x: 22.5, y: 1, z: 8.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1292,6 +1292,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 648025791}
     - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: jumpMultiplier
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: maxGravityForce
       value: 10
       objectReference: {fileID: 0}
@@ -1305,11 +1309,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: initialRunArcForce
-      value: 15
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: gravityForceDecrement
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3836458721096162249, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_Mass
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 5386568211178942212, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: m_LocalPosition.x
@@ -1709,7 +1717,7 @@ Transform:
   m_GameObject: {fileID: 1679266815}
   serializedVersion: 2
   m_LocalRotation: {x: 0.5, y: -0.5, z: 0.5, w: 0.5}
-  m_LocalPosition: {x: -32.7, y: 14.7, z: -31.6}
+  m_LocalPosition: {x: -32.7, y: 14.16, z: -28.09}
   m_LocalScale: {x: 22.5, y: 1, z: 8.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
