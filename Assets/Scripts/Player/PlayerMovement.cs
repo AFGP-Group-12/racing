@@ -86,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool sprinting;
 
-    private bool wallrunning;
+    public bool wallrunning;
 
     private bool sliding;
 
@@ -121,7 +121,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
-        Debug.DrawRay(transform.position, Vector3.down * 5f, Color.green);
+        //Debug.DrawRay(transform.position, Vector3.down * 5f, Color.green);
 
         if (isOnGround)
         {
@@ -231,19 +231,21 @@ public class PlayerMovement : MonoBehaviour
 
         if (state != MovementState.wallrunning && isWallRight && horizontalInput > 0)
         {
+            rb.useGravity = false;
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            gravityForce = 0;
             rb.AddForce(new Vector3(0f, initialRunArcForce, 0f), ForceMode.Impulse);
             wallrunning = true;
-            gravityForce = 0;
             //Debug.Log("WallRight");
         }
 
         if (state != MovementState.wallrunning && isWallLeft && horizontalInput < 0)
         {
+            rb.useGravity = false;
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            gravityForce = 0;
             rb.AddForce(new Vector3(0f, initialRunArcForce, 0f), ForceMode.Impulse);
             wallrunning = true;
-            gravityForce = 0;
             //Debug.Log("WallLeft");
         }
     }
