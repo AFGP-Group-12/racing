@@ -75,11 +75,11 @@ public class LobbyClient : MonoBehaviour
         Debug.Log("LobbyClient Connected!");
     }
 
-    private void HandleLobbyUpdate(racing_lobby_update_m message) {
+    private unsafe void HandleLobbyUpdate(racing_lobby_update_m message) {
         string other_player_username;
         switch (message.update)
         {
-            case 0: // Lobby joined sucessfully
+            case 0: // Public lobby joined sucessfully
                 OnLobbyJoined.Invoke();
                 OnPlayerJoinLobby.Invoke(player_username);
                 break;
@@ -95,7 +95,14 @@ public class LobbyClient : MonoBehaviour
             case 3: // Invalid lobby code
                 Debug.LogError("Invalid Lobby Code!");
                 break;
-            case 4: // Ping
+            case 4: // Private lobby created
+                OnLobbyJoined.Invoke();
+                OnPlayerJoinLobby.Invoke(player_username);
+                string lobby_code = Helpers.getStringFromMessage(message.lobby_code, 6);
+                Debug.Log(lobby_code);
+                break;
+            case 5: // Private lobby Full
+                Debug.LogError("Lobby full!");
                 break;
         }
     }
