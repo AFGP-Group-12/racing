@@ -13,7 +13,7 @@ public class LobbyClient : MonoBehaviour
 
     // Networking
     private string connection_server_ip = "68.205.103.143";
-    BaseNetworkClient client;
+    public BaseNetworkClient client;
 
     public static LobbyClient instance;
 
@@ -32,7 +32,7 @@ public class LobbyClient : MonoBehaviour
         ConnectToServer();
     }
 
-    private void ConnectToServer()
+    public void ConnectToServer()
     {
         player_username = "Player_" + UnityEngine.Random.Range(0, 10000000);
         client = new BaseNetworkClient(connection_server_ip, 8080, 256, player_username);

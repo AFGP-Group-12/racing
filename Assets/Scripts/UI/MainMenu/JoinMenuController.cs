@@ -35,6 +35,7 @@ public class JoinMenuController : MonoBehaviour
         matchmakeButton.clicked += () =>
         {
             loadingOverlay.RemoveFromClassList("hidden");
+            joinOverlay.AddToClassList("hidden");
         };
 
         joinOverlay.RegisterCallback<ClickEvent>(evt =>
