@@ -59,6 +59,11 @@ public class PlayerScreenVisuals : MonoBehaviour
 
         transparency = moveDifference / speedDifference;
 
+        if (transparency < 0)
+        {
+            transparency = 0;
+        }
+
         speedLineRawImage.material.SetFloat("_Transparency", transparency);
 
         currentAddedFov = transparency;
