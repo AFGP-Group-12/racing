@@ -1747,22 +1747,6 @@ PrefabInstance:
       propertyPath: speedLineGameObject
       value: 
       objectReference: {fileID: 648025791}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: wallJumpForceUp
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: wallUpwardForce
-      value: 40
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: wallLayer.m_Bits
-      value: 1536
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: wallJumpForceDirection
-      value: 40
-      objectReference: {fileID: 0}
     - target: {fileID: 5386568211178942212, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

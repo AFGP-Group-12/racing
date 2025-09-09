@@ -47,15 +47,24 @@ public class PlayerMovement : MonoBehaviour
     [Header("Ground Check")]
     [SerializeField] LayerMask groundLayer;
     [SerializeField] Transform orientation;
-    [SerializeField] float playerHeight;
+    [SerializeField] float playerHeight = 1.96f;
 
     [Header("Wall Running")]
-
     [SerializeField] LayerMask wallLayer;
+
+    [Tooltip("How fast you want the player to move when wall running")]
     [SerializeField] float wallRunningForce;
+
+    [Tooltip("How strong you want the initial wall run arc to be")]
     [SerializeField] float wallUpwardForce;
+
+    [Tooltip("Determines how strong the jump off the wall will be in the upwards direction")]
     [SerializeField] float wallJumpForceUp;
+
+    [Tooltip("Determines how strong the jump off the wall will be in the horizontal directions")]
     [SerializeField] float wallJumpForceDirection;
+
+    [Tooltip("Determines how strong the gravity will be while on the wall. Wallrunning disables unity's gravity and uses this instead")]
     [SerializeField] float maxGravityForce;
 
     public float gravityForce;
@@ -71,9 +80,8 @@ public class PlayerMovement : MonoBehaviour
     private bool isWallRight;
 
     [Header("Camera")]
+    [Tooltip("Script used to adjust camera visuals. Should be on the main camera game object")]
     [SerializeField] PlayerScreenVisuals visualScript;
-
-    private float cameraRotationValue;
 
     private PlayerInput input;
 
