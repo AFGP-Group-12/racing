@@ -220,7 +220,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 5
   m_Drag: 5
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.3
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -255,15 +255,22 @@ MonoBehaviour:
   accelerationIncrement: 1
   acceleration: 0
   groundDrag: 5
-  jumpForce: 30
-  jumpMultiplier: 2
+  jumpForce: 45
+  jumpTurningForce: 2
   jumpCooldown: 0.25
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
   orientation: {fileID: 6213159212276226189}
   playerHeight: 1.96
-  wallRunningForce: 5
+  wallLayer:
+    serializedVersion: 2
+    m_Bits: 1024
+  wallRunningForce: 15
+  wallUpwardForce: 30
+  offWallJumpForce: 35
+  maxGravityForce: 10
+  gravityForceDecrement: 1
   visualScript: {fileID: 2228908584671281163}
 --- !u!114 &2228908584671281163
 MonoBehaviour:
