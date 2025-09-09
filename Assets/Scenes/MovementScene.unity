@@ -858,6 +858,30 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1890586515}
+    - target: {fileID: 334444434041549867, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
+      propertyPath: m_PlaneDistance
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 5656017816389340139, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5656017816389340139, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
+      propertyPath: m_MatchWidthOrHeight
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5656017816389340139, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
+      propertyPath: m_ReferenceResolution.x
+      value: 1920
+      objectReference: {fileID: 0}
+    - target: {fileID: 5656017816389340139, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
+      propertyPath: m_ReferenceResolution.y
+      value: 1080
+      objectReference: {fileID: 0}
+    - target: {fileID: 5656017816389340139, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
+      propertyPath: m_ReferencePixelsPerUnit
+      value: 100
+      objectReference: {fileID: 0}
     - target: {fileID: 6429450066480939843, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1292,6 +1316,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 648025791}
     - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: jumpForce
+      value: 45
+      objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: jumpMultiplier
       value: 1
       objectReference: {fileID: 0}
@@ -1304,8 +1332,16 @@ PrefabInstance:
       value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: jumpTurningForce
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: offWallJumpForce
+      value: 55
+      objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: wallRunningForce
-      value: 10
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: initialRunArcForce
@@ -1315,9 +1351,21 @@ PrefabInstance:
       propertyPath: gravityForceDecrement
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: offWallJumpMultiplier
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: offWalljumpTurningForce
+      value: 1.5
+      objectReference: {fileID: 0}
     - target: {fileID: 3836458721096162249, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: m_Mass
-      value: 6
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3836458721096162249, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_AngularDrag
+      value: 0.3
       objectReference: {fileID: 0}
     - target: {fileID: 5386568211178942212, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: m_LocalPosition.x

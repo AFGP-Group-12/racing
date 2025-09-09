@@ -20,7 +20,7 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jump")]
     [SerializeField] float jumpForce;
-    [SerializeField] float jumpMultiplier;
+    [SerializeField] float jumpTurningForce;
     [SerializeField] float jumpCooldown;
 
     private bool jumpReady;
@@ -43,6 +43,8 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float initialRunArcForce;
 
+    [SerializeField] float offWallJumpForce;
+
     private float gravityForce;
 
     [SerializeField] float maxGravityForce;
@@ -59,6 +61,8 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Other Scripts")]
     [SerializeField] PlayerScreenVisuals visualScript;
+
+    private float cameraRotationValue;
 
     private PlayerInput input;
 
@@ -86,7 +90,7 @@ public class PlayerMovement : MonoBehaviour
 
     private bool sprinting;
 
-    public bool wallrunning;
+    private bool wallrunning;
 
     private bool sliding;
 
@@ -139,8 +143,10 @@ public class PlayerMovement : MonoBehaviour
         // SpeedCheck();
         StopMomentumJump();
         visualScript.SetSpeedVisuals(basicSpeed, sprintSpeed, moveSpeed);
-        visualScript.MoveRotation(horizontalInput);
+        SetCameraRotation();
     }
+
+    
 
 
     void FixedUpdate()
@@ -196,7 +202,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (!isOnGround)
         {
-            MovementForce(jumpMultiplier);
+            MovementForce(jumpTurningForce);
         }
     }
 
@@ -234,7 +240,16 @@ public class PlayerMovement : MonoBehaviour
             rb.useGravity = false;
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             gravityForce = 0;
-            rb.AddForce(new Vector3(0f, initialRunArcForce, 0f), ForceMode.Impulse);
+
+            if (isOnGround)
+            {
+                rb.AddForce(new Vector3(0f, initialRunArcForce/2, 0f), ForceMode.Impulse);
+            }
+            else
+            {
+                rb.AddForce(new Vector3(0f, initialRunArcForce, 0f), ForceMode.Impulse);
+            }
+
             wallrunning = true;
             //Debug.Log("WallRight");
         }
@@ -244,7 +259,16 @@ public class PlayerMovement : MonoBehaviour
             rb.useGravity = false;
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             gravityForce = 0;
-            rb.AddForce(new Vector3(0f, initialRunArcForce, 0f), ForceMode.Impulse);
+            
+            if (isOnGround)
+            {
+                rb.AddForce(new Vector3(0f, initialRunArcForce/2, 0f), ForceMode.Impulse);
+            }
+            else
+            {
+                rb.AddForce(new Vector3(0f, initialRunArcForce, 0f), ForceMode.Impulse);
+            }
+
             wallrunning = true;
             //Debug.Log("WallLeft");
         }
@@ -265,8 +289,6 @@ public class PlayerMovement : MonoBehaviour
             wallrunning = true;
             wallNormal = rightWallHit.normal;
             wallForward = Vector3.Cross(wallNormal, transform.up);
-
-
 
             if (Vector3.Dot(wallForward, orientation.forward) < 0)
             {
@@ -319,6 +341,7 @@ public class PlayerMovement : MonoBehaviour
             accelerationIncrement = math.abs(accelerationIncrement);
         }
     }
+
     void OnMoveStop(InputAction.CallbackContext context)
     {
         accelerationIncrement = -math.abs(accelerationIncrement);
@@ -344,13 +367,13 @@ public class PlayerMovement : MonoBehaviour
             {
                 wallrunning = false;
                 rb.useGravity = true;
-                rb.AddForce(transform.up * jumpForce + (-orientation.right * jumpForce * 2), ForceMode.Impulse);
+                rb.AddForce(transform.up * offWallJumpForce + (-orientation.right * offWallJumpForce), ForceMode.Impulse);
             }
             else if (isWallLeft)
             {
                 wallrunning = false;
                 rb.useGravity = true;
-                rb.AddForce(transform.up * jumpForce + (orientation.right * jumpForce * 2), ForceMode.Impulse);
+                rb.AddForce(transform.up *  offWallJumpForce + (orientation.right * offWallJumpForce), ForceMode.Impulse);
             }
         }
     }
@@ -388,6 +411,20 @@ public class PlayerMovement : MonoBehaviour
             sprinting = false;
             accelerationIncrement = -math.abs(accelerationIncrement);
             isAccelerating = false;
+            isKeepingMomentum = false;
+        }
+    }
+
+    void SetCameraRotation()
+    {
+        if (state == MovementState.wallrunning)
+        {
+            float wallCameraChange = isWallRight ? -1 : 1;
+            visualScript.MoveRotation(wallCameraChange);
+        }
+        else
+        {
+            visualScript.MoveRotation(horizontalInput);
         }
     }
 
@@ -410,7 +447,7 @@ public class PlayerMovement : MonoBehaviour
         {
             acceleration = 99;
         }
-        else if (acceleration < 0)
+        else if (acceleration <= 0)
         {
             acceleration = 0;
         }
