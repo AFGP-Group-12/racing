@@ -59,12 +59,19 @@ public class PlayerScreenVisuals : MonoBehaviour
 
         transparency = moveDifference / speedDifference;
 
+        if (transparency < 0)
+        {
+            transparency = 0;
+        }
+
         speedLineRawImage.material.SetFloat("_Transparency", transparency);
 
         currentAddedFov = transparency;
         playerCamera.fieldOfView = startingFov + (addedFov * currentAddedFov);
     }
 
+
+    // ****Might come back here and clean it up a bit. I feel like it could be more efficient****
     public void MoveRotation(float horizontalInput)
     {
         if (math.abs(targetRotation) > math.abs(rotationAdditive))
@@ -74,11 +81,12 @@ public class PlayerScreenVisuals : MonoBehaviour
 
         if (horizontalInput != 0)
         {
-            targetRotation = rotationAdditive * (-horizontalInput / math.abs(horizontalInput));
-            rotationIncrement = math.abs(rotationIncrement) * (-horizontalInput / math.abs(horizontalInput));
+            float horizontalInputDirection = -horizontalInput / math.abs(horizontalInput);
+            targetRotation = rotationAdditive * horizontalInputDirection;
+            rotationIncrement = math.abs(rotationIncrement) * horizontalInputDirection;
             curRotation = playerCameraScript.getRotationZ();
 
-            if (curRotation != targetRotation)
+            if (targetRotation < 0 && curRotation > targetRotation || targetRotation > 0 && curRotation < targetRotation)
             {
                 curRotation += rotationIncrement;
             }
@@ -102,7 +110,7 @@ public class PlayerScreenVisuals : MonoBehaviour
 
             playerCameraScript.setRotationZ(curRotation);
         }
-        
+
     }
 
     // Used for debugging

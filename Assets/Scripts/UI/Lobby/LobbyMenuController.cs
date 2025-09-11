@@ -11,6 +11,9 @@ public class LobbyMenuController : MonoBehaviour
     private Label[] playerPingLabel;
     private Label playerCountLabel;
 
+    private Button exitLobbyButton;
+    private Button startGameButton;
+
     private int playerCount = 0;
     private Dictionary<string, int> index_by_username = new Dictionary<string, int>();
 
@@ -29,6 +32,12 @@ public class LobbyMenuController : MonoBehaviour
             playerPingLabel[i].AddToClassList("hidden");
         }
         playerCountLabel = root.Q<Label>("playerCountLabel");
+
+        exitLobbyButton = root.Q<Button>("exitLobbyButton");
+        startGameButton = root.Q<Button>("startGameButton");
+
+        // exitLobbyButton.clicked += () => LobbyClient.instance.LeaveLobby();
+        // startGameButton.clicked += () => LobbyClient.instance.StartGame();
     }
 
     public void Start()
@@ -47,8 +56,10 @@ public class LobbyMenuController : MonoBehaviour
     {
         int player_index = index_by_username[username];
 
-        foreach (var pair in index_by_username) {
-            if (pair.Value > player_index) {
+        foreach (var pair in index_by_username)
+        {
+            if (pair.Value > player_index)
+            {
                 index_by_username[pair.Key] = pair.Value - 1;
                 UpdatePlayerName(pair.Key, pair.Value);
             }

@@ -67,3 +67,10 @@
     align-self: center;
     margin-right: 25px;
 }
+
+.lobby-management-buttons {
+    width: 150px;
+    height: 95px;
+    font-size: 41px;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+}
