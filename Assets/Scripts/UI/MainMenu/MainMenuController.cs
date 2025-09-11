@@ -87,6 +87,14 @@ public class MainMenuController : MonoBehaviour
             mainScreen.AddToClassList("hidden");
             lobbyScreen.RemoveFromClassList("hidden");
         };
+
+        // LobbyClient.instance.OnLobbyExited += () =>
+        // {
+        //     mainScreen.RemoveFromClassList("hidden");
+        //     lobbyScreen.AddToClassList("hidden");
+        //     loadingOverlay.AddToClassList("hidden");
+        // };
+
         OnCreateLobbyPressed += LobbyClient.instance.CreateLobby;
     }
 

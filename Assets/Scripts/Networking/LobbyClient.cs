@@ -18,6 +18,7 @@ public class LobbyClient : MonoBehaviour
     public static LobbyClient instance;
 
     public event Action OnLobbyJoined;
+    public event Action OnLobbyExited;
 
     public event Action<string> OnPlayerJoinLobby;
     public event Action<string> OnPlayerLeaveLobby;
@@ -34,6 +35,7 @@ public class LobbyClient : MonoBehaviour
 
     public void ConnectToServer()
     {
+        Debug.Log("Connecting to server...");
         player_username = "Player_" + UnityEngine.Random.Range(0, 10000000);
         client = new BaseNetworkClient(connection_server_ip, 8080, 256, player_username);
         client.ConnectToServer(OnConnect);
@@ -75,7 +77,8 @@ public class LobbyClient : MonoBehaviour
         Debug.Log("LobbyClient Connected!");
     }
 
-    private void HandleLobbyUpdate(racing_lobby_update_m message) {
+    private void HandleLobbyUpdate(racing_lobby_update_m message)
+    {
         string other_player_username;
         switch (message.update)
         {
@@ -105,7 +108,7 @@ public class LobbyClient : MonoBehaviour
         generic_m message;
         while (client.TryDequeueMessage(out message))
         {
-            switch(message.get_t())
+            switch (message.get_t())
             {
                 case message_t.connection_reply:
                     break;
@@ -120,5 +123,15 @@ public class LobbyClient : MonoBehaviour
     private void OnDestroy()
     {
         client.Disconnect();
+    }
+
+    public void LeaveLobby()
+    {
+
+    }
+
+    public void StartGame()
+    {
+
     }
 }
