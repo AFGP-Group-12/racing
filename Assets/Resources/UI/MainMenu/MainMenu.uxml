@@ -7,11 +7,11 @@
             <ui:VisualElement style="flex-grow: 1; background-image: resource(&apos;UI/Textures/ConceptArt/robot2&apos;); height: 641px; position: absolute; top: 30%; left: 70%; width: 17%;" />
             <ui:Label text="UNTITLED RACING GAME" name="title" class="title" />
             <ui:GroupBox name="buttonBox" class="button-box">
-                <ui:Button name="createLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
-                    <ui:Label text="CREATE" enabled="true" class="wobble-text" />
-                </ui:Button>
                 <ui:Button name="joinLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
                     <ui:Label text="JOIN" class="wobble-text" />
+                </ui:Button>
+                <ui:Button name="createLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
+                    <ui:Label text="CREATE" enabled="true" class="wobble-text" />
                 </ui:Button>
                 <ui:Button name="optionsButton" selectable="false" double-click-selects-word="false" class="mainbutton">
                     <ui:Label text="OPTIONS" class="wobble-text" />
@@ -91,6 +91,28 @@
                     <ui:VisualElement name="loadingScribble" class="scribble-layer" style="flex-grow: 1;" />
                     <ui:VisualElement name="VisualElement" class="row" style="align-self: center; flex-direction: row;">
                         <ui:Label text="Loading..." name="Label" double-click-selects-word="false" class="form-label" style="align-self: flex-start; font-size: 36px; -unity-text-align: middle-center; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                    </ui:VisualElement>
+                </ui:GroupBox>
+            </ui:VisualElement>
+            <ui:VisualElement name="joinOverlay" class="overlay" style="flex-grow: 1;">
+                <ui:GroupBox name="joinPanel" class="join-panel">
+                    <ui:VisualElement name="joinScribble" class="scribble-layer" style="flex-grow: 1;" />
+                    <ui:VisualElement class="join-title" style="flex-grow: 1;">
+                        <ui:Label text="Label" style="font-size: 48px;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="join-group" style="flex-grow: 1; flex-direction: row; align-items: flex-start; justify-content: flex-start; align-self: stretch;">
+                        <ui:VisualElement class="join-subgroup" style="flex-grow: 1; border-right-width: 0;">
+                            <ui:Label text="Private Game" style="justify-content: center; align-items: flex-start; align-self: center; font-size: 25px;" />
+                            <ui:TextField label="Text Field" placeholder-text="ABCDEF" name="joinTextField" />
+                            <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                                <ui:Button text="Join" name="joinPrivateButton" />
+                                <ui:Button text="Button" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="join-subgroup" style="flex-grow: 1; border-right-width: 0;">
+                            <ui:Label text="Public Game" enable-rich-text="true" style="align-self: center; font-size: 25px;" />
+                            <ui:Button text="Matchmake" name="matchmakeButton" />
+                        </ui:VisualElement>
                     </ui:VisualElement>
                 </ui:GroupBox>
             </ui:VisualElement>

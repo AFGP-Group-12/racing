@@ -263,7 +263,7 @@ public class BaseNetworkClient
 
                 // Debug.Log($"Got some server info. Addr: {server_addr}, Port: {port}, Type: {(server_t)m.server_info.server_name}");
 
-                if ((server_t)m.server_info.server_name == server_t.gameplay_server && GameplayClient.instance.client == null)
+                if ((server_t)m.server_info.name == server_t.gameplay_server && GameplayClient.instance.client == null)
                 {
                     if (server_addr.Trim().Contains("127.0.0.1")) { server_addr = serverIp; }
 
