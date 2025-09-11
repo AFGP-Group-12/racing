@@ -143,10 +143,21 @@
                     </ui:VisualElement>
                 </ui:GroupBox>
             </ui:GroupBox>
-            <ui:VisualElement style="flex-grow: 1; position: absolute; flex-direction: row; bottom: 45px; left: 280px;">
+            <ui:VisualElement style="flex-grow: 1; position: absolute; flex-direction: row; bottom: 100px; left: 280px;">
                 <ui:Button text="Exit" name="exitLobbyButton" class="lobby-management-buttons" />
                 <ui:Button text="Start" name="startGameButton" class="lobby-management-buttons" />
             </ui:VisualElement>
+            <ui:GroupBox name="lobbyOptionsPanel" class="lobby-options-panel">
+                <ui:VisualElement name="lobbyOptionsScribble" class="scribble-layer" style="flex-grow: 1;" />
+                <ui:VisualElement name="mapSelectionBox" style="flex-grow: 1; background-color: rgba(255, 255, 255, 0); width: 100%; height: 57%; align-items: center; align-self: auto; flex-basis: 0; position: absolute;">
+                    <ui:VisualElement style="flex-grow: 1; top: 30px; position: absolute; background-color: rgb(205, 125, 125); height: 400px; width: 1000px;" />
+                    <ui:GroupBox style="top: 415px; flex-direction: row;">
+                        <ui:Button text="&lt;-" style="background-color: rgba(255, 255, 255, 0); font-size: 41px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                        <ui:Label text="MAPNAME" style="top: 0; position: relative; font-size: 41px; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;); -unity-text-align: middle-center;" />
+                        <ui:Button text="-&gt;" style="background-color: rgba(255, 255, 255, 0); font-size: 41px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                    </ui:GroupBox>
+                </ui:VisualElement>
+            </ui:GroupBox>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
