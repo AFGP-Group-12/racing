@@ -160,8 +160,6 @@ public class PlayerMovement : MonoBehaviour
         StopMomentumJump();
         // SpeedCheck(); // For debugging purposes
 
-        // Wall Running
-        WallRunCheck();
 
         // Camera
         visualScript.SetSpeedVisuals(basicSpeed, sprintSpeed, moveSpeed);
@@ -170,6 +168,10 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Wall Running
+        WallRunCheck();
+
+
         if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air)
         {
             MovePlayer();
