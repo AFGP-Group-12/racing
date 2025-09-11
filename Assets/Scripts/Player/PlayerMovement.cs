@@ -85,8 +85,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isWallRight;
 
     [Header("Camera")]
-    [Tooltip("Script used to adjust camera visuals. Should be on the main camera game object")]
-    [SerializeField] PlayerScreenVisuals visualScript;
+    PlayerScreenVisuals visualScript;
 
     private PlayerInput input;
 
@@ -122,6 +121,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         input = GetComponent<PlayerInput>();
+        visualScript = GetComponent<PlayerScreenVisuals>();
 
         input.actions["Move"].performed += OnMove;
         input.actions["Move"].canceled += OnMoveStop;
