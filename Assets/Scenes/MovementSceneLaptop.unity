@@ -1755,6 +1755,22 @@ PrefabInstance:
       propertyPath: wallBoostForce
       value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: maxGravityForce
+      value: 40
+      objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: wallUpwardForce
+      value: 20
+      objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: wallInitialForce
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: wallConstantForce
+      value: 15
+      objectReference: {fileID: 0}
     - target: {fileID: 5386568211178942212, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
