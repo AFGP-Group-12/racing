@@ -1290,30 +1290,6 @@ PrefabInstance:
       propertyPath: m_Camera
       value: 
       objectReference: {fileID: 1890586515}
-    - target: {fileID: 334444434041549867, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
-      propertyPath: m_PlaneDistance
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 5656017816389340139, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
-      propertyPath: m_UiScaleMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5656017816389340139, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
-      propertyPath: m_MatchWidthOrHeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5656017816389340139, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
-      propertyPath: m_ReferenceResolution.x
-      value: 1920
-      objectReference: {fileID: 0}
-    - target: {fileID: 5656017816389340139, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
-      propertyPath: m_ReferenceResolution.y
-      value: 1080
-      objectReference: {fileID: 0}
-    - target: {fileID: 5656017816389340139, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
-      propertyPath: m_ReferencePixelsPerUnit
-      value: 100
-      objectReference: {fileID: 0}
     - target: {fileID: 6429450066480939843, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1739,6 +1715,14 @@ PrefabInstance:
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 2004549323}
+    - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: rotationAdditive
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: rotationIncrement
+      value: 0.25
+      objectReference: {fileID: 0}
     - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: playerCameraScript
       value: 

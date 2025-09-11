@@ -53,7 +53,10 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] LayerMask wallLayer;
 
     [Tooltip("How fast you want the player to move when wall running")]
-    [SerializeField] float wallRunningForce;
+    [SerializeField] float wallRunForce;
+
+    [Tooltip("How fast do you want the initial wall boost to be")]
+    [SerializeField] float wallBoostForce;
 
     [Tooltip("How strong you want the initial wall run arc to be")]
     [SerializeField] float wallUpwardForce;
@@ -69,6 +72,8 @@ public class PlayerMovement : MonoBehaviour
 
     public float gravityForce;
 
+    private bool canBoost = false;
+
     Vector3 wallNormal;
     Vector3 wallForward;
     Vector3 runArc;
@@ -80,8 +85,7 @@ public class PlayerMovement : MonoBehaviour
     private bool isWallRight;
 
     [Header("Camera")]
-    [Tooltip("Script used to adjust camera visuals. Should be on the main camera game object")]
-    [SerializeField] PlayerScreenVisuals visualScript;
+    PlayerScreenVisuals visualScript;
 
     private PlayerInput input;
 
@@ -117,6 +121,7 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         input = GetComponent<PlayerInput>();
+        visualScript = GetComponent<PlayerScreenVisuals>();
 
         input.actions["Move"].performed += OnMove;
         input.actions["Move"].canceled += OnMoveStop;
@@ -163,14 +168,22 @@ public class PlayerMovement : MonoBehaviour
         // Wall Running
         WallRunCheck();
 
-        // Camera
-        visualScript.SetSpeedVisuals(basicSpeed, sprintSpeed, moveSpeed);
-        SetCameraRotation();
+        
     }
 
     void FixedUpdate()
     {
-        if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air)
+        // Camera
+        visualScript.SetSpeedVisuals(basicSpeed, sprintSpeed, moveSpeed);
+        SetCameraRotation();
+
+        
+        if (state == MovementState.wallrunning)
+        {
+            WallRun();
+        }
+
+        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air)
         {
             MovePlayer();
         }
@@ -186,7 +199,6 @@ public class PlayerMovement : MonoBehaviour
         if (wallrunning)
         {
             state = MovementState.wallrunning;
-            WallRun();
         }
         else if (dashing)
         {
@@ -300,6 +312,7 @@ public class PlayerMovement : MonoBehaviour
 
                 rb.AddForce(new Vector3(0f, wallUpwardForce, 0f), ForceMode.Impulse);
 
+                canBoost = true;
                 wallrunning = true;
                 //Debug.Log("WallRight");
             }
@@ -312,6 +325,7 @@ public class PlayerMovement : MonoBehaviour
 
                 rb.AddForce(new Vector3(0f, wallUpwardForce, 0f), ForceMode.Impulse);
 
+                canBoost = true;
                 wallrunning = true;
                 //Debug.Log("WallLeft");
             }
@@ -341,7 +355,12 @@ public class PlayerMovement : MonoBehaviour
                 wallForward = -wallForward;
             }
 
-            rb.AddForce(wallForward * wallRunningForce + runArc, ForceMode.Force);
+            if (canBoost)
+            {
+                rb.AddForce(wallForward * wallBoostForce, ForceMode.Impulse);
+                canBoost = false;
+            }
+            rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
             //Debug.Log("WallRight");
         }
 
@@ -356,7 +375,12 @@ public class PlayerMovement : MonoBehaviour
                 wallForward = -wallForward;
             }
 
-            rb.AddForce(wallForward * wallRunningForce + runArc, ForceMode.Force);
+            if (canBoost)
+            {
+                rb.AddForce(wallForward * wallBoostForce, ForceMode.Impulse);
+                canBoost = false;
+            }
+            rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
             //Debug.Log("WallLeft");
         }
 
