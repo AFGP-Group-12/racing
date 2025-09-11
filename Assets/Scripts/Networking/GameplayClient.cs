@@ -14,6 +14,7 @@ public class GameplayClient : MonoBehaviour
     public void Awake()
     {
         instance = this;
+        DontDestroyOnLoad(this.gameObject);
     }
 
     public void Setup()
@@ -38,6 +39,7 @@ public class GameplayClient : MonoBehaviour
 
     private void Update()
     {
+        if (client == null) { return; }
         generic_m message;
         while (client.TryDequeueMessage(out message))
         {
