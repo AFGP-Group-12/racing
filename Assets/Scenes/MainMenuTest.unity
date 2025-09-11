@@ -452,8 +452,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 1615518618}
-  connectedIcon: {fileID: 2800000, guid: 283698f037199c14aaa50f085ab080ce, type: 3}
-  disconnectedIcon: {fileID: 2800000, guid: c4acb20d1ab9018479d303c85931a306, type: 3}
+  connectedIcon: {fileID: 2800000, guid: 79c8e59bf97e3004699d77edaeb89f8c, type: 3}
+  disconnectedIcon: {fileID: 2800000, guid: 490c1421a54fb87419959d1e9a36501f, type: 3}
 --- !u!114 &1615518621
 MonoBehaviour:
   m_ObjectHideFlags: 0
