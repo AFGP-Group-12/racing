@@ -59,6 +59,14 @@ public class LobbyClient : MonoBehaviour
         message.action = 1;
         client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
     }
+    public unsafe void JoinPrivateLobby(string lobby_code)
+    {
+        racing_lobby_action_m message;
+        message.type = (ushort)message_t.racing_lobby_action;
+        message.action = 2;
+        Helpers.setStringForMessage(lobby_code, 6, message.lobby_code);
+        client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
+    }
 
     public unsafe void UpdateUsername(string new_username)
     {
@@ -128,5 +136,22 @@ public class LobbyClient : MonoBehaviour
     private void OnDestroy()
     {
         client.Disconnect();
+    }
+
+    public unsafe void LeaveLobby()
+    {
+        racing_lobby_action_m message;
+        message.type = (ushort)message_t.racing_lobby_action;
+        message.action = 3;
+        client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
+
+    }
+
+    public unsafe void StartGame()
+    {
+        racing_lobby_action_m message;
+        message.type = (ushort)message_t.racing_lobby_action;
+        message.action = 5;
+        client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
     }
 }

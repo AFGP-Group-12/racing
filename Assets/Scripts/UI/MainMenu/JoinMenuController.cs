@@ -59,6 +59,7 @@ public class JoinMenuController : MonoBehaviour
     void Start()
     {
         OnMatchmakeButtonClicked += LobbyClient.instance.JoinLobby;
+        OnJoinPrivateButtonClicked += LobbyClient.instance.JoinPrivateLobby;
     }
 
     private void HideJoinMenu()
