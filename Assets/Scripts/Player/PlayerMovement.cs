@@ -70,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
         wallrunning,
         sliding,
         air,
-        dashing
+        dashing 
     }
 
     private bool walking;
@@ -85,6 +85,8 @@ public class PlayerMovement : MonoBehaviour
 
     private bool dashing;
 
+    private Collider objectCollider;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -98,6 +100,9 @@ public class PlayerMovement : MonoBehaviour
 
         input.actions["Sprint"].started += OnSprint;
         input.actions["Sprint"].canceled += OnSprintEnd;
+
+        input.actions["Crouch"].started += OnSlide;
+        input.actions["Crouch"].canceled += OnSlideEnd;
 
         rb.freezeRotation = true;
 
@@ -135,7 +140,7 @@ public class PlayerMovement : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air)
+        if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air || state == MovementState.sliding)
         {
             MovePlayer();
         }
@@ -238,6 +243,17 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void Slide()
+    {
+        objectCollider = GetComponentInChildren<Collider>();
+        if (objectCollider == null)
+        {
+            Debug.LogError("No Collider found on Player!");
+            return;
+        }
+        objectCollider.sharedMaterial.dynamicFriction = 30;
+    }
+
     void OnMove(InputAction.CallbackContext context)
     {
         horizontalInput = context.ReadValue<Vector2>().x;
@@ -261,6 +277,23 @@ public class PlayerMovement : MonoBehaviour
 
             Invoke(nameof(JumpCooldown), jumpCooldown);
         }
+    }
+    private void OnSlide(InputAction.CallbackContext context)
+    {
+        if (isOnGround && !sliding)
+        {
+            sliding = true;
+            Slide();
+            isKeepingMomentum = true;
+        }
+    }
+
+    private void OnSlideEnd(InputAction.CallbackContext context)
+    {
+        sliding = false;
+        objectCollider = GetComponentInChildren<Collider>();
+        Debug.Log("Slide Ended");
+        objectCollider.sharedMaterial.dynamicFriction = 0;
     }
 
     private void OnSprint(InputAction.CallbackContext context)
