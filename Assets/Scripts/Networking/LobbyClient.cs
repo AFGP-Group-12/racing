@@ -25,6 +25,7 @@ public class LobbyClient : MonoBehaviour
     private void Awake()
     {
         instance = this;
+        DontDestroyOnLoad(this.gameObject);
     }
 
     void Start()
