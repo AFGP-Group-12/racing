@@ -111,28 +111,6 @@
                     </ui:VisualElement>
                 </ui:GroupBox>
             </ui:VisualElement>
-            <ui:VisualElement name="joinOverlay" class="overlay hidden" style="flex-grow: 1;">
-                <ui:GroupBox name="joinPanel" class="join-panel">
-                    <ui:VisualElement name="joinScribble" class="scribble-layer" style="flex-grow: 1;" />
-                    <ui:VisualElement class="join-title" style="flex-grow: 1;">
-                        <ui:Label text="Label" style="font-size: 48px;" />
-                    </ui:VisualElement>
-                    <ui:VisualElement class="join-group" style="flex-grow: 1; flex-direction: row; align-items: flex-start; justify-content: flex-start; align-self: stretch;">
-                        <ui:VisualElement class="join-subgroup" style="flex-grow: 1; border-right-width: 0;">
-                            <ui:Label text="Private Game" style="justify-content: center; align-items: flex-start; align-self: center; font-size: 25px;" />
-                            <ui:TextField label="Text Field" placeholder-text="ABCDEF" name="joinTextField" />
-                            <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
-                                <ui:Button text="Join" name="joinPrivateButton" />
-                                <ui:Button text="Button" />
-                            </ui:VisualElement>
-                        </ui:VisualElement>
-                        <ui:VisualElement class="join-subgroup" style="flex-grow: 1; border-right-width: 0;">
-                            <ui:Label text="Public Game" enable-rich-text="true" style="align-self: center; font-size: 25px;" />
-                            <ui:Button text="Matchmake" name="matchmakeButton" />
-                        </ui:VisualElement>
-                    </ui:VisualElement>
-                </ui:GroupBox>
-            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="lobbyScreen" class="hidden" style="width: 100%; height: 100%; position: absolute; flex-direction: row;">
             <ui:GroupBox name="playerListPanel" class="player-list-panel">
@@ -165,10 +143,21 @@
                     </ui:VisualElement>
                 </ui:GroupBox>
             </ui:GroupBox>
-            <ui:VisualElement style="flex-grow: 1; position: absolute; flex-direction: row; bottom: 45px; left: 280px;">
+            <ui:VisualElement style="flex-grow: 1; position: absolute; flex-direction: row; bottom: 100px; left: 280px;">
                 <ui:Button text="Exit" name="exitLobbyButton" class="lobby-management-buttons" />
                 <ui:Button text="Start" name="startGameButton" class="lobby-management-buttons" />
             </ui:VisualElement>
+            <ui:GroupBox name="lobbyOptionsPanel" class="lobby-options-panel">
+                <ui:VisualElement name="lobbyOptionsScribble" class="scribble-layer" style="flex-grow: 1;" />
+                <ui:VisualElement name="mapSelectionBox" style="flex-grow: 1; background-color: rgba(255, 255, 255, 0); width: 100%; height: 57%; align-items: center; align-self: auto; flex-basis: 0; position: absolute;">
+                    <ui:VisualElement style="flex-grow: 1; top: 30px; position: absolute; background-color: rgb(205, 125, 125); height: 400px; width: 1000px;" />
+                    <ui:GroupBox style="top: 415px; flex-direction: row;">
+                        <ui:Button text="&lt;-" style="background-color: rgba(255, 255, 255, 0); font-size: 41px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                        <ui:Label text="MAPNAME" style="top: 0; position: relative; font-size: 41px; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;); -unity-text-align: middle-center;" />
+                        <ui:Button text="-&gt;" style="background-color: rgba(255, 255, 255, 0); font-size: 41px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                    </ui:GroupBox>
+                </ui:VisualElement>
+            </ui:GroupBox>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
