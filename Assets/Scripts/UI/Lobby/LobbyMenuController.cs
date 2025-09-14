@@ -45,6 +45,14 @@ public class LobbyMenuController : MonoBehaviour
 
         LobbyClient.instance.OnPlayerJoinLobby += OnPlayerJoin;
         LobbyClient.instance.OnPlayerLeaveLobby += OnPlayerLeave;
+        LobbyClient.instance.SetPlayerPing += SetPlayerPing;
+    }
+
+    private void SetPlayerPing(int ping_ms, string username)
+    {
+        if (!index_by_username.ContainsKey(username)) { return; }
+        int player_index = index_by_username[username];
+        UpdatePlayerPing(ping_ms, player_index);
     }
 
     private void ClearPlayers()
@@ -100,7 +108,7 @@ public class LobbyMenuController : MonoBehaviour
     {
         if (playerIndex >= 4) throw new ArgumentOutOfRangeException(nameof(playerIndex), "Invalid player index");
 
-        playerPingLabel[playerIndex].text = newPing.ToString();
+        playerPingLabel[playerIndex].text = newPing.ToString() + "ms";
         if (newPing == -1) playerPingLabel[playerIndex].AddToClassList("hidden");
         else playerPingLabel[playerIndex].RemoveFromClassList("hidden");
     }

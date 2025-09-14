@@ -1,8 +1,6 @@
 using Messages;
 using System;
 using System.Collections.Generic;
-using TMPro;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 
 public class LobbyClient : MonoBehaviour
@@ -23,10 +21,22 @@ public class LobbyClient : MonoBehaviour
     public event Action<string> OnPlayerJoinLobby;
     public event Action<string> OnPlayerLeaveLobby;
 
+    public event Action<int, string> SetPlayerPing;
+
+    private System.Diagnostics.Stopwatch pingTimer;
+    private bool waitingForPing = false;
+    DateTime timeSinceLastPing;
+    int currentPing = -1;
+    const int pingInterval = 5;
+
     private void Awake()
     {
         instance = this;
         DontDestroyOnLoad(this.gameObject);
+
+
+        pingTimer = new System.Diagnostics.Stopwatch();
+        timeSinceLastPing = DateTime.Now;
     }
 
     void Start()
@@ -124,7 +134,6 @@ public class LobbyClient : MonoBehaviour
             case 7: // Lobby exited sucessfully
                 OnLobbyExited.Invoke();
                 Debug.Log("Exited");
-
                 break;
 
         }
@@ -142,9 +151,43 @@ public class LobbyClient : MonoBehaviour
                 case message_t.racing_lobby_update:
                     HandleLobbyUpdate(message.racing_lobby_update);
                     break;
+                case message_t.ping_reply:
+                    HandlePing();
+                    break;
                 default:
                     break;
             }
+        }
+    }
+
+    private void HandlePing()
+    {
+        if (!waitingForPing) { Debug.LogError("Got ping when not expecting it!"); return; }
+
+        pingTimer.Stop();
+        currentPing = (int)pingTimer.ElapsedMilliseconds;
+        SetPlayerPing.Invoke(currentPing, player_username);
+
+        waitingForPing = false;
+        timeSinceLastPing = DateTime.Now;
+        pingTimer.Reset();
+    }
+
+    private unsafe void FixedUpdate()
+    {
+        if (waitingForPing) { return; }
+
+        Double elapsedseconds = (DateTime.Now - timeSinceLastPing).TotalSeconds;
+        if (elapsedseconds >= pingInterval)
+        {
+            waitingForPing = true;
+
+            ping_m ping;
+            ping.type = (ushort)message_t.ping;
+            ping.random_number = (ushort)(UnityEngine.Random.value * 65536);
+
+            pingTimer.Start();
+            client.SendDataTcp(ping.bytes, ping_m.size);
         }
     }
     private void OnDestroy()

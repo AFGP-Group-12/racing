@@ -1,6 +1,5 @@
 
 using System;
-using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -28,6 +27,8 @@ namespace Messages
         server_registration_reply,
         server_info,
         server_info_reply,
+        ping,
+        ping_reply,
 
     };
 
@@ -77,6 +78,10 @@ namespace Messages
                     return server_info_m.size;
                 case message_t.server_info_reply:
                     return server_info_m_reply.size;
+                case message_t.ping:
+                    return ping_m.size;
+                case message_t.ping_reply:
+                    return ping_m_reply.size;
 
                 default:
                     return -1;
@@ -186,6 +191,8 @@ namespace Messages
         [FieldOffset(0)] public server_registration_m_reply server_registration_reply;
         [FieldOffset(0)] public server_info_m server_info;
         [FieldOffset(0)] public server_info_m_reply server_info_reply;
+        [FieldOffset(0)] public ping_m ping;
+        [FieldOffset(0)] public ping_m_reply ping_reply;
 
 
 
@@ -463,6 +470,26 @@ namespace Messages
         [FieldOffset(4)] public fixed byte address[32];
         [FieldOffset(36)] public int port;
         [FieldOffset(40)] public byte connection_success;
+    };
+
+    [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
+    public unsafe struct ping_m
+    {
+        public const int size = 4;
+        [FieldOffset(0)] public fixed byte bytes[size];
+        [FieldOffset(0)] public UInt16 type;
+
+        [FieldOffset(2)] public UInt16 random_number;
+    };
+
+    [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
+    public unsafe struct ping_m_reply
+    {
+        public const int size = 4;
+        [FieldOffset(0)] public fixed byte bytes[size];
+        [FieldOffset(0)] public UInt16 type;
+
+        [FieldOffset(2)] public UInt16 random_number;
     };
 
 }
