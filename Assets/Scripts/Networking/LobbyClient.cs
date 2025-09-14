@@ -124,6 +124,7 @@ public class LobbyClient : MonoBehaviour
             case 7: // Lobby exited sucessfully
                 OnLobbyExited.Invoke();
                 Debug.Log("Exited");
+
                 break;
 
         }

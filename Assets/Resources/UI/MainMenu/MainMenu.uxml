@@ -111,6 +111,28 @@
                     </ui:VisualElement>
                 </ui:GroupBox>
             </ui:VisualElement>
+            <ui:VisualElement name="joinOverlay" class="overlay" style="flex-grow: 1;">
+                <ui:GroupBox name="joinPanel" class="join-panel">
+                    <ui:VisualElement name="joinScribble" class="scribble-layer" style="flex-grow: 1;" />
+                    <ui:VisualElement class="join-title" style="flex-grow: 1;">
+                        <ui:Label text="Label" style="font-size: 48px;" />
+                    </ui:VisualElement>
+                    <ui:VisualElement class="join-group" style="flex-grow: 1; flex-direction: row; align-items: flex-start; justify-content: flex-start; align-self: stretch;">
+                        <ui:VisualElement class="join-subgroup" style="flex-grow: 1; border-right-width: 0;">
+                            <ui:Label text="Private Game" style="justify-content: center; align-items: flex-start; align-self: center; font-size: 25px;" />
+                            <ui:TextField label="Text Field" placeholder-text="ABCDEF" name="joinTextField" />
+                            <ui:VisualElement style="flex-grow: 1; flex-direction: row;">
+                                <ui:Button text="Join" name="joinPrivateButton" />
+                                <ui:Button text="Button" />
+                            </ui:VisualElement>
+                        </ui:VisualElement>
+                        <ui:VisualElement class="join-subgroup" style="flex-grow: 1; border-right-width: 0;">
+                            <ui:Label text="Public Game" enable-rich-text="true" style="align-self: center; font-size: 25px;" />
+                            <ui:Button text="Matchmake" name="matchmakeButton" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:GroupBox>
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="lobbyScreen" class="hidden" style="width: 100%; height: 100%; position: absolute; flex-direction: row;">
             <ui:GroupBox name="playerListPanel" class="player-list-panel">
