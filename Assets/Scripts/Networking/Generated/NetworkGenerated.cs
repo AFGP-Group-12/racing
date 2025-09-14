@@ -153,7 +153,7 @@ namespace Messages
         }
         public static void setStringForMessage(string s, int n, byte* arr)
         {
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < n && i < s.Length; i++)
             {
                 arr[i] = (byte)s[i];
             }

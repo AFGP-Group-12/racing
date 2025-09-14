@@ -38,6 +38,12 @@ public class JoinMenuController : MonoBehaviour
             joinOverlay.AddToClassList("hidden");
         };
 
+        joinPrivateButton.clicked += () =>
+        {
+            loadingOverlay.RemoveFromClassList("hidden");
+            joinOverlay.AddToClassList("hidden");
+        };
+
         joinOverlay.RegisterCallback<ClickEvent>(evt =>
         {
             if (evt.target == joinOverlay) HideJoinMenu();

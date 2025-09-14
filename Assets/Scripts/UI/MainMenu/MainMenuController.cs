@@ -88,19 +88,19 @@ public class MainMenuController : MonoBehaviour
             lobbyScreen.RemoveFromClassList("hidden");
         };
 
-        // LobbyClient.instance.OnLobbyExited += () =>
-        // {
-        //     mainScreen.RemoveFromClassList("hidden");
-        //     lobbyScreen.AddToClassList("hidden");
-        //     loadingOverlay.AddToClassList("hidden");
-        // };
+        LobbyClient.instance.OnLobbyExited += () =>
+        {
+            mainScreen.RemoveFromClassList("hidden");
+            lobbyScreen.AddToClassList("hidden");
+            loadingOverlay.AddToClassList("hidden");
+        };
 
         OnCreateLobbyPressed += LobbyClient.instance.CreateLobby;
     }
 
     void Update()
     {
-        if (LobbyClient.instance.client.IsConnectedTcp() || LobbyClient.instance.client.IsConnectedUdp())
+        if (LobbyClient.instance.client.IsConnectedTcp())
         {
             connectionIcon.style.backgroundImage = new StyleBackground(connectedIcon);
             connectButton.AddToClassList("hidden");

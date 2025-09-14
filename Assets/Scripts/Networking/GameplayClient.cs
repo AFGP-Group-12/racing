@@ -29,7 +29,8 @@ public class GameplayClient : MonoBehaviour
 
     private void OnDestroy()
     {
-        client.Disconnect();
+        if (client != null)
+            client.Disconnect();
     }
 
     private void FixedUpdate()
