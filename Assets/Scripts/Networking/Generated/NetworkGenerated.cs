@@ -312,26 +312,28 @@ namespace Messages
     [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
     public unsafe struct racing_lobby_action_m
     {
-        public const int size = 26;
+        public const int size = 28;
         [FieldOffset(0)] public fixed byte bytes[size];
         [FieldOffset(0)] public UInt16 type;
 
         [FieldOffset(2)] public UInt16 action;
         [FieldOffset(4)] public fixed byte lobby_code[6];
         [FieldOffset(10)] public username_sm username;
+        [FieldOffset(26)] public UInt16 ping;
     };
 
     [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
     public unsafe struct racing_lobby_update_m
     {
-        public const int size = 28;
+        public const int size = 30;
         [FieldOffset(0)] public fixed byte bytes[size];
         [FieldOffset(0)] public UInt16 type;
 
         [FieldOffset(2)] public UInt16 update;
         [FieldOffset(4)] public UInt16 other_player_id;
-        [FieldOffset(6)] public fixed byte lobby_code[6];
-        [FieldOffset(12)] public username_sm username;
+        [FieldOffset(6)] public UInt16 ping;
+        [FieldOffset(8)] public fixed byte lobby_code[6];
+        [FieldOffset(14)] public username_sm username;
     };
 
     [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]

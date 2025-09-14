@@ -135,6 +135,10 @@ public class LobbyClient : MonoBehaviour
                 OnLobbyExited.Invoke();
                 Debug.Log("Exited");
                 break;
+            case 8: // Other player ping
+                other_player_username = username_by_id[message.other_player_id];
+                SetPlayerPing.Invoke(message.ping, other_player_username);
+                break;
 
         }
     }
@@ -160,13 +164,20 @@ public class LobbyClient : MonoBehaviour
         }
     }
 
-    private void HandlePing()
+    private unsafe void HandlePing()
     {
         if (!waitingForPing) { Debug.LogError("Got ping when not expecting it!"); return; }
 
         pingTimer.Stop();
         currentPing = (int)pingTimer.ElapsedMilliseconds;
         SetPlayerPing.Invoke(currentPing, player_username);
+
+        racing_lobby_action_m message;
+        message.type = (ushort)message_t.racing_lobby_action;
+        message.action = 6;
+        message.ping = (ushort)currentPing;
+        client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
+
 
         waitingForPing = false;
         timeSinceLastPing = DateTime.Now;
