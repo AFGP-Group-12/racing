@@ -4,13 +4,13 @@
     padding: 16px;
     background-color: white;
     border-radius: 12px;
-    position: relative;
+    position: absolute;
     overflow: visible;
     -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
     color: rgb(34, 34, 34);
     font-size: 20px;
     align-items: center;
-    top: 0%;
+    top: 100px;
     left: 3%;
     height: 750px;
     align-self: center;
@@ -73,4 +73,15 @@
     height: 95px;
     font-size: 41px;
     -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+}
+
+.lobby-options-panel {
+    background-color: rgb(255, 255, 255);
+    position: absolute;
+    width: 1200px;
+    height: 875px;
+    right: 55px;
+    top: 100px;
+    align-items: center;
+    align-self: center;
 }
