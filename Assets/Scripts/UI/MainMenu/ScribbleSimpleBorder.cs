@@ -6,7 +6,7 @@ public class ScribbleBorderSimple : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDocument;
     [Header("Target")]
-    public string targetElementName = "profileScribble";
+    public List<string> targetElementName = new List<string> { };
 
     [Header("Marker Thick Border")]
     [Range(1f, 12f)] public float stroke = 6f;
@@ -19,8 +19,11 @@ public class ScribbleBorderSimple : MonoBehaviour
     {
         if (!uiDocument) uiDocument = GetComponent<UIDocument>();
         var root = uiDocument.rootVisualElement;
-        target = root.Q<VisualElement>(targetElementName);
-        if (target != null) target.generateVisualContent += PaintMarkerThick;
+        foreach (var name in targetElementName)
+        {
+            var t = root.Q<VisualElement>(name);
+            if (t != null) t.generateVisualContent += PaintMarkerThick;
+        }
     }
 
     private void PaintMarkerThick(MeshGenerationContext ctx)
