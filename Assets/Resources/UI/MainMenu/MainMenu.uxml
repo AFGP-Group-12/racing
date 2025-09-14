@@ -111,7 +111,7 @@
                     </ui:VisualElement>
                 </ui:GroupBox>
             </ui:VisualElement>
-            <ui:VisualElement name="joinOverlay" class="overlay" style="flex-grow: 1;">
+            <ui:VisualElement name="joinOverlay" class="overlay hidden" style="flex-grow: 1;">
                 <ui:GroupBox name="joinPanel" class="join-panel">
                     <ui:VisualElement name="joinScribble" class="scribble-layer" style="flex-grow: 1;" />
                     <ui:VisualElement class="join-title" style="flex-grow: 1;">
