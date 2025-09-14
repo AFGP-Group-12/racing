@@ -10,6 +10,13 @@ public class MainMenuController : MonoBehaviour
     private Button optionsButton;
     private Button exitGameButton;
 
+    private VisualElement connectionIcon;
+    private Button connectButton;
+    [SerializeField]
+    private Texture2D connectedIcon;
+    [SerializeField]
+    private Texture2D disconnectedIcon;
+
     private VisualElement optionsOverlay;
     private Button optionsCloseButton;
 
@@ -41,6 +48,9 @@ public class MainMenuController : MonoBehaviour
         mainScreen = root.Q<VisualElement>("mainScreen");
         lobbyScreen = root.Q<VisualElement>("lobbyScreen");
 
+        connectionIcon = root.Q<VisualElement>("connectionIcon");
+        connectButton = root.Q<Button>("connectButton");
+
         optionsController = GetComponent<OptionsMenuController>();
 
         createLobbyButton.clicked += () => OnCreateLobbyPressed?.Invoke();
@@ -49,6 +59,8 @@ public class MainMenuController : MonoBehaviour
 
         OnOptionsPressed += ShowOptions;
         optionsCloseButton.clicked += HideOptions;
+
+        connectButton.clicked += () => LobbyClient.instance.ConnectToServer();
 
         OnCreateLobbyPressed += () => loadingOverlay.RemoveFromClassList("hidden"); 
 
@@ -75,7 +87,29 @@ public class MainMenuController : MonoBehaviour
             mainScreen.AddToClassList("hidden");
             lobbyScreen.RemoveFromClassList("hidden");
         };
+
+        LobbyClient.instance.OnLobbyExited += () =>
+        {
+            mainScreen.RemoveFromClassList("hidden");
+            lobbyScreen.AddToClassList("hidden");
+            loadingOverlay.AddToClassList("hidden");
+        };
+
         OnCreateLobbyPressed += LobbyClient.instance.CreateLobby;
+    }
+
+    void Update()
+    {
+        if (LobbyClient.instance.client.IsConnectedTcp())
+        {
+            connectionIcon.style.backgroundImage = new StyleBackground(connectedIcon);
+            connectButton.AddToClassList("hidden");
+        }
+        else
+        {
+            connectionIcon.style.backgroundImage = new StyleBackground(disconnectedIcon);
+            connectButton.RemoveFromClassList("hidden");
+        }
     }
 
     private void ShowOptions()

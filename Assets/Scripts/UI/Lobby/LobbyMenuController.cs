@@ -11,6 +11,9 @@ public class LobbyMenuController : MonoBehaviour
     private Label[] playerPingLabel;
     private Label playerCountLabel;
 
+    private Button exitLobbyButton;
+    private Button startGameButton;
+
     private int playerCount = 0;
     private Dictionary<string, int> index_by_username = new Dictionary<string, int>();
 
@@ -24,17 +27,35 @@ public class LobbyMenuController : MonoBehaviour
         {
             playerNameLabel[i] = root.Q<Label>("playerNameLabel" + (i + 1));
             playerPingLabel[i] = root.Q<Label>("playerPingLabel" + (i + 1));
-
-            playerNameLabel[i].AddToClassList("hidden");
-            playerPingLabel[i].AddToClassList("hidden");
         }
         playerCountLabel = root.Q<Label>("playerCountLabel");
+
+        exitLobbyButton = root.Q<Button>("exitLobbyButton");
+        startGameButton = root.Q<Button>("startGameButton");
+        
+        ClearPlayers();
     }
 
     public void Start()
     {
+
+        startGameButton.clicked += LobbyClient.instance.StartGame;
+        exitLobbyButton.clicked += LobbyClient.instance.LeaveLobby;
+        exitLobbyButton.clicked += ClearPlayers;
+
         LobbyClient.instance.OnPlayerJoinLobby += OnPlayerJoin;
         LobbyClient.instance.OnPlayerLeaveLobby += OnPlayerLeave;
+    }
+
+    private void ClearPlayers()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            playerNameLabel[i].AddToClassList("hidden");
+            playerPingLabel[i].AddToClassList("hidden");
+        }
+        index_by_username.Clear();
+        playerCount = 0;
     }
 
     private void OnPlayerJoin(string username)
@@ -46,12 +67,18 @@ public class LobbyMenuController : MonoBehaviour
     private void OnPlayerLeave(string username)
     {
         int player_index = index_by_username[username];
+        List<string> toModify = new List<string>();
 
-        foreach (var pair in index_by_username) {
-            if (pair.Value > player_index) {
-                index_by_username[pair.Key] = pair.Value - 1;
-                UpdatePlayerName(pair.Key, pair.Value);
+        foreach (var pair in index_by_username)
+        {
+            if (pair.Value > player_index)
+            {
+                toModify.Add(pair.Key);
             }
+        }
+        foreach (string key in toModify)
+        {
+            UpdatePlayerName(key, --index_by_username[key]);
         }
 
         UpdatePlayerName("", --playerCount);

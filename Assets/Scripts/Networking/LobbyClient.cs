@@ -13,11 +13,12 @@ public class LobbyClient : MonoBehaviour
 
     // Networking
     private string connection_server_ip = "68.205.103.143";
-    BaseNetworkClient client;
+    public BaseNetworkClient client;
 
     public static LobbyClient instance;
 
     public event Action OnLobbyJoined;
+    public event Action OnLobbyExited;
 
     public event Action<string> OnPlayerJoinLobby;
     public event Action<string> OnPlayerLeaveLobby;
@@ -30,12 +31,13 @@ public class LobbyClient : MonoBehaviour
 
     void Start()
     {
+        player_username = "Player_" + UnityEngine.Random.Range(0, 10000000);
         ConnectToServer();
     }
 
-    private void ConnectToServer()
+    public void ConnectToServer()
     {
-        player_username = "Player_" + UnityEngine.Random.Range(0, 10000000);
+        Debug.Log("Connecting to server...");
         client = new BaseNetworkClient(connection_server_ip, 8080, 256, player_username);
         client.ConnectToServer(OnConnect);
     }
@@ -59,6 +61,14 @@ public class LobbyClient : MonoBehaviour
         message.action = 1;
         client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
     }
+    public unsafe void JoinPrivateLobby(string lobby_code)
+    {
+        racing_lobby_action_m message;
+        message.type = (ushort)message_t.racing_lobby_action;
+        message.action = 2;
+        Helpers.setStringForMessage(lobby_code, 6, message.lobby_code);
+        client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
+    }
 
     public unsafe void UpdateUsername(string new_username)
     {
@@ -76,7 +86,8 @@ public class LobbyClient : MonoBehaviour
         Debug.Log("LobbyClient Connected!");
     }
 
-    private unsafe void HandleLobbyUpdate(racing_lobby_update_m message) {
+    private unsafe void HandleLobbyUpdate(racing_lobby_update_m message)
+    {
         string other_player_username;
         switch (message.update)
         {
@@ -95,6 +106,7 @@ public class LobbyClient : MonoBehaviour
                 break;
             case 3: // Invalid lobby code
                 Debug.LogError("Invalid Lobby Code!");
+                OnLobbyExited.Invoke();
                 break;
             case 4: // Private lobby created
                 OnLobbyJoined.Invoke();
@@ -105,6 +117,16 @@ public class LobbyClient : MonoBehaviour
             case 5: // Private lobby Full
                 Debug.LogError("Lobby full!");
                 break;
+            case 6: // Private lobby joined
+                OnLobbyJoined.Invoke();
+                OnPlayerJoinLobby.Invoke(player_username);
+                break;
+            case 7: // Lobby exited sucessfully
+                OnLobbyExited.Invoke();
+                Debug.Log("Exited");
+
+                break;
+
         }
     }
 
@@ -113,7 +135,7 @@ public class LobbyClient : MonoBehaviour
         generic_m message;
         while (client.TryDequeueMessage(out message))
         {
-            switch(message.get_t())
+            switch (message.get_t())
             {
                 case message_t.connection_reply:
                     break;
@@ -128,5 +150,22 @@ public class LobbyClient : MonoBehaviour
     private void OnDestroy()
     {
         client.Disconnect();
+    }
+
+    public unsafe void LeaveLobby()
+    {
+        racing_lobby_action_m message;
+        message.type = (ushort)message_t.racing_lobby_action;
+        message.action = 3;
+        client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
+        OnPlayerLeaveLobby.Invoke(player_username);
+    }
+
+    public unsafe void StartGame()
+    {
+        racing_lobby_action_m message;
+        message.type = (ushort)message_t.racing_lobby_action;
+        message.action = 5;
+        client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
     }
 }

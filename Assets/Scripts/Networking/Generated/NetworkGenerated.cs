@@ -1,5 +1,6 @@
 
 using System;
+using System.Linq;
 using System.Runtime.InteropServices;
 using UnityEngine;
 
@@ -149,6 +150,13 @@ namespace Messages
                 s += (char)field[i];
             }
             return s;
+        }
+        public static void setStringForMessage(string s, int n, byte* arr)
+        {
+            for (int i = 0; i < n && i < s.Length; i++)
+            {
+                arr[i] = (byte)s[i];
+            }
         }
     }
 
