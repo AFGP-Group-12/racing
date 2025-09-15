@@ -53,7 +53,7 @@ public class MainMenuController : MonoBehaviour
 
         optionsController = GetComponent<OptionsMenuController>();
 
-        createLobbyButton.clicked += () => OnCreateLobbyPressed?.Invoke();
+        // createLobbyButton.clicked += () => OnCreateLobbyPressed?.Invoke();
         optionsButton.clicked += () => OnOptionsPressed?.Invoke();
         exitGameButton.clicked += () => OnExitGamePressed?.Invoke();
 
@@ -61,8 +61,6 @@ public class MainMenuController : MonoBehaviour
         optionsCloseButton.clicked += HideOptions;
 
         connectButton.clicked += () => LobbyClient.instance.ConnectToServer();
-
-        OnCreateLobbyPressed += () => loadingOverlay.RemoveFromClassList("hidden"); 
 
         optionsOverlay.RegisterCallback<ClickEvent>(evt =>
         {
@@ -86,16 +84,23 @@ public class MainMenuController : MonoBehaviour
         {
             mainScreen.AddToClassList("hidden");
             lobbyScreen.RemoveFromClassList("hidden");
+            loadingOverlay.AddToClassList("hidden");
         };
 
         LobbyClient.instance.OnLobbyExited += () =>
         {
             mainScreen.RemoveFromClassList("hidden");
             lobbyScreen.AddToClassList("hidden");
-            loadingOverlay.AddToClassList("hidden");
         };
 
-        OnCreateLobbyPressed += LobbyClient.instance.CreateLobby;
+        createLobbyButton.clicked += () =>
+        {
+            if (LobbyClient.instance.client.IsConnectedTcp())
+            {
+                LobbyClient.instance.CreateLobby();
+                loadingOverlay.RemoveFromClassList("hidden");
+            }
+        };
     }
 
     void Update()
