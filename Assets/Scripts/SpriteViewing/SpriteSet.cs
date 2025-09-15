@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public enum Direction { N, NE, E, SE, S, SW, W, NW, T, B }
-
 [CreateAssetMenu(fileName = "SpriteSet", menuName = "Scriptable Objects/SpriteSet")]
 public class SpriteSet : ScriptableObject
 {
+    public enum Direction { N, NE, E, SE, S, SW, W, NW, T, B }
+
     [System.Serializable]
     public class DirecitonalFrames
     {
