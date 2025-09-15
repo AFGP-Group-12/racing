@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -24,6 +25,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float horizontalInput;
     private float verticalInput;
+
+    private float normalHeight;
 
     Vector3 moveDirection;
 
@@ -70,6 +73,9 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Determines how strong the gravity will be while on the wall. Wallrunning disables unity's gravity and uses this instead")]
     [SerializeField] float maxGravityForce;
 
+    [SerializeField] float slideForce;
+    [SerializeField] float slideDuration;
+
     public float gravityForce;
 
     private bool canBoost = false;
@@ -113,7 +119,8 @@ public class PlayerMovement : MonoBehaviour
     private bool air;
     private bool dashing;
 
-    private Collider objectCollider;
+    public CapsuleCollider objectCollider;
+    
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     #endregion Variables
@@ -135,7 +142,6 @@ public class PlayerMovement : MonoBehaviour
         input.actions["Sprint"].canceled += OnSprintEnd;
 
         input.actions["Crouch"].started += OnSlide;
-        input.actions["Crouch"].canceled += OnSlideEnd;
 
         rb.freezeRotation = true;
 
@@ -245,6 +251,8 @@ public class PlayerMovement : MonoBehaviour
 
     void MovePlayer()
     {
+        if (sliding)
+            return;
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         if (isOnGround)
@@ -294,17 +302,6 @@ public class PlayerMovement : MonoBehaviour
         {
             acceleration = 0;
         }
-    }
-
-    void Slide()
-    {
-        objectCollider = GetComponentInChildren<Collider>();
-        if (objectCollider == null)
-        {
-            Debug.LogError("No Collider found on Player!");
-            return;
-        }
-        objectCollider.sharedMaterial.dynamicFriction = 30;
     }
 
     #endregion Basic Movement Functions
@@ -521,22 +518,40 @@ public class PlayerMovement : MonoBehaviour
             Invoke(nameof(JumpCooldown), jumpCooldown);
         }
     }
+    private System.Collections.IEnumerator SlideCoroutine()
+    {
+        // shrink collider
+        objectCollider = GetComponentInChildren<CapsuleCollider>();
+        objectCollider.height = 1.0f;
+
+        // add an impulse forward
+        Vector3 slideDirection = orientation.forward;
+        rb.AddForce(slideDirection * slideForce, ForceMode.VelocityChange);
+
+        // wait for duration
+        float elapsed = 0f;
+        while (elapsed < slideDuration)
+        {
+            elapsed += Time.deltaTime;
+
+            // optional: gradually reduce drag or speed here
+            yield return null; // wait next frame
+        }
+
+        // restore normal height
+        objectCollider.height = normalHeight;
+
+        // stop the slide coroutine
+        sliding = false;
+    }
     private void OnSlide(InputAction.CallbackContext context)
     {
         if (isOnGround && !sliding)
         {
             sliding = true;
-            Slide();
+            StartCoroutine(SlideCoroutine());
             isKeepingMomentum = true;
         }
-    }
-
-    private void OnSlideEnd(InputAction.CallbackContext context)
-    {
-        sliding = false;
-        objectCollider = GetComponentInChildren<Collider>();
-        Debug.Log("Slide Ended");
-        objectCollider.sharedMaterial.dynamicFriction = 0;
     }
 
     private void OnSprint(InputAction.CallbackContext context)
