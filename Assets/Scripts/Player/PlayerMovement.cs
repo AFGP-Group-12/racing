@@ -73,8 +73,12 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Determines how strong the gravity will be while on the wall. Wallrunning disables unity's gravity and uses this instead")]
     [SerializeField] float maxGravityForce;
 
+    [Header("Slide")]
     [SerializeField] float slideForce;
     [SerializeField] float slideDuration;
+    [SerializeField] float slideCooldown;
+
+    private bool slideReady;
 
     public float gravityForce;
 
@@ -142,10 +146,12 @@ public class PlayerMovement : MonoBehaviour
         input.actions["Sprint"].canceled += OnSprintEnd;
 
         input.actions["Crouch"].started += OnSlide;
+        input.actions["Crouch"].canceled += OnSlideEnd;
 
         rb.freezeRotation = true;
 
         jumpReady = true;
+        slideReady = true;
 
         moveSpeed = basicSpeed;
 
@@ -454,9 +460,14 @@ public class PlayerMovement : MonoBehaviour
         jumpReady = true;
     }
 
+    void SlideCooldown()
+    {
+        slideReady = true;
+    }
+
     #endregion Jump Functions
 
-    
+
     #region Input Functions
     void OnMove(InputAction.CallbackContext context)
     {
@@ -526,13 +537,18 @@ public class PlayerMovement : MonoBehaviour
 
         // add an impulse forward
         Vector3 slideDirection = orientation.forward;
-        rb.AddForce(slideDirection * slideForce, ForceMode.VelocityChange);
 
         // wait for duration
         float elapsed = 0f;
+        Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        float tempSlideForce = slideForce * (curVelocity.magnitude/18);
+
         while (elapsed < slideDuration)
         {
             elapsed += Time.deltaTime;
+            tempSlideForce -= tempSlideForce * (Time.deltaTime / slideDuration);
+            rb.AddForce(slideDirection * (tempSlideForce), ForceMode.VelocityChange);
+            //SpeedControl();
 
             // optional: gradually reduce drag or speed here
             yield return null; // wait next frame
@@ -542,16 +558,28 @@ public class PlayerMovement : MonoBehaviour
         objectCollider.height = normalHeight;
 
         // stop the slide coroutine
-        sliding = false;
     }
     private void OnSlide(InputAction.CallbackContext context)
     {
-        if (isOnGround && !sliding)
+        Debug.Log("Slide Started");
+        if (isOnGround && !sliding && slideReady)
         {
             sliding = true;
+            slideReady = false;
             StartCoroutine(SlideCoroutine());
             isKeepingMomentum = true;
         }
+    }
+
+    private void OnSlideEnd(InputAction.CallbackContext context)
+    {
+        Debug.Log("Slide Ended");
+        if (sliding)
+        {
+            StopCoroutine(SlideCoroutine());
+            sliding = false;
+        }
+        Invoke(nameof(SlideCooldown), slideCooldown);
     }
 
     private void OnSprint(InputAction.CallbackContext context)
