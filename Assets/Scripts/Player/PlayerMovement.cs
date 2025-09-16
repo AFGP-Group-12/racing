@@ -70,7 +70,7 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Determines how strong the gravity will be while on the wall. Wallrunning disables unity's gravity and uses this instead")]
     [SerializeField] float maxGravityForce;
 
-    public float gravityForce;
+    private float gravityForce;
 
     private bool canBoost = false;
 
@@ -442,7 +442,7 @@ public class PlayerMovement : MonoBehaviour
 
     #endregion Jump Functions
 
-    
+
     #region Input Functions
     void OnMove(InputAction.CallbackContext context)
     {
