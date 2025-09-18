@@ -75,7 +75,7 @@ public class PlayerAbilityManager : MonoBehaviour
 
     public void StartAbility1()
     {
-        if (abilityList[0] == emptyAbility)
+        if (abilityList[0].abilityIndex == -1)
         {
             return;
         }
@@ -84,7 +84,7 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     public void EndAbility1()
     {
-        if (abilityList[0] == emptyAbility)
+        if (abilityList[0].abilityIndex == -1)
         {
             return;
         }
@@ -92,7 +92,7 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     public void StartAbility2()
     {
-        if (abilityList[1] == emptyAbility)
+        if (abilityList[1].abilityIndex == -1)
         {
             return;
         }
@@ -101,7 +101,7 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     public void EndAbility2()
     {
-        if (abilityList[1] == emptyAbility)
+        if (abilityList[1].abilityIndex == -1)
         {
             return;
         }
@@ -109,7 +109,7 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     public void StartAbility3()
     {
-        if (abilityList[2] == emptyAbility)
+        if (abilityList[2].abilityIndex == -1)
         {
             return;
         }
@@ -118,7 +118,7 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     public void EndAbility3()
     {
-        if (abilityList[2] == emptyAbility)
+        if (abilityList[2].abilityIndex == -1)
         {
             return;
         }
