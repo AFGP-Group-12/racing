@@ -9,10 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b769d9abc0163724981962a5384d352e, type: 3}
+  m_Script: {fileID: 11500000, guid: 4c8f3d5a48b6fa447a9a50b4bbafc87f, type: 3}
   m_Name: Dash
   m_EditorClassIdentifier: 
   abilityName: Dash
-  image: {fileID: 0}
-  rarity: 2
-  functionName: UseDash()
+  icon: {fileID: 21300000, guid: ba093a819c1af2c4dad8d95e4443c79a, type: 3}
+  cooldown: 1
