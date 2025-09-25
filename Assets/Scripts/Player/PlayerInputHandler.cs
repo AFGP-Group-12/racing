@@ -1,3 +1,4 @@
+using Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -12,6 +13,8 @@ public class PlayerInputHandler : MonoBehaviour
     private PlayerAbilityManager abilityManager;
 
     public Ability debugDash; // debugging
+
+    public bool debugGiveDash = false;
 
     public float horizontalInput { get; private set; }
 
@@ -43,8 +46,15 @@ public class PlayerInputHandler : MonoBehaviour
 
         input.actions["Ability3"].started += OnAbility3;
         input.actions["Ability3"].canceled += OnAbility3End;
+    }
 
-        abilityManager.debugAdd(debugDash);
+    void Update()
+    {
+        if (debugGiveDash)
+        {
+            abilityManager.debugAdd(debugDash);
+            debugGiveDash = false;
+        }
     }
 
     #region Input Functions

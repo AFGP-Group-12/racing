@@ -3,6 +3,10 @@ using UnityEngine;
 [CreateAssetMenu(fileName = "Abilities/EmptyAbility")]
 public class EmptyAbility : Ability
 {
+    public override void OnInstantiate()
+    {
+        // Do nothing
+    }
 
     public override void Activate(PlayerContext ctx, int abilityIndex)
     {

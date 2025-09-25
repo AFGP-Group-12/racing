@@ -6,15 +6,16 @@ using UnityEngine;
 
 public abstract class Ability : ScriptableObject
 {
-    public string abilityName;
-    public Sprite icon;
-    public float cooldown = 1f;
+    public string abilityName; // name of the ability
+    public Sprite icon; // icon for UI
+    public float cooldown = 1f; // Set to zero if it has no cooldown
     public float duration = 1f; // Set to zero if it has an infinite duration
-    public int abilityIndex = -1;
-    public bool canAbility = true;
+    public int abilityIndex = -1; // leave as -1 until assigned to player
+    public bool canAbility = true; // whether the ability can be used or not (on cooldown or not)
 
+    public abstract void OnInstantiate();
 
-    public abstract void Activate(PlayerContext ctx, int abilityIndex);
+    public abstract void Activate(PlayerContext ctx, int abilityIndex); 
 
     public abstract void DeActivate(PlayerContext ctx);
 

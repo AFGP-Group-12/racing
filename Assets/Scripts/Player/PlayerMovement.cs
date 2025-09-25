@@ -50,8 +50,8 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Ground Check")]
     [SerializeField] LayerMask groundLayer;
-    [SerializeField] Transform orientation;
     [SerializeField] float playerHeight = 1.96f;
+    private Transform orientation;
 
     [Header("Wall Running")]
     [SerializeField] LayerMask wallLayer;
@@ -121,6 +121,8 @@ public class PlayerMovement : MonoBehaviour
         moveSpeed = basicSpeed;
 
         isAccelerating = false;
+
+        orientation = contextScript.orintation;
 
     }
 

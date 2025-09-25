@@ -10,8 +10,8 @@ public class PlayerContext : MonoBehaviour
     public PlayerMovement movement { get; private set; }
     public PlayerScreenVisuals screenVisuals { get; private set; }
     public PlayerAbilityManager abilityManager { get; private set; }
-
-    public Vector3 playerAim { get; private set; }
+    public Transform orintation;
+    public Transform cameraTransform { get; private set; }
 
     void Awake()
     {
@@ -22,5 +22,6 @@ public class PlayerContext : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
         screenVisuals = GetComponent<PlayerScreenVisuals>();
         abilityManager = GetComponent<PlayerAbilityManager>();
+        cameraTransform = Camera.main.transform; // Change this to a regular public if something goes wrong here
     }
 }

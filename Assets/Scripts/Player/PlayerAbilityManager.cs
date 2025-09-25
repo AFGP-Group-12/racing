@@ -8,9 +8,9 @@ public class PlayerAbilityManager : MonoBehaviour
     #region Variables
     private PlayerContext contextScript;
     private PlayerInput input;
-    private List<Ability> abilityList;
+    public List<Ability> abilityList;
 
-    public int abilityIndex = 0;
+    public int abilityIndex = 1;
     private Ability emptyAbility;
 
     #endregion Variables
@@ -27,7 +27,10 @@ public class PlayerAbilityManager : MonoBehaviour
 
         emptyAbility = ScriptableObject.CreateInstance<EmptyAbility>();
 
-        abilityList = new List<Ability> { emptyAbility, emptyAbility, emptyAbility };
+        abilityList = new List<Ability> { };
+        abilityList.Add(emptyAbility);
+        abilityList.Add(emptyAbility);
+        abilityList.Add(emptyAbility);
     }
 
     // Update is called once per frame
@@ -50,9 +53,22 @@ public class PlayerAbilityManager : MonoBehaviour
 
     void AddAbility(Ability ability)
     {
+        if (abilityList == null || abilityList.Count == 0)
+        {
+            Debug.LogWarning("abilityList not initialized");
+            return;
+        }
+        if (ability == null)
+        {
+            Debug.LogWarning("ability is null");
+            return;
+        }
+
         if (abilityList[abilityIndex].abilityIndex == -1)
         {
             abilityList[abilityIndex] = ability;
+            abilityList[abilityIndex].abilityIndex = abilityIndex;
+            abilityList[abilityIndex].OnInstantiate();
             abilityIndex += 1;
         }
         else
