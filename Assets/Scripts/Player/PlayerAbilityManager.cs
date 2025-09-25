@@ -13,6 +13,10 @@ public class PlayerAbilityManager : MonoBehaviour
     public int abilityIndex = 1;
     private Ability emptyAbility;
 
+    private bool abilityInUse1 = false;
+    private bool abilityInUse2 = false;
+    private bool abilityInUse3 = false;
+
     #endregion Variables
 
 
@@ -37,6 +41,7 @@ public class PlayerAbilityManager : MonoBehaviour
     void Update()
     {
         IndexCheck();
+        AbilityInUseUpdate();
 
     }
     #endregion MonoBehaviour
@@ -48,6 +53,26 @@ public class PlayerAbilityManager : MonoBehaviour
         if (abilityIndex > 2)
         {
             abilityIndex = 0;
+        }
+    }
+
+    void AbilityInUseUpdate()
+    {
+        abilityInUse1 = abilityList[0].usingAbility;
+        abilityInUse2 = abilityList[1].usingAbility;
+        abilityInUse3 = abilityList[2].usingAbility;
+
+        if (abilityInUse1)
+        {
+            abilityList[0].AbilityInUse(contextScript);
+        }
+        if (abilityInUse2)
+        {
+            abilityList[1].AbilityInUse(contextScript);
+        }
+        if (abilityInUse3)
+        {
+            abilityList[2].AbilityInUse(contextScript);
         }
     }
 
@@ -91,7 +116,7 @@ public class PlayerAbilityManager : MonoBehaviour
 
     public void StartAbility1()
     {
-        if (abilityList[0].abilityIndex == -1)
+        if (abilityList[0].abilityIndex == -1 || abilityInUse2 || abilityInUse3)
         {
             return;
         }
@@ -100,7 +125,7 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     public void EndAbility1()
     {
-        if (abilityList[0].abilityIndex == -1)
+        if (abilityList[0].abilityIndex == -1 )
         {
             return;
         }
@@ -108,7 +133,7 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     public void StartAbility2()
     {
-        if (abilityList[1].abilityIndex == -1)
+        if (abilityList[1].abilityIndex == -1 || abilityInUse1 || abilityInUse3)
         {
             return;
         }
@@ -125,7 +150,7 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     public void StartAbility3()
     {
-        if (abilityList[2].abilityIndex == -1)
+        if (abilityList[2].abilityIndex == -1 || abilityInUse1 || abilityInUse2)
         {
             return;
         }

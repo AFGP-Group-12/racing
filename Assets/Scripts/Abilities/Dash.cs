@@ -10,6 +10,7 @@ public class Dash : Ability
     private Transform cameraTransform;
     public float dashForce = 10f;
     public float yDamping = 3f;
+    
 
     public override void OnInstantiate()
     {
@@ -28,24 +29,35 @@ public class Dash : Ability
 
         if (canAbility)
         {
-            Debug.Log("Activating Dash");
             stateHandler.isDashing = true;
             rb.useGravity = false;
-            rb.angularVelocity= Vector3.zero;
-            rb.linearVelocity = Vector3.zero;
-            Debug.Log(ctx.cameraTransform.forward * dashForce);
 
-            rb.AddForce(cameraTransform.forward.x * dashForce,cameraTransform.forward.y * dashForce / yDamping,cameraTransform.forward.z * dashForce,ForceMode.Impulse);
+            rb.angularVelocity = Vector3.zero;
+            rb.linearVelocity = Vector3.zero;
+
             abilityManager.StartAbilityDuration(abilityIndex, duration);
+            usingAbility = true;
             canAbility = false;
+            
         }
+    }
+    public override void AbilityInUse(PlayerContext ctx)
+    {
+        // cameraTransform = ctx.cameraTransform;
+
+        Debug.Log("Activating Dash");
+        Debug.Log(cameraTransform.forward * dashForce);
+        Vector3 forceDirection = new Vector3(cameraTransform.forward.x * dashForce, 0, cameraTransform.forward.z * dashForce);
+
+        rb.AddForce(forceDirection, ForceMode.Impulse);
+        abilityManager.StartAbilityDuration(abilityIndex, duration);
     }
     public override void AbilityEnd()
     {
-
         rb.useGravity = true;
+        usingAbility = false;
         stateHandler.isDashing = false;
-        
+
         abilityManager.StartAbilityCooldown(abilityIndex, cooldown);
     }
     public override void CooldownEnd()

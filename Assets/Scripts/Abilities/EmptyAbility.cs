@@ -27,4 +27,9 @@ public class EmptyAbility : Ability
     {
         // Do nothing
     }
+
+    public override void AbilityInUse(PlayerContext ctx)
+    {
+        // Do nothing
+    }
 }

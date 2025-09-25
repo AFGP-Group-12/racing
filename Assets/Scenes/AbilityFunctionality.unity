@@ -245,7 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 10102f81699aec04fa95555f9d68c51c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ability: {fileID: 0}
+  ability: {fileID: 11400000, guid: 00f82068022fed245b0f0a0b48724180, type: 2}
 --- !u!1 &266536570
 GameObject:
   m_ObjectHideFlags: 0
@@ -1978,6 +1978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1eda22e76cd5cb4cade8ce5ca8c75b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  orintation: {fileID: 24258137}
 --- !u!114 &1410837937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2003,6 +2004,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   debugDash: {fileID: 11400000, guid: 00f82068022fed245b0f0a0b48724180, type: 2}
+  debugGiveDash: 0
 --- !u!114 &1410837940
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2015,6 +2017,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8687dad5cc2296649b87e2acc91d761f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  abilityList: []
   abilityIndex: 0
 --- !u!1 &1514269266
 GameObject:
