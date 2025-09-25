@@ -300,6 +300,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 101107473}
+  connectedIcon: {fileID: 0}
+  disconnectedIcon: {fileID: 0}
 --- !u!114 &101107473
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -391,6 +393,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c43246d6a7cf95744a782f6ae155864a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerUpdatesPerSecond: 5
+  doPrediction: 0
+  otherPlayerPrefab: {fileID: 2670139927068850257, guid: 223b20998810d274e9ab20caa0fcf0bd, type: 3}
 --- !u!1 &589029238
 GameObject:
   m_ObjectHideFlags: 0

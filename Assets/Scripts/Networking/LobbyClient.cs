@@ -10,7 +10,7 @@ public class LobbyClient : MonoBehaviour
     private Dictionary<int, string> username_by_id = new Dictionary<int, string>();
 
     // Networking
-    private string connection_server_ip = "68.205.103.143";
+    private string connection_server_ip = "69.62.71.12";
     public BaseNetworkClient client;
 
     public static LobbyClient instance;
@@ -84,6 +84,8 @@ public class LobbyClient : MonoBehaviour
     {
         player_username = new_username;
         // Send an update username message.
+
+        client.changeUsername(player_username);
 
         racing_lobby_action_m message;
         message.type = (ushort)message_t.racing_lobby_action;
@@ -159,6 +161,7 @@ public class LobbyClient : MonoBehaviour
                     HandlePing();
                     break;
                 default:
+                    Debug.Log("Got Unexpected: " + message.get_t());
                     break;
             }
         }
@@ -203,7 +206,9 @@ public class LobbyClient : MonoBehaviour
     }
     private void OnDestroy()
     {
-        client.Disconnect();
+        if (client != null)
+            client.Disconnect();
+        
     }
 
     public unsafe void LeaveLobby()

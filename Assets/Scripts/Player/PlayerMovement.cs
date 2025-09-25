@@ -139,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
 
         isAccelerating = false;
 
+        Time.timeScale = 1;
     }
 
     void Update()
