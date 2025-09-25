@@ -77,6 +77,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float slideForce;
     [SerializeField] float slideDuration;
     [SerializeField] float slideCooldown;
+    private float slideTimer = 0f;
+
 
     private bool slideReady;
 
@@ -186,7 +188,12 @@ public class PlayerMovement : MonoBehaviour
         // Wall Running
         WallRunCheck();
 
-        
+        if (slideTimer > 0f)
+        {
+            slideTimer -= Time.deltaTime;
+        }
+
+
     }
 
     void FixedUpdate()
@@ -531,45 +538,77 @@ public class PlayerMovement : MonoBehaviour
     }
     private System.Collections.IEnumerator SlideCoroutine()
     {
-        // shrink collider
         objectCollider = GetComponentInChildren<CapsuleCollider>();
         objectCollider.height = 1.0f;
 
-        // add an impulse forward
         Vector3 slideDirection = orientation.forward;
 
-        // wait for duration
         float elapsed = 0f;
         Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-        float tempSlideForce = slideForce * (curVelocity.magnitude/18);
+        float tempSlideForce = slideForce * (curVelocity.magnitude / 18);
+
+        float slopeBoost = 0f;
 
         while (elapsed < slideDuration)
         {
             elapsed += Time.deltaTime;
             tempSlideForce -= tempSlideForce * (Time.deltaTime / slideDuration);
-            rb.AddForce(slideDirection * (tempSlideForce), ForceMode.VelocityChange);
-            //SpeedControl();
 
-            // optional: gradually reduce drag or speed here
-            yield return null; // wait next frame
+            if (isOnGround)
+            {
+                RaycastHit slopeHit;
+                if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.2f, groundLayer))
+                {
+                    // Project slide direction onto slope
+                    Vector3 slopeDir = Vector3.ProjectOnPlane(slideDirection, slopeHit.normal).normalized;
+
+                    // Determine slope factor (positive = downhill, negative = uphill)
+                    float slopeFactor = -Vector3.Dot(slopeHit.normal, Vector3.up);
+
+                    // Gradually apply slope-based boost
+                    float targetBoost = tempSlideForce * Mathf.Max(slopeFactor, 0f); // only boost downhill
+                    slopeBoost = Mathf.Lerp(slopeBoost, targetBoost, Time.deltaTime * 3f);
+
+                    // Prevent upward velocity when going uphill
+                    if (slopeFactor < 0f)
+                    {
+                        // flatten direction on uphill
+                        slopeDir = new Vector3(slopeDir.x, 0f, slopeDir.z).normalized;
+                        slopeBoost = 0f; // no uphill acceleration
+                    }
+
+                    rb.AddForce(slopeDir * (tempSlideForce + slopeBoost), ForceMode.VelocityChange);
+                    slideDirection = slopeDir;
+                }
+            }
+            else
+            {
+                // Airborne slide
+                rb.AddForce(slideDirection * tempSlideForce, ForceMode.VelocityChange);
+                slopeBoost = 0f;
+            }
+
+            yield return null;
         }
 
-        // restore normal height
         objectCollider.height = normalHeight;
-
-        // stop the slide coroutine
     }
+
+
     private void OnSlide(InputAction.CallbackContext context)
     {
-        Debug.Log("Slide Started");
-        if (isOnGround && !sliding && slideReady)
+        if (context.started) // button pressed
         {
-            sliding = true;
-            slideReady = false;
-            StartCoroutine(SlideCoroutine());
-            isKeepingMomentum = true;
+            if (isOnGround && !sliding && slideTimer <= 0f)
+            {
+                sliding = true;
+                slideTimer = slideCooldown; // reset cooldown
+                StartCoroutine(SlideCoroutine());
+                isKeepingMomentum = true;
+            }
         }
     }
+
 
     private void OnSlideEnd(InputAction.CallbackContext context)
     {

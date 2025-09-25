@@ -1955,11 +1955,15 @@ PrefabInstance:
       objectReference: {fileID: 1210922622}
     - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: slideForce
-      value: 100
+      value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: slideCooldown
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: slideDuration
-      value: 3
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5386568211178942212, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: m_LocalPosition.x
