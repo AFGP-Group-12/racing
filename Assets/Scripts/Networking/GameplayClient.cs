@@ -9,23 +9,27 @@ using UnityEngine.SceneManagement;
 public class GameplayClient : MonoBehaviour
 {
     // Parameters
-    public float playerUpdatesPerSecond = 5;
+    public float playerUpdatesPerSecond = 10;
     public bool doPrediction = false;
 
     // Unity
     public static GameplayClient instance;
     public static GameObject player = null;
+    public static GameObject mainCamera = null;
     public GameObject otherPlayerPrefab;
     private Dictionary<int, PlayerData> playerById;
 
     // Networking
     private Vector3 MaxWorldBounds = new Vector3(100, 100, 100);
     public BaseNetworkClient client = null;
+    bool hasReceivedConnectionReply = false;
 
     public void Awake()
     {
         instance = this;
         DontDestroyOnLoad(this.gameObject);
+
+        Application.runInBackground = true;
     }
 
     public void Start()
@@ -59,6 +63,7 @@ public class GameplayClient : MonoBehaviour
             switch (message.get_t())
             {
                 case message_t.connection_reply:
+                    hasReceivedConnectionReply = true;
                     break;
                 case message_t.movement_reply:
                     HandleRecievedPlayerMovement(message.movement_reply);
@@ -72,6 +77,8 @@ public class GameplayClient : MonoBehaviour
                     break;
             }
         }
+
+        Physics.SyncTransforms();
 
         // update players positions
         foreach (PlayerData p in playerById.Values)
@@ -97,7 +104,10 @@ public class GameplayClient : MonoBehaviour
         }
         Debug.Log("Scene Loaded");
 
+        yield return new WaitForSeconds(0.1f);
+
         player = GameObject.Find("Player");
+        mainCamera = GameObject.Find("Main Camera");
 
         player.SetActive(false);
 
@@ -110,11 +120,16 @@ public class GameplayClient : MonoBehaviour
 
 private IEnumerator SendPeriodicMessageCoroutine()
     {
+        while (!hasReceivedConnectionReply)
+        {
+            yield return new WaitForSeconds(0.05f);
+        }
+
         client.BeginUdp(OnConnect);
 
         while (!client.IsConnectedUdp())
         {
-            yield return new WaitForSeconds(0.1f);
+            yield return new WaitForSeconds(0.05f);
         }
 
 
@@ -138,7 +153,7 @@ private IEnumerator SendPeriodicMessageCoroutine()
         m.type = (UInt16)message_t.movement;
         Helpers.fillPosition(transform.position, MaxWorldBounds, out m.position);
         Helpers.fillPosition(new Vector3(0,0,0), MaxWorldBounds, out m.velocity);
-        Helpers.fillRotation(transform.rotation.eulerAngles.y, out m.rotation);
+        if (mainCamera != null) Helpers.fillRotation(mainCamera.transform.rotation.eulerAngles.y, out m.rotation);
         client.SendDataUdp(m.bytes, movement_m.size);
     }
     private unsafe void HandleRecievedPlayerMovement(movement_m_reply message)

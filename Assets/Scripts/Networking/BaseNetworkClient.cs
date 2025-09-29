@@ -93,8 +93,6 @@ public class BaseNetworkClient
         SendDataTcp(m.bytes, initiate_udp_m.size);
         
         tryingToConnectUdp = true;
-
-        readAgainUdp();
     }
 
     public unsafe void SendDataTcp(byte* data, int len)
@@ -220,6 +218,7 @@ public class BaseNetworkClient
             connectedUdp = true;
             tryingToConnectUdp = false;
             if (onConnectUdpUserCallback != null) onConnectUdpUserCallback();
+            readAgainUdp();
         } catch (Exception e)
         {
             Debug.LogError($"{e.Message}{e.StackTrace}");
