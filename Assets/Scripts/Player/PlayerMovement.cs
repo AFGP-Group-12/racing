@@ -77,6 +77,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float slideForce;
     [SerializeField] float slideDuration;
     [SerializeField] float slideCooldown;
+    [SerializeField] Camera playerCamera;
     private float slideTimer = 0f;
 
 
@@ -126,7 +127,7 @@ public class PlayerMovement : MonoBehaviour
     private bool dashing;
 
     public CapsuleCollider objectCollider;
-    
+
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     #endregion Variables
@@ -549,7 +550,11 @@ public class PlayerMovement : MonoBehaviour
 
         float slopeBoost = 0f;
 
-        while (elapsed < slideDuration)
+        float startZ = playerCamera.transform.localEulerAngles.z;
+        float tiltAngle = 15f; // how much to tilt
+
+
+        while (elapsed < slideDuration && curVelocity.magnitude != 0)
         {
             elapsed += Time.deltaTime;
             tempSlideForce -= tempSlideForce * (Time.deltaTime / slideDuration);
@@ -562,23 +567,24 @@ public class PlayerMovement : MonoBehaviour
                     // Project slide direction onto slope
                     Vector3 slopeDir = Vector3.ProjectOnPlane(slideDirection, slopeHit.normal).normalized;
 
-                    // Determine slope factor (positive = downhill, negative = uphill)
                     float slopeFactor = -Vector3.Dot(slopeHit.normal, Vector3.up);
-
-                    // Gradually apply slope-based boost
-                    float targetBoost = tempSlideForce * Mathf.Max(slopeFactor, 0f); // only boost downhill
+                    float targetBoost = tempSlideForce * Mathf.Max(slopeFactor, 0f);
                     slopeBoost = Mathf.Lerp(slopeBoost, targetBoost, Time.deltaTime * 3f);
 
-                    // Prevent upward velocity when going uphill
                     if (slopeFactor < 0f)
                     {
-                        // flatten direction on uphill
                         slopeDir = new Vector3(slopeDir.x, 0f, slopeDir.z).normalized;
-                        slopeBoost = 0f; // no uphill acceleration
+                        slopeBoost = 0f;
                     }
 
                     rb.AddForce(slopeDir * (tempSlideForce + slopeBoost), ForceMode.VelocityChange);
                     slideDirection = slopeDir;
+
+                    float progress = Mathf.Clamp01(elapsed / (slideDuration / 2f));
+                    float targetZ = Mathf.LerpAngle(startZ, tiltAngle, progress);
+                    Vector3 euler = playerCamera.transform.localEulerAngles;
+                    euler.z = targetZ;
+                    playerCamera.transform.localEulerAngles = euler;
                 }
             }
             else
@@ -588,9 +594,14 @@ public class PlayerMovement : MonoBehaviour
                 slopeBoost = 0f;
             }
 
+
             yield return null;
         }
 
+        Vector3 finalEuler = playerCamera.transform.localEulerAngles;
+        finalEuler.z = startZ;
+        
+        playerCamera.transform.localEulerAngles = finalEuler;
         objectCollider.height = normalHeight;
     }
 
