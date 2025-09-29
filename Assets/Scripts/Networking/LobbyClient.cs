@@ -10,7 +10,9 @@ public class LobbyClient : MonoBehaviour
     private Dictionary<int, string> username_by_id = new Dictionary<int, string>();
 
     // Networking
-    private string connection_server_ip = "69.62.71.12";
+    private bool is_local = false;
+    private string connection_server_ip = "68.205.103.143";// "69.62.71.12";
+    private string local_connection_server_ip = "192.168.0.201";
     public BaseNetworkClient client;
 
     public static LobbyClient instance;
@@ -48,7 +50,7 @@ public class LobbyClient : MonoBehaviour
     public void ConnectToServer()
     {
         Debug.Log("Connecting to server...");
-        client = new BaseNetworkClient(connection_server_ip, 8080, 256, player_username);
+        client = new BaseNetworkClient(is_local ? local_connection_server_ip : connection_server_ip, 8080, 256, player_username);
         client.ConnectToServer(OnConnect);
     }
 
