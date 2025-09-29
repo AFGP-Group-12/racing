@@ -16,7 +16,7 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: ba093a819c1af2c4dad8d95e4443c79a, type: 3}
   cooldown: 0.2
   duration: 0.5
-  abilityIndex: 0
+  abilityIndex: -1
   canAbility: 1
   usingAbility: 0
   dashForce: 5

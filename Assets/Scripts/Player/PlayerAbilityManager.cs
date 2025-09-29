@@ -31,10 +31,12 @@ public class PlayerAbilityManager : MonoBehaviour
 
         emptyAbility = ScriptableObject.CreateInstance<EmptyAbility>();
 
-        abilityList = new List<Ability> { };
-        abilityList.Add(emptyAbility);
-        abilityList.Add(emptyAbility);
-        abilityList.Add(emptyAbility);
+        abilityList = new List<Ability>
+        {
+            emptyAbility,
+            emptyAbility,
+            emptyAbility
+        };
     }
 
     // Update is called once per frame
