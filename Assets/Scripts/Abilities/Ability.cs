@@ -6,6 +6,7 @@ using UnityEngine;
 
 public abstract class Ability : ScriptableObject
 {
+    [Header("General Ability Info")]
     public string abilityName; // name of the ability
     public Sprite icon; // icon for UI
     public float cooldown = 1f; // Set to zero if it has no cooldown
