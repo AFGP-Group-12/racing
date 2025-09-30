@@ -10,11 +10,16 @@ public class PlayerStateHandler : MonoBehaviour
     public bool isWallrunning { get; set; }
     public bool isSliding { get; set; }
     public bool isDashing { get; set; }
+    public bool isGrappling{ get; set; }
     public bool isOnGround { get; set; }
 
     #region State Handler
     void Update()
     {
+        if (isGrappling)
+        {
+            state = MovementState.grappleing;
+        }
         if (isWallrunning)
         {
             state = MovementState.wallrunning;

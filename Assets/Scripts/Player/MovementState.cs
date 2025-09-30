@@ -8,5 +8,6 @@ public enum MovementState
     sliding,
     air,
     dashing,
+    grappleing,
     idle
 }
