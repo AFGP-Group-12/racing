@@ -12,14 +12,36 @@ public class GrappleStationary : Ability
 
     [Header("Grapple Info")]
     public float grappleSpeed = 5f;
+    public float maxGrappleDistance = 10f;
+    public LayerMask grappleSurface;
+
+    public Vector3 grappleLocation;
+    private Ray ray;
 
     public override void OnInstantiate()
     {
-
+        canAbility = true;
     }
     public override void Activate(PlayerContext ctx, int abilityIndex)
     {
-        
+        rb = ctx.rb;
+        abilityManager = ctx.abilityManager;
+        cameraTransform = ctx.cameraTransform;
+
+        if (canAbility)
+        {
+            canAbility = false;
+
+            ray = new Ray(cameraTransform.position, cameraTransform.forward);
+            if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance))
+            {
+                grappleLocation = hit.point;
+                usingAbility = true;
+            }
+
+            abilityManager.StartAbilityDuration(abilityIndex, duration);
+        }
+
     }
 
     public override void AbilityInUse(PlayerContext ctx)
@@ -29,17 +51,17 @@ public class GrappleStationary : Ability
 
     public override void AbilityEnd()
     {
-        
+        abilityManager.StartAbilityCooldown(abilityIndex, cooldown);
     }
 
     public override void DeActivate(PlayerContext ctx)
     {
-        
+        abilityManager.StartAbilityCooldown(abilityIndex, cooldown);
     }
 
     public override void CooldownEnd()
     {
-        
+        canAbility = true;
     }
 
 

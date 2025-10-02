@@ -6,6 +6,10 @@ public class AbilityPickup : MonoBehaviour
 
     public Ability GetAbility()
     {
-        return ability;
+        return ability; // This if for debugging purposes
+
+
+        // Ability instanitatedAbility = Instantiate(ability);
+        // return instanitatedAbility;
     }
 }

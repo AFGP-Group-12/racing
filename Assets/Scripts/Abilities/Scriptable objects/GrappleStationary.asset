@@ -9,17 +9,19 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4c8f3d5a48b6fa447a9a50b4bbafc87f, type: 3}
-  m_Name: Dash
+  m_Script: {fileID: 11500000, guid: a34a1359ee991bb44905b76de7205911, type: 3}
+  m_Name: GrappleStationary
   m_EditorClassIdentifier: 
-  abilityName: Dash
+  abilityName: GrappleToObject
   icon: {fileID: 21300000, guid: ba093a819c1af2c4dad8d95e4443c79a, type: 3}
-  cooldown: 0.2
-  duration: 0.5
-  abilityIndex: 0
+  cooldown: 1
+  duration: 1
+  abilityIndex: 1
   canAbility: 1
-  usingAbility: 0
-  dashForce: 5
-  dashForceY: 6
-  dashInnerDeadzone: 0.2
-  dashOuterDeadzone: 0.7
+  usingAbility: 1
+  grappleSpeed: 5
+  maxGrappleDistance: 10
+  grappleSurface:
+    serializedVersion: 2
+    m_Bits: 256
+  grappleLocation: {x: -12.606506, y: 10.721395, z: 19.130001}
