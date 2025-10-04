@@ -551,7 +551,7 @@ public class PlayerMovement : MonoBehaviour
         float slopeBoost = 0f;
 
         float startZ = playerCamera.transform.localEulerAngles.z;
-        float tiltAngle = 15f; // how much to tilt
+        float tiltAngle = 6f;
 
 
         while (elapsed < slideDuration && curVelocity.magnitude != 0)
@@ -564,7 +564,6 @@ public class PlayerMovement : MonoBehaviour
                 RaycastHit slopeHit;
                 if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.2f, groundLayer))
                 {
-                    // Project slide direction onto slope
                     Vector3 slopeDir = Vector3.ProjectOnPlane(slideDirection, slopeHit.normal).normalized;
 
                     float slopeFactor = -Vector3.Dot(slopeHit.normal, Vector3.up);
@@ -598,10 +597,27 @@ public class PlayerMovement : MonoBehaviour
             yield return null;
         }
 
+        float returnElapsed = 0f;
+        float returnDuration = 0.2f;
+        float currentZ = playerCamera.transform.localEulerAngles.z;
+
+        while (returnElapsed < returnDuration)
+        {
+            returnElapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(returnElapsed / returnDuration);
+
+            float z = Mathf.LerpAngle(tiltAngle, startZ, progress);
+            Vector3 euler = playerCamera.transform.localEulerAngles;
+            euler.z = z;
+            playerCamera.transform.localEulerAngles = euler;
+
+            yield return null;
+        }
+
         Vector3 finalEuler = playerCamera.transform.localEulerAngles;
         finalEuler.z = startZ;
-        
         playerCamera.transform.localEulerAngles = finalEuler;
+
         objectCollider.height = normalHeight;
     }
 
