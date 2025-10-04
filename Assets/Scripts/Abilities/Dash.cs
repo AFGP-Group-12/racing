@@ -25,11 +25,16 @@ public class Dash : Ability
     [Tooltip("This value acts as the maximum y input that can be taken in by the dash. So if its 0.7 then when the user looks straight up the value will be 0.7 rather than 1")]
     [Range(0.5f, 1f)]
     public float dashOuterDeadzone = 0.7f;
-    
+
 
     public override void OnInstantiate()
     {
         canAbility = true;
+        usingAbility = false;
+    }
+    public override void AbilityPreview(PlayerContext ctx)
+    {
+        // Does nothing here
     }
 
     public override void Activate(PlayerContext ctx, int abilityIndex)
@@ -47,7 +52,7 @@ public class Dash : Ability
             stateHandler.isDashing = true;
             rb.useGravity = false;
 
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x,0,rb.linearVelocity.z);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
             abilityManager.StartAbilityDuration(abilityIndex, duration);
             usingAbility = true;
@@ -76,7 +81,7 @@ public class Dash : Ability
 
             verticalForce *= dashForce;
             rb.AddForce(verticalForce * dashForceY, ForceMode.Impulse);
-            
+
 
         }
     }
@@ -106,4 +111,5 @@ public class Dash : Ability
 
     }
 
+    
 }

@@ -14,8 +14,11 @@ public abstract class Ability : ScriptableObject
     public int abilityIndex = -1; // leave as -1 until assigned to player
     public bool canAbility = true; // whether the ability can be used or not (on cooldown or not)
     public bool usingAbility = false; // whether the ability is currently being used (Can also be used to indicate that activate was called)
-    
+
+    public bool isPreview = false; // If the ability requires some kind of preview BEFORE pressing the button then make this true and write the code in the ability preview function
     public abstract void OnInstantiate();
+
+    public abstract void AbilityPreview(PlayerContext ctx); 
 
     public abstract void Activate(PlayerContext ctx, int abilityIndex); 
 

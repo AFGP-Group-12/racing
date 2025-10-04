@@ -30,6 +30,10 @@ public class Platform : Ability
     {
         canAbility = true;
     }
+    public override void AbilityPreview(PlayerContext ctx)
+    {
+        // Does nothing here
+    }
     public override void Activate(PlayerContext ctx, int abilityIndex)
     {
         rb = ctx.rb;

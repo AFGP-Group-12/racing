@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -43,9 +44,11 @@ public class PlayerAbilityManager : MonoBehaviour
     void Update()
     {
         IndexCheck();
+        AbilityPreviewUpdate();
         AbilityInUseUpdate();
 
     }
+
     #endregion MonoBehaviour
 
     #region Functions
@@ -58,8 +61,25 @@ public class PlayerAbilityManager : MonoBehaviour
         }
     }
 
-    void AbilityInUseUpdate()
+    private void AbilityPreviewUpdate()
     {
+        if (abilityList[0].isPreview)
+        {
+            abilityList[0].AbilityPreview(contextScript);
+        }
+        if (abilityList[1].isPreview)
+        {
+            abilityList[1].AbilityPreview(contextScript);
+        }
+        if (abilityList[2].isPreview)
+        {
+            abilityList[2].AbilityPreview(contextScript);
+        }
+    }
+
+    private void AbilityInUseUpdate()
+    {
+        
         abilityInUse1 = abilityList[0].usingAbility;
         abilityInUse2 = abilityList[1].usingAbility;
         abilityInUse3 = abilityList[2].usingAbility;
