@@ -1955,8 +1955,12 @@ PrefabInstance:
       objectReference: {fileID: 1210922622}
     - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: slideForce
-      value: 7
+      value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: playerCamera
+      value: 
+      objectReference: {fileID: 330585545}
     - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: slideCooldown
       value: 0.5
