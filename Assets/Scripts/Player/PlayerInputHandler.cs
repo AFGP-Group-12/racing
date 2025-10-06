@@ -105,7 +105,7 @@ public class PlayerInputHandler : MonoBehaviour
     }
     private void OnAbility3(InputAction.CallbackContext context)
     {
-        abilityManager.StartAbility2();
+        abilityManager.StartAbility3();
     }
     private void OnAbility3End(InputAction.CallbackContext context)
     {

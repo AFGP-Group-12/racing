@@ -8,6 +8,11 @@ public class EmptyAbility : Ability
         // Do nothing
     }
 
+    public override void AbilityPreview(PlayerContext ctx)
+    {
+        // Does nothing here
+    }
+
     public override void Activate(PlayerContext ctx, int abilityIndex)
     {
         // Do nothing

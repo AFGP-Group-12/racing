@@ -11,6 +11,8 @@ public class PlayerAbilityManager : MonoBehaviour
     private PlayerInput input;
     public List<Ability> abilityList;
 
+    public List<Coroutine> abilityDurationList;
+
     public int abilityIndex = 1;
     private Ability emptyAbility;
 
@@ -51,9 +53,11 @@ public class PlayerAbilityManager : MonoBehaviour
     void Update()
     {
         IndexCheck();
+        AbilityPreviewUpdate();
         AbilityInUseUpdate();
 
     }
+
     #endregion MonoBehaviour
 
     #region Functions
@@ -66,8 +70,25 @@ public class PlayerAbilityManager : MonoBehaviour
         }
     }
 
-    void AbilityInUseUpdate()
+    private void AbilityPreviewUpdate()
     {
+        if (abilityList[0].isPreview)
+        {
+            abilityList[0].AbilityPreview(contextScript);
+        }
+        if (abilityList[1].isPreview)
+        {
+            abilityList[1].AbilityPreview(contextScript);
+        }
+        if (abilityList[2].isPreview)
+        {
+            abilityList[2].AbilityPreview(contextScript);
+        }
+    }
+
+    private void AbilityInUseUpdate()
+    {
+        
         abilityInUse1 = abilityList[0].usingAbility;
         abilityInUse2 = abilityList[1].usingAbility;
         abilityInUse3 = abilityList[2].usingAbility;
@@ -166,6 +187,10 @@ public class PlayerAbilityManager : MonoBehaviour
     public void StartAbilityDuration(int abilityIndex, float duration)
     {
         StartCoroutine(AbilityDuration(abilityIndex, duration));
+    }
+    public void EndAbilityEarly(int abilityIndex)
+    {
+        //StopCoroutine(abilityDurationList[abilityIndex]);
     }
     IEnumerator AbilityDuration(int abilityIndex, float duration)
     {
