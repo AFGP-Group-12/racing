@@ -21,6 +21,8 @@ public class PlayerAbilityManager : MonoBehaviour
 
     public event Action<int> OnAbilityCooldownStart;
     public event Action<int> OnAbilityCooldownEnd;
+    public event Action<int> OnAbilityDurationStart;
+    public event Action<int> OnAbilityDurationEnd;
     public event Action<int, Ability> OnAbilityChanged;
 
     #endregion Variables
@@ -131,7 +133,7 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     public void EndAbility1()
     {
-        if (abilityList[0].abilityIndex == -1 ) return;
+        if (abilityList[0].abilityIndex == -1) return;
 
         abilityList[0].DeActivate(contextScript);
     }
@@ -167,8 +169,10 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     IEnumerator AbilityDuration(int abilityIndex, float duration)
     {
+        OnAbilityDurationStart?.Invoke(abilityIndex);
         yield return new WaitForSeconds(duration);
         abilityList[abilityIndex].AbilityEnd();
+        OnAbilityDurationEnd?.Invoke(abilityIndex);
     }
 
 

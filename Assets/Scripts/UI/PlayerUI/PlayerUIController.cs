@@ -30,11 +30,8 @@ public class PlayerUIController : MonoBehaviour
 
     void Start()
     {
-        // Get the UI Document component if not assigned
         if (uiDocument == null)
-        {
             uiDocument = GetComponent<UIDocument>();
-        }
 
         // Get the root visual element
         root = uiDocument.rootVisualElement;
@@ -55,6 +52,8 @@ public class PlayerUIController : MonoBehaviour
         abilityManager.OnAbilityChanged += UpdateAbilityIcon;
         abilityManager.OnAbilityCooldownStart += StartCooldownVisual;
         abilityManager.OnAbilityCooldownEnd += EndCooldownVisual;
+        abilityManager.OnAbilityDurationStart += StartDurationVisual;
+        abilityManager.OnAbilityDurationEnd += EndDurationVisual;
 
     }
 
@@ -66,6 +65,8 @@ public class PlayerUIController : MonoBehaviour
             abilityManager.OnAbilityChanged -= UpdateAbilityIcon;
             abilityManager.OnAbilityCooldownStart -= StartCooldownVisual;
             abilityManager.OnAbilityCooldownEnd -= EndCooldownVisual;
+            abilityManager.OnAbilityDurationStart -= StartDurationVisual;
+            abilityManager.OnAbilityDurationEnd -= EndDurationVisual;
         }
     }
 
@@ -109,10 +110,8 @@ public class PlayerUIController : MonoBehaviour
 
         equippedAbilities[abilityIndex] = ability;
 
-        // Get the sprite from the ability
         Sprite icon = ability.icon;
 
-        // Update the appropriate icon based on the index
         switch (abilityIndex)
         {
             case 0:
@@ -173,6 +172,78 @@ public class PlayerUIController : MonoBehaviour
                 break;
             case 2:
                 if (cooldownOverlay3 != null) cooldownOverlay3.style.display = DisplayStyle.None;
+                break;
+        }
+    }
+
+    private void StartDurationVisual(int abilityIndex)
+    {
+        // Change the ability slot border color to yellow when ability is active
+        Color yellow = new Color(1f, 1f, 0f);
+        switch (abilityIndex)
+        {
+            case 0:
+                if (abilitySlot1 != null)
+                {
+                    abilitySlot1.style.borderTopColor = yellow;
+                    abilitySlot1.style.borderBottomColor = yellow;
+                    abilitySlot1.style.borderLeftColor = yellow;
+                    abilitySlot1.style.borderRightColor = yellow;
+                }
+                break;
+            case 1:
+                if (abilitySlot2 != null)
+                {
+                    abilitySlot2.style.borderTopColor = yellow;
+                    abilitySlot2.style.borderBottomColor = yellow;
+                    abilitySlot2.style.borderLeftColor = yellow;
+                    abilitySlot2.style.borderRightColor = yellow;
+                }
+                break;
+            case 2:
+                if (abilitySlot3 != null)
+                {
+                    abilitySlot3.style.borderTopColor = yellow;
+                    abilitySlot3.style.borderBottomColor = yellow;
+                    abilitySlot3.style.borderLeftColor = yellow;
+                    abilitySlot3.style.borderRightColor = yellow;
+                }
+                break;
+        }
+    }
+
+    private void EndDurationVisual(int abilityIndex)
+    {
+        // Reset the ability slot border color back to black when duration ends
+        Color black = new Color(0f, 0f, 0f);
+        switch (abilityIndex)
+        {
+            case 0:
+                if (abilitySlot1 != null)
+                {
+                    abilitySlot1.style.borderTopColor = black;
+                    abilitySlot1.style.borderBottomColor = black;
+                    abilitySlot1.style.borderLeftColor = black;
+                    abilitySlot1.style.borderRightColor = black;
+                }
+                break;
+            case 1:
+                if (abilitySlot2 != null)
+                {
+                    abilitySlot2.style.borderTopColor = black;
+                    abilitySlot2.style.borderBottomColor = black;
+                    abilitySlot2.style.borderLeftColor = black;
+                    abilitySlot2.style.borderRightColor = black;
+                }
+                break;
+            case 2:
+                if (abilitySlot3 != null)
+                {
+                    abilitySlot3.style.borderTopColor = black;
+                    abilitySlot3.style.borderBottomColor = black;
+                    abilitySlot3.style.borderLeftColor = black;
+                    abilitySlot3.style.borderRightColor = black;
+                }
                 break;
         }
     }
