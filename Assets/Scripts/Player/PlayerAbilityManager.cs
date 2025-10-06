@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -16,6 +17,13 @@ public class PlayerAbilityManager : MonoBehaviour
     private bool abilityInUse1 = false;
     private bool abilityInUse2 = false;
     private bool abilityInUse3 = false;
+
+
+    public event Action<int> OnAbilityCooldownStart;
+    public event Action<int> OnAbilityCooldownEnd;
+    public event Action<int> OnAbilityDurationStart;
+    public event Action<int> OnAbilityDurationEnd;
+    public event Action<int, Ability> OnAbilityChanged;
 
     #endregion Variables
 
@@ -96,6 +104,7 @@ public class PlayerAbilityManager : MonoBehaviour
             abilityList[abilityIndex] = ability;
             abilityList[abilityIndex].abilityIndex = abilityIndex;
             abilityList[abilityIndex].OnInstantiate();
+            OnAbilityChanged?.Invoke(abilityIndex, abilityList[abilityIndex]);
             abilityIndex += 1;
         }
         else
@@ -118,53 +127,39 @@ public class PlayerAbilityManager : MonoBehaviour
 
     public void StartAbility1()
     {
-        if (abilityList[0].abilityIndex == -1 || abilityInUse2 || abilityInUse3)
-        {
-            return;
-        }
+        if (abilityList[0].abilityIndex == -1 || abilityInUse2 || abilityInUse3) return;
 
         abilityList[0].Activate(contextScript, 0);
     }
     public void EndAbility1()
     {
-        if (abilityList[0].abilityIndex == -1 )
-        {
-            return;
-        }
+        if (abilityList[0].abilityIndex == -1) return;
+
         abilityList[0].DeActivate(contextScript);
     }
     public void StartAbility2()
     {
-        if (abilityList[1].abilityIndex == -1 || abilityInUse1 || abilityInUse3)
-        {
-            return;
-        }
+        if (abilityList[1].abilityIndex == -1 || abilityInUse1 || abilityInUse3) return;
 
         abilityList[1].Activate(contextScript, 1);
     }
     public void EndAbility2()
     {
-        if (abilityList[1].abilityIndex == -1)
-        {
-            return;
-        }
+        if (abilityList[1].abilityIndex == -1) return;
+
         abilityList[1].DeActivate(contextScript);
     }
     public void StartAbility3()
     {
-        if (abilityList[2].abilityIndex == -1 || abilityInUse1 || abilityInUse2)
-        {
-            return;
-        }
+        if (abilityList[2].abilityIndex == -1 || abilityInUse1 || abilityInUse2) return;
 
         abilityList[2].Activate(contextScript, 2);
     }
     public void EndAbility3()
     {
         if (abilityList[2].abilityIndex == -1)
-        {
             return;
-        }
+
         abilityList[2].DeActivate(contextScript);
     }
 
@@ -174,8 +169,10 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     IEnumerator AbilityDuration(int abilityIndex, float duration)
     {
+        OnAbilityDurationStart?.Invoke(abilityIndex);
         yield return new WaitForSeconds(duration);
         abilityList[abilityIndex].AbilityEnd();
+        OnAbilityDurationEnd?.Invoke(abilityIndex);
     }
 
 
@@ -185,8 +182,10 @@ public class PlayerAbilityManager : MonoBehaviour
     }
     IEnumerator AbilityCooldown(int abilityIndex, float cooldown)
     {
+        OnAbilityCooldownStart?.Invoke(abilityIndex);
         yield return new WaitForSeconds(cooldown);
         abilityList[abilityIndex].CooldownEnd();
+        OnAbilityCooldownEnd?.Invoke(abilityIndex);
     }
 
 
