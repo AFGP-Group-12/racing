@@ -10,6 +10,8 @@ public class LobbyMenuController : MonoBehaviour
     private Label[] playerNameLabel;
     private Label[] playerPingLabel;
     private Label playerCountLabel;
+    private Label lobbyNameLabel;
+    private Label joinCodeLabel;
 
     private Button exitLobbyButton;
     private Button startGameButton;
@@ -29,6 +31,8 @@ public class LobbyMenuController : MonoBehaviour
             playerPingLabel[i] = root.Q<Label>("playerPingLabel" + (i + 1));
         }
         playerCountLabel = root.Q<Label>("playerCountLabel");
+        lobbyNameLabel = root.Q<Label>("lobbyNameLabel");
+        joinCodeLabel = root.Q<Label>("joinCodeLabel");
 
         exitLobbyButton = root.Q<Button>("exitLobbyButton");
         startGameButton = root.Q<Button>("startGameButton");
@@ -46,6 +50,7 @@ public class LobbyMenuController : MonoBehaviour
         LobbyClient.instance.OnPlayerJoinLobby += OnPlayerJoin;
         LobbyClient.instance.OnPlayerLeaveLobby += OnPlayerLeave;
         LobbyClient.instance.SetPlayerPing += SetPlayerPing;
+        LobbyClient.instance.SetLobbyCode += SetLobbyCode;
     }
 
     private void SetPlayerPing(int ping_ms, string username)
@@ -111,5 +116,15 @@ public class LobbyMenuController : MonoBehaviour
         playerPingLabel[playerIndex].text = newPing.ToString() + "ms";
         if (newPing == -1) playerPingLabel[playerIndex].AddToClassList("hidden");
         else playerPingLabel[playerIndex].RemoveFromClassList("hidden");
+    }
+
+    public void SetLobbyName(string lobbyName)
+    {
+        lobbyNameLabel.text = lobbyName;
+    }
+
+    public void SetLobbyCode(string lobbyCode)
+    {
+        joinCodeLabel.text = lobbyCode;
     }
 }

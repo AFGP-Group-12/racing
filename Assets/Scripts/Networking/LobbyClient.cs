@@ -24,6 +24,7 @@ public class LobbyClient : MonoBehaviour
     public event Action<string> OnPlayerLeaveLobby;
 
     public event Action<int, string> SetPlayerPing;
+    public event Action<string> SetLobbyCode;
 
     private System.Diagnostics.Stopwatch pingTimer;
     private bool waitingForPing = false;
@@ -126,7 +127,7 @@ public class LobbyClient : MonoBehaviour
                 OnLobbyJoined.Invoke();
                 OnPlayerJoinLobby.Invoke(player_username);
                 string lobby_code = Helpers.getStringFromMessage(message.lobby_code, 6);
-                Debug.Log(lobby_code);
+                SetLobbyCode.Invoke(lobby_code);
                 break;
             case 5: // Private lobby Full
                 Debug.LogError("Lobby full!");
