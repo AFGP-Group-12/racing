@@ -44,8 +44,10 @@ public class GrappleStationary : Ability
     }
     public override void AbilityPreview(PlayerContext ctx)
     {
+        cameraTransform = ctx.cameraTransform;
+
         ray = new Ray(cameraTransform.position, cameraTransform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance,grappleSurface))
+        if (!usingAbility && Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance, grappleSurface))
         {
             if (previewObject == null)
             {
@@ -61,11 +63,12 @@ public class GrappleStationary : Ability
                 previewObject.transform.rotation = rotationAway;
             }
         }
-        else
+        else if (!usingAbility)
         {
             Destroy(previewObject);
             previewObject = null;
         }
+        
     }
     public override void Activate(PlayerContext ctx, int abilityIndex)
     {

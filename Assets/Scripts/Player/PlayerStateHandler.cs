@@ -20,7 +20,7 @@ public class PlayerStateHandler : MonoBehaviour
         {
             state = MovementState.grappleing;
         }
-        if (isWallrunning)
+        else if (isWallrunning)
         {
             state = MovementState.wallrunning;
         }
