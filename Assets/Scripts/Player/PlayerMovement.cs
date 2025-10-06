@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -28,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float horizontalInput;
     private float verticalInput;
+
+    private float normalHeight;
 
     Vector3 moveDirection;
 
@@ -74,7 +77,17 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Determines how strong the gravity will be while on the wall. Wallrunning disables unity's gravity and uses this instead")]
     [SerializeField] float maxGravityForce;
 
-    private float gravityForce;
+    [Header("Slide")]
+    [SerializeField] float slideForce;
+    [SerializeField] float slideDuration;
+    [SerializeField] float slideCooldown;
+    [SerializeField] Camera playerCamera;
+    private float slideTimer = 0f;
+
+
+    private bool slideReady;
+
+    public float gravityForce;
 
     private bool canBoost = false;
 
@@ -99,6 +112,28 @@ public class PlayerMovement : MonoBehaviour
 
     private MovementState state;
 
+    public enum MovementState
+    {
+        walking,
+        sprinting,
+        wallrunning,
+        sliding,
+        air,
+        dashing,
+        idle
+    }
+
+    private bool walking;
+    private bool sprinting;
+    private bool wallrunning;
+    private bool sliding;
+    private bool air;
+    private bool dashing;
+
+    public CapsuleCollider objectCollider;
+
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
     #endregion Variables
 
     #region MonoBehavior
@@ -114,9 +149,13 @@ public class PlayerMovement : MonoBehaviour
 
 
 
+        input.actions["Crouch"].started += OnSlide;
+        input.actions["Crouch"].canceled += OnSlideEnd;
+
         rb.freezeRotation = true;
 
         jumpReady = true;
+        slideReady = true;
 
         moveSpeed = basicSpeed;
 
@@ -154,6 +193,11 @@ public class PlayerMovement : MonoBehaviour
         // Wall Running
         WallRunCheck();
 
+        if (slideTimer > 0f)
+        {
+            slideTimer -= Time.deltaTime;
+        }
+
 
     }
 
@@ -169,7 +213,7 @@ public class PlayerMovement : MonoBehaviour
             WallRun();
         }
 
-        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air)
+        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air || state == MovementState.sliding)
         {
             MovePlayer();
         }
@@ -227,6 +271,8 @@ public class PlayerMovement : MonoBehaviour
 
     void MovePlayer()
     {
+        if (sliding)
+            return;
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         if (isOnGround)
@@ -358,6 +404,11 @@ public class PlayerMovement : MonoBehaviour
         jumpReady = true;
     }
 
+    void SlideCooldown()
+    {
+        slideReady = true;
+    }
+
     #endregion Jump Functions
 
 
@@ -467,6 +518,116 @@ public class PlayerMovement : MonoBehaviour
         {
             gravityForce -= 0.5f;
         }
+    }
+    private System.Collections.IEnumerator SlideCoroutine()
+    {
+        objectCollider = GetComponentInChildren<CapsuleCollider>();
+        objectCollider.height = 1.0f;
+
+        Vector3 slideDirection = orientation.forward;
+
+        float elapsed = 0f;
+        Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        float tempSlideForce = slideForce * (curVelocity.magnitude / 18);
+
+        float slopeBoost = 0f;
+
+        float startZ = playerCamera.transform.localEulerAngles.z;
+        float tiltAngle = 6f;
+
+
+        while (elapsed < slideDuration && curVelocity.magnitude != 0)
+        {
+            elapsed += Time.deltaTime;
+            tempSlideForce -= tempSlideForce * (Time.deltaTime / slideDuration);
+
+            if (isOnGround)
+            {
+                RaycastHit slopeHit;
+                if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.2f, groundLayer))
+                {
+                    Vector3 slopeDir = Vector3.ProjectOnPlane(slideDirection, slopeHit.normal).normalized;
+
+                    float slopeFactor = -Vector3.Dot(slopeHit.normal, Vector3.up);
+                    float targetBoost = tempSlideForce * Mathf.Max(slopeFactor, 0f);
+                    slopeBoost = Mathf.Lerp(slopeBoost, targetBoost, Time.deltaTime * 3f);
+
+                    if (slopeFactor < 0f)
+                    {
+                        slopeDir = new Vector3(slopeDir.x, 0f, slopeDir.z).normalized;
+                        slopeBoost = 0f;
+                    }
+
+                    rb.AddForce(slopeDir * (tempSlideForce + slopeBoost), ForceMode.VelocityChange);
+                    slideDirection = slopeDir;
+
+                    float progress = Mathf.Clamp01(elapsed / (slideDuration / 2f));
+                    float targetZ = Mathf.LerpAngle(startZ, tiltAngle, progress);
+                    Vector3 euler = playerCamera.transform.localEulerAngles;
+                    euler.z = targetZ;
+                    playerCamera.transform.localEulerAngles = euler;
+                }
+            }
+            else
+            {
+                // Airborne slide
+                rb.AddForce(slideDirection * tempSlideForce, ForceMode.VelocityChange);
+                slopeBoost = 0f;
+            }
+
+
+            yield return null;
+        }
+
+        float returnElapsed = 0f;
+        float returnDuration = 0.2f;
+        float currentZ = playerCamera.transform.localEulerAngles.z;
+
+        while (returnElapsed < returnDuration)
+        {
+            returnElapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(returnElapsed / returnDuration);
+
+            float z = Mathf.LerpAngle(tiltAngle, startZ, progress);
+            Vector3 euler = playerCamera.transform.localEulerAngles;
+            euler.z = z;
+            playerCamera.transform.localEulerAngles = euler;
+
+            yield return null;
+        }
+
+        Vector3 finalEuler = playerCamera.transform.localEulerAngles;
+        finalEuler.z = startZ;
+        playerCamera.transform.localEulerAngles = finalEuler;
+
+        objectCollider.height = normalHeight;
+    }
+
+
+    private void OnSlide(InputAction.CallbackContext context)
+    {
+        if (context.started) // button pressed
+        {
+            if (isOnGround && !sliding && slideTimer <= 0f)
+            {
+                sliding = true;
+                slideTimer = slideCooldown; // reset cooldown
+                StartCoroutine(SlideCoroutine());
+                isKeepingMomentum = true;
+            }
+        }
+    }
+
+
+    private void OnSlideEnd(InputAction.CallbackContext context)
+    {
+        Debug.Log("Slide Ended");
+        if (sliding)
+        {
+            StopCoroutine(SlideCoroutine());
+            sliding = false;
+        }
+        Invoke(nameof(SlideCooldown), slideCooldown);
     }
 
     #endregion Wall Run Functions
