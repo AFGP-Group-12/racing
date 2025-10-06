@@ -11,7 +11,7 @@ public class LobbyClient : MonoBehaviour
 
     // Networking
     private bool is_local = false;
-    private string connection_server_ip = "68.205.103.143";// "69.62.71.12";
+    private string connection_server_ip = "69.62.71.12";
     private string local_connection_server_ip = "192.168.0.201";
     public BaseNetworkClient client;
 
