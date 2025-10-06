@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using TMPro;
 
 
 public class GameplayClient : MonoBehaviour
@@ -161,7 +162,7 @@ private IEnumerator SendPeriodicMessageCoroutine()
         int id = message.from_id;
         if (!playerById.ContainsKey(id))
         {
-            playerById[id] = new PlayerData(otherPlayerPrefab);
+            playerById[id] = new PlayerData(otherPlayerPrefab, LobbyClient.instance.GetPlayerName(id), mainCamera.GetComponent<Camera>());
         }
 
         Vector3 pos = Helpers.readPosition(message.position, MaxWorldBounds);
@@ -175,19 +176,25 @@ private IEnumerator SendPeriodicMessageCoroutine()
 class PlayerData
 {
     GameObject playerObj;
+    Canvas canvas;
 
     private Vector3 originMovement;
     private Vector3 targetMovement;
     private Vector3 velocity;
 
     private int lastRecievedMovementFrame = 0;
-    private float averageMovementDelayInFrames = 0;
+    private float averageMovementDelayInFrames = 15;
 
-    private const float frameAdjustmentWeight = 0.1f;
+    private const float frameAdjustmentWeight = 0.3f;
 
-    public PlayerData(GameObject prefab)
+    public PlayerData(GameObject prefab, string name, Camera camera)
     {
         playerObj = UnityEngine.Object.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+        canvas = playerObj.GetComponentInChildren<Canvas>();
+        canvas.worldCamera = camera;
+
+        TextMeshProUGUI text = playerObj.GetComponentInChildren<TextMeshProUGUI>();
+        text.SetText(name);
     }
 
     public void addMovementReply(Vector3 pos, Vector3 velocity, double rotation)
@@ -211,6 +218,8 @@ class PlayerData
     }
     public void update(bool doPrediction)
     {
+        if (playerObj == null) { return; }
+
         Vector3 origin;
         Vector3 target;
 
@@ -227,8 +236,8 @@ class PlayerData
 
         Vector3 interpolation = (target - origin) * calculateInterpolation();
 
-        if (playerObj == null) { return; }
         playerObj.transform.position = origin + interpolation;
+        canvas.transform.LookAt(canvas.worldCamera.transform);
     }
 
     private Vector3 calculatePrediction()

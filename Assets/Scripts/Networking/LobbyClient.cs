@@ -229,4 +229,9 @@ public class LobbyClient : MonoBehaviour
         message.action = 5;
         client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
     }
+
+    public string GetPlayerName(int id)
+    {
+        return username_by_id.ContainsKey(id) ? username_by_id[id] : "404";
+    }
 }
