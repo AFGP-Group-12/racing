@@ -112,26 +112,6 @@ public class PlayerMovement : MonoBehaviour
 
     private MovementState state;
 
-    public enum MovementState
-    {
-        walking,
-        sprinting,
-        wallrunning,
-        sliding,
-        air,
-        dashing,
-        idle
-    }
-
-    private bool walking;
-    private bool sprinting;
-    private bool wallrunning;
-    private bool sliding;
-    private bool air;
-    private bool dashing;
-
-    public CapsuleCollider objectCollider;
-
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     #endregion Variables
@@ -147,11 +127,6 @@ public class PlayerMovement : MonoBehaviour
         input = contextScript.input;
         visualScript = contextScript.screenVisuals;
 
-
-
-        input.actions["Crouch"].started += OnSlide;
-        input.actions["Crouch"].canceled += OnSlideEnd;
-
         rb.freezeRotation = true;
 
         jumpReady = true;
@@ -162,6 +137,10 @@ public class PlayerMovement : MonoBehaviour
         isAccelerating = false;
 
         orientation = contextScript.orintation;
+
+        stateHandler.isSliding = false;
+
+        slideTimer = 0f;
 
     }
 
@@ -271,8 +250,6 @@ public class PlayerMovement : MonoBehaviour
 
     void MovePlayer()
     {
-        if (sliding)
-            return;
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
 
         if (isOnGround)
@@ -521,8 +498,7 @@ public class PlayerMovement : MonoBehaviour
     }
     private System.Collections.IEnumerator SlideCoroutine()
     {
-        objectCollider = GetComponentInChildren<CapsuleCollider>();
-        objectCollider.height = 1.0f;
+        
 
         Vector3 slideDirection = orientation.forward;
 
@@ -599,33 +575,29 @@ public class PlayerMovement : MonoBehaviour
         Vector3 finalEuler = playerCamera.transform.localEulerAngles;
         finalEuler.z = startZ;
         playerCamera.transform.localEulerAngles = finalEuler;
-
-        objectCollider.height = normalHeight;
     }
 
 
-    private void OnSlide(InputAction.CallbackContext context)
+    public void Slide()
     {
-        if (context.started) // button pressed
+        if (isOnGround && !stateHandler.isSliding && slideTimer <= 0f)
         {
-            if (isOnGround && !sliding && slideTimer <= 0f)
-            {
-                sliding = true;
-                slideTimer = slideCooldown; // reset cooldown
-                StartCoroutine(SlideCoroutine());
-                isKeepingMomentum = true;
-            }
+            Debug.Log("Slide Started");
+            stateHandler.isSliding = true;
+            slideTimer = slideCooldown; // reset cooldown
+            StartCoroutine(SlideCoroutine());
+            isKeepingMomentum = true;
         }
     }
 
 
-    private void OnSlideEnd(InputAction.CallbackContext context)
+    public void SlideEnd()
     {
         Debug.Log("Slide Ended");
-        if (sliding)
+        if (stateHandler.isSliding)
         {
             StopCoroutine(SlideCoroutine());
-            sliding = false;
+            stateHandler.isSliding = false;
         }
         Invoke(nameof(SlideCooldown), slideCooldown);
     }
