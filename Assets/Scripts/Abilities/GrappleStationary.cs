@@ -18,10 +18,10 @@ public class GrappleStationary : Ability
     public float maxGrappleDistance = 10f;
     public LayerMask grappleSurface;
 
-    [Range(0.5f, 1f)]
+    [Range(0, 1f)]
     public float maxGrappleExtend;
 
-    [Range(0f, 0.5f)]
+    [Range(0f, 1f)]
     public float minGrappleExtend;
 
     public float grappleSpringForce;
@@ -30,8 +30,8 @@ public class GrappleStationary : Ability
 
     public float grappleMassScale;
 
+    private PlayerGrappleLine grappleLineScript;
     private GameObject previewObject;
-
     private Vector3 grappleLocation;
     private Ray ray;
 
@@ -77,27 +77,31 @@ public class GrappleStationary : Ability
         abilityManager = ctx.abilityManager;
         cameraTransform = ctx.cameraTransform;
         stateHandler = ctx.stateHandler;
+        grappleLineScript = ctx.grappleLine;
+        this.abilityIndex = abilityIndex;
 
         if (canAbility)
         {
             canAbility = false;
-            stateHandler.isGrappling = true;
 
             ray = new Ray(cameraTransform.position, cameraTransform.forward);
-            if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance,grappleSurface))
+            if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance, grappleSurface))
             {
+                stateHandler.isGrappling = true;
                 grappleLocation = hit.point;
                 usingAbility = true;
+                grappleLineScript.SetEndPoint(hit.point);
 
                 joint = playerObject.AddComponent<SpringJoint>();
 
                 joint.autoConfigureConnectedAnchor = false;
                 joint.connectedAnchor = grappleLocation;
 
-                float distanceFromPoint = Vector3.Distance(playerObject.transform.position, grappleLocation);
+                float d = Vector3.Distance(playerObject.transform.position, grappleLocation);
 
-                joint.maxDistance = distanceFromPoint * maxGrappleExtend;
-                joint.minDistance = distanceFromPoint * minGrappleExtend;
+                // start taut
+                joint.maxDistance = d * 0.9f;   // 90% of initial distance
+                joint.minDistance = d * Mathf.Clamp(minGrappleExtend, 0f, 0.85f);
 
                 joint.spring = grappleSpringForce;
                 joint.damper = grappleDamper;
@@ -111,7 +115,6 @@ public class GrappleStationary : Ability
 
     public override void AbilityInUse(PlayerContext ctx)
     {
-
     }
 
     public override void AbilityEnd()
@@ -121,6 +124,7 @@ public class GrappleStationary : Ability
 
     public override void DeActivate(PlayerContext ctx)
     {
+        abilityManager.EndAbilityEarly(abilityIndex);
         GrappleEnd();
     }
 

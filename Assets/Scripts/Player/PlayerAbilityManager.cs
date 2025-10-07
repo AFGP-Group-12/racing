@@ -11,7 +11,7 @@ public class PlayerAbilityManager : MonoBehaviour
     private PlayerInput input;
     public List<Ability> abilityList;
 
-    public List<Coroutine> abilityDurationList;
+    public List<Coroutine> abilityDurationList ;
 
     public int abilityIndex = 1;
     private Ability emptyAbility;
@@ -46,6 +46,13 @@ public class PlayerAbilityManager : MonoBehaviour
             emptyAbility,
             emptyAbility,
             emptyAbility
+        };
+
+        abilityDurationList = new List<Coroutine>
+        {
+            null,
+            null,
+            null
         };
     }
 
@@ -186,11 +193,11 @@ public class PlayerAbilityManager : MonoBehaviour
 
     public void StartAbilityDuration(int abilityIndex, float duration)
     {
-        StartCoroutine(AbilityDuration(abilityIndex, duration));
+        abilityDurationList[abilityIndex] = StartCoroutine(AbilityDuration(abilityIndex, duration));
     }
     public void EndAbilityEarly(int abilityIndex)
     {
-        //StopCoroutine(abilityDurationList[abilityIndex]);
+        StopCoroutine(abilityDurationList[abilityIndex]);
     }
     IEnumerator AbilityDuration(int abilityIndex, float duration)
     {

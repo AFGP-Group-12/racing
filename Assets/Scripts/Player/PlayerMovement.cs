@@ -101,6 +101,10 @@ public class PlayerMovement : MonoBehaviour
     private bool isWallLeft;
     private bool isWallRight;
 
+    [Header("Gapple Movement")]
+
+    [SerializeField] float movementDivider; 
+
     [Header("Camera")]
     PlayerScreenVisuals visualScript;
 
@@ -192,11 +196,12 @@ public class PlayerMovement : MonoBehaviour
             WallRun();
         }
 
-        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air || state == MovementState.sliding)
+        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air || state == MovementState.sliding || state == MovementState.grappleing)
         {
             MovePlayer();
         }
     }
+
 
     #endregion MonoBehavior
 
@@ -250,7 +255,14 @@ public class PlayerMovement : MonoBehaviour
 
     void MovePlayer()
     {
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        if (state == MovementState.grappleing)
+        {
+            moveDirection = (moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput) / movementDivider;
+        }
+        else
+        {
+            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        }
 
         if (isOnGround)
         {

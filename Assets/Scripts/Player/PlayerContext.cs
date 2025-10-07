@@ -9,7 +9,8 @@ public class PlayerContext : MonoBehaviour
     public PlayerStateHandler stateHandler { get; private set; }
     public PlayerMovement movement { get; private set; }
     public PlayerScreenVisuals screenVisuals { get; private set; }
-    public PlayerAbilityManager abilityManager { get; private set; }
+    public PlayerAbilityManager abilityManager { get; private set; }  
+    public PlayerGrappleLine grappleLine { get; private set; }
     public Transform orintation;
     public Transform cameraTransform { get; private set; }
 
@@ -22,6 +23,7 @@ public class PlayerContext : MonoBehaviour
         movement = GetComponent<PlayerMovement>();
         screenVisuals = GetComponent<PlayerScreenVisuals>();
         abilityManager = GetComponent<PlayerAbilityManager>();
+        grappleLine = GetComponent<PlayerGrappleLine>();
         cameraTransform = Camera.main.transform; // Change this to a regular public if something goes wrong here
     }
 }
