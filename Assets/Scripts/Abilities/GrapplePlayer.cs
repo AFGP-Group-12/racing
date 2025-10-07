@@ -17,7 +17,13 @@ public class GrapplePlayer : Ability
 
     public float grappleSpeed = 5f;
     public float maxGrappleDistance = 10f;
+    public float verticalStrength = 10f;
+    public float horizontalStrength = 10f;
     public LayerMask playerLayer;
+
+    private Vector3 verticalForce;
+    private Vector3 horizontalForce;
+
     private Vector3 grappleLocation;
     private Ray ray;
     private GameObject previewObject;
@@ -36,11 +42,13 @@ public class GrapplePlayer : Ability
         {
             if (previewObject == null)
             {
-                previewObject = Instantiate(previewPrefab, hit.point, Quaternion.identity);
+                previewObject = Instantiate(previewPrefab, hit.transform.position, cameraTransform.rotation);
             }
             else
             {
                 previewObject.transform.position = hit.transform.position;
+
+                previewObject.transform.rotation = cameraTransform.rotation;
             }
         }
         else if (!usingAbility)
@@ -57,6 +65,7 @@ public class GrapplePlayer : Ability
         abilityManager = ctx.abilityManager;
         cameraTransform = ctx.cameraTransform;
         stateHandler = ctx.stateHandler;
+        orintation = ctx.orintation;
         this.abilityIndex = abilityIndex;
 
         if (canAbility)
@@ -69,6 +78,7 @@ public class GrapplePlayer : Ability
                 stateHandler.isGrappling = true;
                 grappleLocation = hit.point;
                 usingAbility = true;
+                horizontalForce = orintation.forward * horizontalStrength;
                 
             }
 
@@ -79,6 +89,8 @@ public class GrapplePlayer : Ability
 
     public override void AbilityInUse(PlayerContext ctx)
     {
+        verticalForce = new Vector3(0, verticalStrength, 0);
+        rb.AddForce(horizontalForce + verticalForce, ForceMode.Impulse);
     }
 
     public override void AbilityEnd()
