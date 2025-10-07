@@ -39,6 +39,7 @@ public class Platform : Ability
         rb = ctx.rb;
         abilityManager = ctx.abilityManager;
         cameraTransform = ctx.cameraTransform;
+        this.abilityIndex = abilityIndex;
 
         if (canAbility)
         {
@@ -85,6 +86,7 @@ public class Platform : Ability
 
     public override void DeActivate(PlayerContext ctx)
     {
+        abilityManager.EndAbilityEarly(abilityIndex);
         PlacePrefab();
     }
 
