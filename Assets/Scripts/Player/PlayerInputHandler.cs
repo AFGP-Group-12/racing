@@ -1,3 +1,4 @@
+using System;
 using Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -38,6 +39,9 @@ public class PlayerInputHandler : MonoBehaviour
         input.actions["Sprint"].started += OnSprint;
         input.actions["Sprint"].canceled += OnSprintEnd;
 
+        input.actions["Crouch"].started += OnSlide;
+        input.actions["Crouch"].canceled += OnSlideEnd;
+
         input.actions["Ability1"].started += OnAbility1;
         input.actions["Ability1"].canceled += OnAbility1End;
 
@@ -47,6 +51,7 @@ public class PlayerInputHandler : MonoBehaviour
         input.actions["Ability3"].started += OnAbility3;
         input.actions["Ability3"].canceled += OnAbility3End;
     }
+
 
     void Update()
     {
@@ -74,6 +79,15 @@ public class PlayerInputHandler : MonoBehaviour
     void OnJump(InputAction.CallbackContext context)
     {
         movementScript.Jump();
+    }
+
+    private void OnSlide(InputAction.CallbackContext context)
+    {
+        movementScript.Slide();
+    }
+    private void OnSlideEnd(InputAction.CallbackContext context)
+    {
+        movementScript.SlideEnd();
     }
 
     private void OnSprint(InputAction.CallbackContext context)
