@@ -84,7 +84,7 @@ public class GameplayClient : MonoBehaviour
         // update players positions
         foreach (PlayerData p in playerById.Values)
         {
-            p.update(false);
+            p.update(doPrediction);
         }
     }
 
@@ -162,7 +162,8 @@ private IEnumerator SendPeriodicMessageCoroutine()
         int id = message.from_id;
         if (!playerById.ContainsKey(id))
         {
-            playerById[id] = new PlayerData(otherPlayerPrefab, LobbyClient.instance.GetPlayerName(id), mainCamera.GetComponent<Camera>());
+            OnPlayerJoin(id);
+            return;
         }
 
         Vector3 pos = Helpers.readPosition(message.position, MaxWorldBounds);
@@ -170,6 +171,25 @@ private IEnumerator SendPeriodicMessageCoroutine()
         double rotation = -1 * (double)(Helpers.readRotation(message.rotation) + 180) * Math.PI / 180.0;
 
         playerById[id].addMovementReply(pos, vel, rotation);
+    }
+
+    private void OnPlayerJoin(int id)
+    {
+        if (playerById.ContainsKey(id))
+        {
+            playerById[id].destroy();
+            playerById.Remove(id);
+        }
+        playerById[id] = new PlayerData(otherPlayerPrefab, LobbyClient.instance.GetPlayerName(id), mainCamera.GetComponent<Camera>());
+    }
+    private void OnPlayerLeave(int id, string username)
+    {
+        if (playerById.ContainsKey(id))
+        {
+            playerById[id].destroy();
+            playerById.Remove(id);
+        }
+
     }
 }
 
@@ -248,6 +268,16 @@ class PlayerData
     private float calculateInterpolation()
     {
         return (Time.frameCount - lastRecievedMovementFrame) / averageMovementDelayInFrames;
+    }
+
+    public void destroy()
+    {
+        if (playerObj != null)
+        {
+            UnityEngine.Object.Destroy(playerObj);
+            playerObj = null;
+            canvas = null;
+        }
     }
 
 };

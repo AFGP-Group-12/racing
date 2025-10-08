@@ -25,12 +25,16 @@ public class LobbyClient : MonoBehaviour
 
     public event Action<int, string> SetPlayerPing;
     public event Action<string> SetLobbyCode;
+    public event Action<string, bool> UpdateHost;
 
     private System.Diagnostics.Stopwatch pingTimer;
     private bool waitingForPing = false;
     DateTime timeSinceLastPing;
     int currentPing = -1;
     const int pingInterval = 5;
+    int self_id = -1;
+
+    bool gameStarted = false;
 
     private void Awake()
     {
@@ -144,6 +148,11 @@ public class LobbyClient : MonoBehaviour
                 other_player_username = username_by_id[message.other_player_id];
                 SetPlayerPing.Invoke(message.ping, other_player_username);
                 break;
+            case 9: // Host changed
+                other_player_username = username_by_id[message.other_player_id];
+                bool is_host = message.other_player_id == self_id;
+                UpdateHost.Invoke(other_player_username, is_host);
+                break;
 
         }
     }
@@ -156,6 +165,7 @@ public class LobbyClient : MonoBehaviour
             switch (message.get_t())
             {
                 case message_t.connection_reply:
+                    self_id = message.connection_reply.id;
                     break;
                 case message_t.racing_lobby_update:
                     HandleLobbyUpdate(message.racing_lobby_update);
@@ -225,10 +235,13 @@ public class LobbyClient : MonoBehaviour
 
     public unsafe void StartGame()
     {
+        if (gameStarted) return;
+
         racing_lobby_action_m message;
         message.type = (ushort)message_t.racing_lobby_action;
         message.action = 5;
         client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
+        gameStarted = true;
     }
 
     public string GetPlayerName(int id)

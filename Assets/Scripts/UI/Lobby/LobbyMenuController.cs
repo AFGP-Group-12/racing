@@ -18,6 +18,7 @@ public class LobbyMenuController : MonoBehaviour
 
     private int playerCount = 0;
     private Dictionary<string, int> index_by_username = new Dictionary<string, int>();
+    private string host = "";
 
     private void Awake()
     {
@@ -36,8 +37,9 @@ public class LobbyMenuController : MonoBehaviour
 
         exitLobbyButton = root.Q<Button>("exitLobbyButton");
         startGameButton = root.Q<Button>("startGameButton");
-        
+
         ClearPlayers();
+        SetHost("", false);
     }
 
     public void Start()
@@ -51,6 +53,7 @@ public class LobbyMenuController : MonoBehaviour
         LobbyClient.instance.OnPlayerLeaveLobby += OnPlayerLeave;
         LobbyClient.instance.SetPlayerPing += SetPlayerPing;
         LobbyClient.instance.SetLobbyCode += SetLobbyCode;
+        LobbyClient.instance.UpdateHost += SetHost;
     }
 
     private void SetPlayerPing(int ping_ms, string username)
@@ -104,9 +107,13 @@ public class LobbyMenuController : MonoBehaviour
     {
         if (playerIndex >= 4) throw new ArgumentOutOfRangeException(nameof(playerIndex), "Invalid player index");
 
-        playerNameLabel[playerIndex].text = newName;
         if (newName.Length == 0) playerNameLabel[playerIndex].AddToClassList("hidden");
         else playerNameLabel[playerIndex].RemoveFromClassList("hidden");
+
+        if (host == newName)
+            newName += " (host)";
+
+        playerNameLabel[playerIndex].text = newName;
     }
 
     public void UpdatePlayerPing(int newPing, int playerIndex)
@@ -126,5 +133,15 @@ public class LobbyMenuController : MonoBehaviour
     public void SetLobbyCode(string lobbyCode)
     {
         joinCodeLabel.text = lobbyCode;
+    }
+
+    public void SetHost(string newHost, bool isHost)
+    {
+        host = newHost;
+        if (index_by_username.ContainsKey(host))
+            UpdatePlayerName(newHost, index_by_username[host]);
+
+        if (isHost) startGameButton.RemoveFromClassList("hidden");
+        else startGameButton.AddToClassList("hidden");
     }
 }
