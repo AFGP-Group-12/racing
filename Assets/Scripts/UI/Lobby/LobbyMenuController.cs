@@ -39,7 +39,6 @@ public class LobbyMenuController : MonoBehaviour
         startGameButton = root.Q<Button>("startGameButton");
 
         ClearPlayers();
-        SetHost("", false);
     }
 
     public void Start()
@@ -72,6 +71,7 @@ public class LobbyMenuController : MonoBehaviour
         }
         index_by_username.Clear();
         playerCount = 0;
+        SetHost("", false);
     }
 
     private void OnPlayerJoin(string username)
@@ -140,8 +140,20 @@ public class LobbyMenuController : MonoBehaviour
     public void SetHost(string newHost, bool isHost)
     {
         host = newHost;
+
+        List<string> toModify = new List<string>();
+
+        foreach (var pair in index_by_username)
+        {
+            toModify.Add(pair.Key);
+        }
+        foreach (string key in toModify)
+        {
+            UpdatePlayerName(key, index_by_username[key]);
+        }
+
         if (index_by_username.ContainsKey(host))
-            UpdatePlayerName(newHost, index_by_username[host]);
+            UpdatePlayerName(host, index_by_username[host]);
 
         if (isHost) startGameButton.RemoveFromClassList("hidden");
         else startGameButton.AddToClassList("hidden");
