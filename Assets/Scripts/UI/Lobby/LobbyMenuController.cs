@@ -101,6 +101,7 @@ public class LobbyMenuController : MonoBehaviour
         UpdatePlayerPing(-1, playerCount);
 
         playerCountLabel.text = playerCount.ToString() + "/4";
+        index_by_username.Remove(username);
     }
 
     public void UpdatePlayerName(string newName, int playerIndex)
@@ -140,17 +141,10 @@ public class LobbyMenuController : MonoBehaviour
     public void SetHost(string newHost, bool isHost)
     {
         host = newHost;
-
-        List<string> toModify = new List<string>();
-
+        
+        // Remove previous host artifacts.
         foreach (var pair in index_by_username)
-        {
-            toModify.Add(pair.Key);
-        }
-        foreach (string key in toModify)
-        {
-            UpdatePlayerName(key, index_by_username[key]);
-        }
+            UpdatePlayerName(pair.Key, pair.Value);
 
         if (index_by_username.ContainsKey(host))
             UpdatePlayerName(host, index_by_username[host]);
