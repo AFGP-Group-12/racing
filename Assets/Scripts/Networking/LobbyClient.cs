@@ -33,6 +33,7 @@ public class LobbyClient : MonoBehaviour
     int currentPing = -1;
     const int pingInterval = 5;
     int self_id = -1;
+    int currentHost = -1;
 
     bool gameStarted = false;
 
@@ -113,11 +114,16 @@ public class LobbyClient : MonoBehaviour
             case 0: // Public lobby joined sucessfully
                 OnLobbyJoined.Invoke();
                 OnPlayerJoinLobby.Invoke(player_username);
+                SetLobbyCode.Invoke("");
+                if (self_id == currentHost)
+                    ChangeHost(currentHost);
                 break;
             case 1: // Other player joined lobby
                 other_player_username = Helpers.readUsername(message.username);
                 username_by_id[message.other_player_id] = other_player_username;
                 OnPlayerJoinLobby.Invoke(other_player_username);
+                if (message.other_player_id == currentHost)
+                    ChangeHost(currentHost);
                 break;
             case 2: // Other player left lobby
                 other_player_username = username_by_id[message.other_player_id];
@@ -139,6 +145,8 @@ public class LobbyClient : MonoBehaviour
             case 6: // Private lobby joined
                 OnLobbyJoined.Invoke();
                 OnPlayerJoinLobby.Invoke(player_username);
+                if (self_id == currentHost)
+                    ChangeHost(currentHost);
                 break;
             case 7: // Lobby exited sucessfully
                 OnLobbyExited.Invoke();
@@ -149,12 +157,24 @@ public class LobbyClient : MonoBehaviour
                 SetPlayerPing.Invoke(message.ping, other_player_username);
                 break;
             case 9: // Host changed
-                other_player_username = username_by_id[message.other_player_id];
-                bool is_host = message.other_player_id == self_id;
-                UpdateHost.Invoke(other_player_username, is_host);
+                ChangeHost(message.other_player_id);
                 break;
 
         }
+    }
+
+    private void ChangeHost(int hostId)
+    {
+        currentHost = hostId;
+
+        string hostUsername;
+        if (hostId == self_id)
+            hostUsername = player_username;
+        else if (username_by_id.ContainsKey(hostId))
+            hostUsername = username_by_id[hostId];
+        else
+            return;
+        UpdateHost.Invoke(hostUsername, hostId == self_id);
     }
 
     private void Update()
@@ -166,6 +186,7 @@ public class LobbyClient : MonoBehaviour
             {
                 case message_t.connection_reply:
                     self_id = message.connection_reply.id;
+                    Debug.Log("Self Id: " + self_id);
                     break;
                 case message_t.racing_lobby_update:
                     HandleLobbyUpdate(message.racing_lobby_update);

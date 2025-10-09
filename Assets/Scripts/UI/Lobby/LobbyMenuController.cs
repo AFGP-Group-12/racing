@@ -133,6 +133,8 @@ public class LobbyMenuController : MonoBehaviour
     public void SetLobbyCode(string lobbyCode)
     {
         joinCodeLabel.text = lobbyCode;
+        if (lobbyCode == "") joinCodeLabel.AddToClassList("hidden");
+        else joinCodeLabel.RemoveFromClassList("hidden");
     }
 
     public void SetHost(string newHost, bool isHost)
