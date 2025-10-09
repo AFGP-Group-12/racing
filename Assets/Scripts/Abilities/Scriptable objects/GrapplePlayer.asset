@@ -15,16 +15,16 @@ MonoBehaviour:
   abilityName: GrapplePlayer
   icon: {fileID: 21300000, guid: c31c4fb4651d65e4e92288eb896c4b36, type: 3}
   cooldown: 1
-  duration: 1
+  duration: 0.2
   abilityIndex: 0
   canAbility: 1
   usingAbility: 0
   isPreview: 1
   previewPrefab: {fileID: 7403508374583288671, guid: 289b0f970bd600845ad8425d95d4705f, type: 3}
-  grappleSpeed: 5
+  grappleSpeed: 600
   maxGrappleDistance: 30
-  verticalStrength: 1
-  horizontalStrength: 10
+  verticalStrength: 12
+  horizontalStrength: 20
   playerLayer:
     serializedVersion: 2
     m_Bits: 64

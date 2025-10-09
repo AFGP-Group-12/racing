@@ -8,6 +8,7 @@ public class GrapplePlayer : Ability
     private PlayerStateHandler stateHandler;
     private PlayerAbilityManager abilityManager;
     private PlayerMovement movementScript;
+    private PlayerGrappleLine grappleLineScript;
     private Transform orintation;
     private Transform cameraTransform;
 
@@ -65,6 +66,7 @@ public class GrapplePlayer : Ability
         abilityManager = ctx.abilityManager;
         cameraTransform = ctx.cameraTransform;
         stateHandler = ctx.stateHandler;
+        grappleLineScript = ctx.grappleLine;
         orintation = ctx.orintation;
         this.abilityIndex = abilityIndex;
 
@@ -76,9 +78,13 @@ public class GrapplePlayer : Ability
             if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance, playerLayer))
             {
                 stateHandler.isGrappling = true;
-                grappleLocation = hit.point;
                 usingAbility = true;
+
+                grappleLocation = hit.point;
                 horizontalForce = orintation.forward * horizontalStrength;
+                grappleLineScript.SetEndPoint(hit.point);
+
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x,0f,rb.linearVelocity.z);
                 
             }
 
@@ -90,18 +96,21 @@ public class GrapplePlayer : Ability
     public override void AbilityInUse(PlayerContext ctx)
     {
         verticalForce = new Vector3(0, verticalStrength, 0);
-        rb.AddForce(horizontalForce + verticalForce, ForceMode.Impulse);
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x,verticalForce.y,rb.linearVelocity.z);
+        rb.AddForce(horizontalForce, ForceMode.Impulse);
+
+
     }
 
     public override void AbilityEnd()
     {
+        rb.AddForce(horizontalForce, ForceMode.Impulse);
         GrappleEnd();
     }
 
     public override void DeActivate(PlayerContext ctx)
     {
-        abilityManager.EndAbilityEarly(abilityIndex);
-        GrappleEnd();
+
     }
 
     private void GrappleEnd()

@@ -103,7 +103,9 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Gapple Movement")]
 
-    [SerializeField] float movementDivider; 
+    [SerializeField] float movementDivider;
+
+    public float airEntryMaxSpeed = float.PositiveInfinity;
 
     [Header("Camera")]
     PlayerScreenVisuals visualScript;
@@ -114,7 +116,8 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("State Machine")]
 
-    private MovementState state;
+    private MovementState state = MovementState.walking;
+    private MovementState lastState;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -152,7 +155,7 @@ public class PlayerMovement : MonoBehaviour
     {
         isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
         stateHandler.isOnGround = isOnGround;
-
+        lastState = state;
         state = stateHandler.state;
 
         //Debug.DrawRay(transform.position, Vector3.down * 5f, Color.green);
@@ -168,7 +171,6 @@ public class PlayerMovement : MonoBehaviour
 
         // Movement
         SetMovementSpeed();
-        SpeedControl();
         Accelerate();
         StopMomentumJump();
         // SpeedCheck(); // For debugging purposes
@@ -191,6 +193,7 @@ public class PlayerMovement : MonoBehaviour
         SetCameraRotation();
 
 
+
         if (state == MovementState.wallrunning)
         {
             WallRun();
@@ -200,7 +203,10 @@ public class PlayerMovement : MonoBehaviour
         {
             MovePlayer();
         }
+        SetAirExitSpeed();
+        SpeedControl();
     }
+
 
 
     #endregion MonoBehavior
@@ -283,11 +289,14 @@ public class PlayerMovement : MonoBehaviour
     // Makes sure the movement speed doesnt go over a certain amount
     void SpeedControl()
     {
+        
         Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
-        if (curVelocity.magnitude > moveSpeed)
+        float max = (state == MovementState.air) ? airEntryMaxSpeed : moveSpeed;
+
+        if (curVelocity.magnitude > max)
         {
-            Vector3 limitedVel = curVelocity.normalized * moveSpeed;
+            Vector3 limitedVel = curVelocity.normalized * max;
             rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
         }
 
@@ -310,6 +319,21 @@ public class PlayerMovement : MonoBehaviour
         else if (acceleration <= 0)
         {
             acceleration = 0;
+        }
+    }
+
+    void SetAirExitSpeed()
+    {
+        // Just entered Air
+        if (state != MovementState.air)
+        {
+            Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            airEntryMaxSpeed = horizontalVelocity.magnitude;
+
+            if (airEntryMaxSpeed < moveSpeed)
+            {
+                airEntryMaxSpeed = moveSpeed;
+            }
         }
     }
 
