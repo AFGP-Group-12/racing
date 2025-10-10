@@ -15,6 +15,10 @@ public class PlayerGrappleLine : MonoBehaviour
     Vector3 startPoint;
 
     Vector3 endPoint;
+
+    Vector3 currentEndPoint;
+
+    
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -30,13 +34,17 @@ public class PlayerGrappleLine : MonoBehaviour
         startPoint = grappleStartPoint.position;
         if (stateHandler.state == MovementState.grappleing)
         {
+            currentEndPoint = Vector3.Lerp(currentEndPoint, endPoint, Time.deltaTime * 8f);
+
             lineRenderer.SetPosition(0, startPoint);
-            lineRenderer.SetPosition(1, endPoint);
+            lineRenderer.SetPosition(1, currentEndPoint);
             lineRenderer.enabled = true;
 
         }
         else
         {
+            currentEndPoint = startPoint;
+            lineRenderer.SetPosition(1, currentEndPoint);
             lineRenderer.enabled = false;
         }
     }
