@@ -50,6 +50,12 @@ public class PlayerInputHandler : MonoBehaviour
 
         input.actions["Ability3"].started += OnAbility3;
         input.actions["Ability3"].canceled += OnAbility3End;
+
+        input.actions["ChangeAbilityIndex"].performed += OnScroll;
+        input.actions["ChangeAbilityIndex"].canceled += OnScrollEnd;
+
+        input.actions["ChangeAbility"].started += OnChangeAbility;
+        input.actions["ChangeAbility"].canceled += OnChangeAbilityEnd;
     }
 
 
@@ -125,6 +131,24 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnAbility3End(InputAction.CallbackContext context)
     {
         abilityManager.EndAbility3();
+    }
+
+    private void OnScroll(InputAction.CallbackContext context)
+    {
+        abilityManager.SwitchActiveIndex((int)context.ReadValue<float>());
+    }
+    private void OnScrollEnd(InputAction.CallbackContext context)
+    {
+        abilityManager.SwitchActiveIndex(0);
+    }
+
+    private void OnChangeAbility(InputAction.CallbackContext context)
+    {
+        abilityManager.ChangeAbility(true);
+    }
+    private void OnChangeAbilityEnd(InputAction.CallbackContext context)
+    {
+        abilityManager.ChangeAbility(false);
     }
     
     #endregion Input Functions

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: GrappleStationary
   m_EditorClassIdentifier: 
   abilityName: GrappleToObject
-  icon: {fileID: 21300000, guid: ba093a819c1af2c4dad8d95e4443c79a, type: 3}
+  icon: {fileID: 21300000, guid: e719df0db5b3d1c4e996cdd3ecd6a616, type: 3}
   cooldown: 0.2
   duration: 30
   abilityIndex: 0
