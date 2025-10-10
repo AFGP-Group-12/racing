@@ -104,6 +104,24 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "ChangeAbilityIndex",
+                    "type": "PassThrough",
+                    "id": "82a39816-117b-4e6c-b655-797276facd4c",
+                    "expectedControlType": "Axis",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "ChangeAbility",
+                    "type": "Button",
+                    "id": "fa1d493d-3f4b-45dc-90b2-3edaab87eb2f",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -506,11 +524,33 @@
                 {
                     "name": "",
                     "id": "c033052d-500a-4029-bbd8-493217c83cbe",
-                    "path": "<Keyboard>/f",
+                    "path": "<Keyboard>/r",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
                     "action": "Ability3",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6b0ee1d2-c961-4105-8739-81b64578f259",
+                    "path": "<Mouse>/scroll/y",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeAbilityIndex",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "8fc03e23-d938-4a39-8ff7-da114f303a2c",
+                    "path": "<Keyboard>/f",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ChangeAbility",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

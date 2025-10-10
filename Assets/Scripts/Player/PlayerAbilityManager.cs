@@ -14,6 +14,7 @@ public class PlayerAbilityManager : MonoBehaviour
     public List<Coroutine> abilityDurationList ;
 
     public int abilityIndex = 1;
+    bool isChangeAbility = false;
     private Ability emptyAbility;
 
     private bool abilityInUse1 = false;
@@ -75,6 +76,19 @@ public class PlayerAbilityManager : MonoBehaviour
         {
             abilityIndex = 0;
         }
+        else if (abilityIndex < 0)
+        {
+            abilityIndex = 2;
+        }
+    }
+    public void SwitchActiveIndex(int indexAdditive)
+    {
+        abilityIndex += indexAdditive;
+    }
+
+    public void ChangeAbility(bool isChangeAbility)
+    {
+        this.isChangeAbility = isChangeAbility;
     }
 
     private void AbilityPreviewUpdate()
@@ -135,9 +149,12 @@ public class PlayerAbilityManager : MonoBehaviour
             OnAbilityChanged?.Invoke(abilityIndex, abilityList[abilityIndex]);
             abilityIndex += 1;
         }
-        else
+        else if(isChangeAbility)
         {
-            // If you have an ability already what happens
+            abilityList[abilityIndex] = ability;
+            abilityList[abilityIndex].abilityIndex = abilityIndex;
+            abilityList[abilityIndex].OnInstantiate();
+            OnAbilityChanged?.Invoke(abilityIndex, abilityList[abilityIndex]);
         }
     }
     public void debugAdd(Ability ability) // Delete this once done
