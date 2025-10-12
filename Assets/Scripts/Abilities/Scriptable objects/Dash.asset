@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Dash
   icon: {fileID: 21300000, guid: 6739d07566d47cd478a8f0888affcb49, type: 3}
-  cooldown: 0.2
+  cooldown: 3
   duration: 0.5
   abilityIndex: 0
   canAbility: 1
   usingAbility: 0
   isPreview: 0
-  dashForce: 5
-  dashForceY: 6
+  dashForce: 7
+  dashForceY: 7
   dashInnerDeadzone: 0.2
   dashOuterDeadzone: 0.7
