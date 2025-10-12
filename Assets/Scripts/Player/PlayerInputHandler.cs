@@ -39,7 +39,7 @@ public class PlayerInputHandler : MonoBehaviour
         input.actions["Sprint"].started += OnSprint;
         input.actions["Sprint"].canceled += OnSprintEnd;
 
-        input.actions["Crouch"].started += OnSlide;
+        input.actions["Crouch"].performed += OnSlide;
         input.actions["Crouch"].canceled += OnSlideEnd;
 
         input.actions["Ability1"].started += OnAbility1;
@@ -89,7 +89,7 @@ public class PlayerInputHandler : MonoBehaviour
 
     private void OnSlide(InputAction.CallbackContext context)
     {
-        Debug.Log("Skude opressed");
+        //Debug.Log("Skude opressed");
         movementScript.Slide();
     }
     private void OnSlideEnd(InputAction.CallbackContext context)
