@@ -19,6 +19,7 @@ public class LobbyMenuController : MonoBehaviour
     private int playerCount = 0;
     private Dictionary<string, int> index_by_username = new Dictionary<string, int>();
     private string host = "";
+    private bool isHost = false;
 
     private void Awake()
     {
@@ -39,6 +40,7 @@ public class LobbyMenuController : MonoBehaviour
         startGameButton = root.Q<Button>("startGameButton");
 
         ClearPlayers();
+        UpdateStartGameButton();
     }
 
     public void Start()
@@ -79,6 +81,8 @@ public class LobbyMenuController : MonoBehaviour
         index_by_username[username] = playerCount;
         UpdatePlayerName(username, playerCount++);
         playerCountLabel.text = playerCount.ToString() + "/4";
+
+        UpdateStartGameButton();
     }
     private void OnPlayerLeave(string username)
     {
@@ -102,6 +106,8 @@ public class LobbyMenuController : MonoBehaviour
 
         playerCountLabel.text = playerCount.ToString() + "/4";
         index_by_username.Remove(username);
+
+        UpdateStartGameButton();
     }
 
     public void UpdatePlayerName(string newName, int playerIndex)
@@ -140,6 +146,7 @@ public class LobbyMenuController : MonoBehaviour
 
     public void SetHost(string newHost, bool isHost)
     {
+        this.isHost = isHost;
         host = newHost;
         
         // Remove previous host artifacts.
@@ -149,7 +156,10 @@ public class LobbyMenuController : MonoBehaviour
         if (index_by_username.ContainsKey(host))
             UpdatePlayerName(host, index_by_username[host]);
 
-        if (isHost) startGameButton.RemoveFromClassList("hidden");
-        else startGameButton.AddToClassList("hidden");
+        UpdateStartGameButton();
+    }
+    private void UpdateStartGameButton()
+    {
+        startGameButton.SetEnabled(isHost && playerCount > 1);
     }
 }
