@@ -7,6 +7,7 @@ public class OtherPlayer
 {
     GameObject playerObj;
     Canvas canvas;
+    SpriteController spriteController;
 
     private Vector3 originMovement;
     private Vector3 targetMovement;
@@ -21,13 +22,16 @@ public class OtherPlayer
     {
         playerObj = UnityEngine.Object.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
         canvas = playerObj.GetComponentInChildren<Canvas>();
+        spriteController = playerObj.GetComponentInChildren<SpriteController>();
         canvas.worldCamera = camera;
 
         TextMeshProUGUI text = playerObj.GetComponentInChildren<TextMeshProUGUI>();
         text.SetText(name);
+
+        spriteController.viewer = camera.transform;
     }
 
-    public void AddMovementReply(Vector3 pos, Vector3 velocity, double rotation)
+    public void AddMovementReply(Vector3 pos, Vector3 velocity, double rotation, MovementState state)
     {
         if (lastRecievedMovementFrame == 0) { targetMovement = pos; }
         originMovement = targetMovement;
@@ -39,6 +43,7 @@ public class OtherPlayer
         playerObj.transform.rotation = Quaternion.LookRotation(look_direction);
 
         this.velocity = velocity;
+        spriteController.HandleStateChanged(state);
 
         int currentFrame = Time.frameCount;
 

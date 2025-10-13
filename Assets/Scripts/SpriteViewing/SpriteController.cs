@@ -63,20 +63,21 @@ public class SpriteController : MonoBehaviour
         }
     }
 
-    // void OnEnable()
-    // {
-    //     if (playerStateHandler != null)
-    //         playerStateHandler.OnStateChanged += HandleStateChanged;
-    // }
-
-    // void OnDisable()
-    // {
-    //     if (playerStateHandler != null)
-    //         playerStateHandler.OnStateChanged -= HandleStateChanged;
-    // }
-
-    private void HandleStateChanged(MovementState newState)
+    void OnEnable()
     {
+         if (playerStateHandler != null)
+             playerStateHandler.OnStateChanged += HandleStateChanged;
+    }
+
+    void OnDisable()
+    {
+       if (playerStateHandler != null)
+            playerStateHandler.OnStateChanged -= HandleStateChanged;
+    }
+
+    public void HandleStateChanged(MovementState newState)
+    {
+        if (newState == currentMovementState) return;
         currentMovementState = newState;
         // Reset animation when state changes
         _frameIdx = 0;

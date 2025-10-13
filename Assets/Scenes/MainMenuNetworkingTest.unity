@@ -159,7 +159,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 101107473}
-  targetElementName: joinScribble
+  targetElementName: []
   stroke: 6
   inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
   jitterAmplitude: 4
@@ -189,7 +189,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 0}
-  targetElementName: playerListScribble
+  targetElementName: []
   stroke: 6
   inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
   jitterAmplitude: 4
@@ -219,7 +219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 101107473}
-  targetElementName: optionsScribble
+  targetElementName: []
   stroke: 6
   inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
   jitterAmplitude: 4
@@ -236,7 +236,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 101107473}
-  targetElementName: profileScribble
+  targetElementName: []
   stroke: 6
   inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
   jitterAmplitude: 4
@@ -395,7 +395,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerUpdatesPerSecond: 5
   doPrediction: 0
-  otherPlayerPrefab: {fileID: 2670139927068850257, guid: 223b20998810d274e9ab20caa0fcf0bd, type: 3}
+  otherPlayerPrefab: {fileID: 2670139927068850257, guid: 96db6be734f374c73a5cf8da1bf0e0e4, type: 3}
 --- !u!1 &589029238
 GameObject:
   m_ObjectHideFlags: 0

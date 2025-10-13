@@ -13,11 +13,13 @@ public class GameplayClient : MonoBehaviour
     public bool doPrediction = false;
 
     // Unity
-    public static GameplayClient instance;
+    public static GameplayClient instance = null;
     public static GameObject player = null;
     public static GameObject mainCamera = null;
     public GameObject otherPlayerPrefab;
     private Dictionary<int, OtherPlayer> playerById;
+
+    public MovementState currentState { private get; set; }
 
     // Networking
     private Vector3 MaxWorldBounds = new Vector3(100, 100, 100);
@@ -30,11 +32,13 @@ public class GameplayClient : MonoBehaviour
         DontDestroyOnLoad(this.gameObject);
 
         Application.runInBackground = true;
+        
     }
 
     public void Start()
     {
         playerById = new Dictionary<int, OtherPlayer>();
+        currentState = MovementState.idle;
     }
 
     public void Setup()
@@ -154,6 +158,7 @@ private IEnumerator SendPeriodicMessageCoroutine()
         Helpers.fillPosition(transform.position, MaxWorldBounds, out m.position);
         Helpers.fillPosition(new Vector3(0,0,0), MaxWorldBounds, out m.velocity);
         if (mainCamera != null) Helpers.fillRotation(mainCamera.transform.rotation.eulerAngles.y, out m.rotation);
+        m.state = (ushort)currentState;
         client.SendDataUdp(m.bytes, movement_m.size);
     }
     private unsafe void HandleRecievedPlayerMovement(movement_m_reply message)
@@ -169,7 +174,9 @@ private IEnumerator SendPeriodicMessageCoroutine()
         Vector3 vel = Helpers.readPosition(message.velocity, MaxWorldBounds);
         double rotation = -1 * (double)(Helpers.readRotation(message.rotation) + 180) * Math.PI / 180.0;
 
-        playerById[id].AddMovementReply(pos, vel, rotation);
+        MovementState state = (MovementState)message.state;
+
+        playerById[id].AddMovementReply(pos, vel, rotation, state);
     }
 
     private void OnPlayerJoin(int id)
