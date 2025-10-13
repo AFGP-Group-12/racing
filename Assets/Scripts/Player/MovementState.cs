@@ -4,7 +4,8 @@ public enum MovementState
 {
     walking,
     sprinting,
-    wallrunning,
+    wallrunningleft,
+    wallrunningright,
     sliding,
     air,
     dashing,
