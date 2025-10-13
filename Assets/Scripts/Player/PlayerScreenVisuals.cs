@@ -26,6 +26,8 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     [SerializeField] float rotationAdditive;
 
+    [SerializeField] float transparencySmoothTime = 0.10f;
+
     private float targetRotation;
 
     private float curRotation = 0;
@@ -33,7 +35,8 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     private float startingFov;
 
-    private float transparency;
+    private float transparencyVel;     // SmoothDamp velocity for transparency
+    private float currentTransparency; // smoothed 0..100
 
     private float currentAddedFov;
 
@@ -52,21 +55,27 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     }
 
-    public void SetSpeedVisuals(float basicSpeed, float sprintSpeed, float moveSpeed)
+    public void SetSpeedVisuals(float basicSpeed, float maxSpeed, float moveSpeed)
     {
-        float speedDifference = sprintSpeed - basicSpeed;
+
+        basicSpeed++;
+        float speedDifference = maxSpeed - basicSpeed;
         float moveDifference = moveSpeed - basicSpeed;
 
-        transparency = moveDifference / speedDifference;
+        float targetTransparency = Mathf.Clamp( (moveDifference / speedDifference) * 100f, 0f, 100f);
 
-        if (transparency < 0)
-        {
-            transparency = 0;
-        }
+        // Smooth the transparency
+        currentTransparency = Mathf.SmoothDamp(
+            currentTransparency, 
+            targetTransparency, 
+            ref transparencyVel, 
+            transparencySmoothTime
+        );
 
-        speedLineRawImage.material.SetFloat("_Transparency", transparency);
+        // Drive the material with the *smoothed* value
+        speedLineRawImage.material.SetFloat("_Transparency", currentTransparency);
 
-        currentAddedFov = transparency;
+        currentAddedFov = currentTransparency;
         playerCamera.fieldOfView = startingFov + (addedFov * currentAddedFov);
     }
 

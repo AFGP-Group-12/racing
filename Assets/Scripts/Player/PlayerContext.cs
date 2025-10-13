@@ -11,6 +11,7 @@ public class PlayerContext : MonoBehaviour
     public PlayerScreenVisuals screenVisuals { get; private set; }
     public PlayerAbilityManager abilityManager { get; private set; }  
     public PlayerGrappleLine grappleLine { get; private set; }
+    public GameObject playerObject;
     public Transform orintation;
     public Transform cameraTransform { get; private set; }
 

@@ -305,12 +305,13 @@ MonoBehaviour:
   wallRunForce: 15
   wallBoostForce: 100
   wallUpwardForce: 20
-  wallJumpForceUp: 50
+  wallJumpForceUp: 20
   wallJumpForceDirection: 40
   maxGravityForce: 40
-  slideForce: 5
+  slideForce: 2
   slideDuration: 1
   slideCooldown: 0.5
+  slideHeight: 0
   playerCamera: {fileID: 0}
   gravityForce: 0
   movementDivider: 200
@@ -371,6 +372,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1eda22e76cd5cb4cade8ce5ca8c75b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerObject: {fileID: 2811787371286987652}
   orintation: {fileID: 6213159212276226189}
 --- !u!114 &6342188381768307056
 MonoBehaviour:
