@@ -52,9 +52,11 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     }
 
-    public void SetSpeedVisuals(float basicSpeed, float sprintSpeed, float moveSpeed)
+    public void SetSpeedVisuals(float basicSpeed, float maxSpeed, float moveSpeed)
     {
-        float speedDifference = sprintSpeed - basicSpeed;
+
+        basicSpeed++;
+        float speedDifference = maxSpeed - basicSpeed;
         float moveDifference = moveSpeed - basicSpeed;
 
         transparency = moveDifference / speedDifference;
@@ -62,6 +64,11 @@ public class PlayerScreenVisuals : MonoBehaviour
         if (transparency < 0)
         {
             transparency = 0;
+        }
+
+        if (transparency > 100)
+        {
+            transparency = 100;
         }
 
         speedLineRawImage.material.SetFloat("_Transparency", transparency);

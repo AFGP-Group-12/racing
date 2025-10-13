@@ -14,11 +14,13 @@ public class PlayerMovement : MonoBehaviour
 
     private PlayerContext contextScript;
     private PlayerStateHandler stateHandler;
+    private CapsuleCollider playerCollider;
 
 
     [Header("Movement")]
     [SerializeField] float basicSpeed;
     [SerializeField] float sprintSpeed; // Should always be greater than moveSpeed
+    [SerializeField] float maxSpeed; // The max speed. This accounts for gaining speed while in air which would be faster than the sprint speed. This is only used for the screen visuals
 
     [Tooltip("Determines how quickly the player slows down when they stop moving")]
     [SerializeField] float groundDrag;
@@ -81,8 +83,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float slideForce;
     [SerializeField] float slideDuration;
     [SerializeField] float slideCooldown;
+
+    [Tooltip("Keep in mind that the normal height is 2")]
+    [SerializeField] float slideHeight;
     [SerializeField] Camera playerCamera;
     private float slideTimer = 0f;
+
+    private float normalColliderHeight = 2f;
 
 
     private bool slideReady;
@@ -129,6 +136,7 @@ public class PlayerMovement : MonoBehaviour
     {
         contextScript = GetComponent<PlayerContext>();
         stateHandler = contextScript.stateHandler;
+        playerCollider = contextScript.playerObject.GetComponent<CapsuleCollider>();
 
         rb = contextScript.rb;
         input = contextScript.input;
@@ -190,7 +198,7 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         // Camera
-        visualScript.SetSpeedVisuals(basicSpeed, sprintSpeed, moveSpeed);
+        visualScript.SetSpeedVisuals(basicSpeed, maxSpeed, rb.linearVelocity.magnitude);
         SetCameraRotation();
 
 
@@ -533,10 +541,11 @@ public class PlayerMovement : MonoBehaviour
             gravityForce -= 0.5f;
         }
     }
+    #endregion Wall Run Functions
+
+    #region Slide Functions
     private System.Collections.IEnumerator SlideCoroutine()
     {
-        
-
         Vector3 slideDirection = orientation.forward;
 
         float elapsed = 0f;
@@ -588,7 +597,7 @@ public class PlayerMovement : MonoBehaviour
                 slopeBoost = 0f;
             }
 
-
+            
             yield return null;
         }
 
@@ -605,7 +614,8 @@ public class PlayerMovement : MonoBehaviour
             Vector3 euler = playerCamera.transform.localEulerAngles;
             euler.z = z;
             playerCamera.transform.localEulerAngles = euler;
-
+            playerCollider.height = normalColliderHeight;
+            //playerCollider.size = new Vector3(playerCollider.size.x,normalColliderHeight,playerCollider.size.z);
             yield return null;
         }
 
@@ -619,27 +629,30 @@ public class PlayerMovement : MonoBehaviour
     {
         if (isOnGround && !stateHandler.isSliding && slideTimer <= 0f)
         {
-            Debug.Log("Slide Started");
+            //Debug.Log("Slide Started");
+            playerCollider.height = slideHeight;
+            //playerCollider.size = new Vector3(playerCollider.size.x,slideHeight,playerCollider.size.z);
             stateHandler.isSliding = true;
             slideTimer = slideCooldown; // reset cooldown
             StartCoroutine(SlideCoroutine());
-            isKeepingMomentum = true;
         }
     }
 
 
     public void SlideEnd()
     {
-        Debug.Log("Slide Ended");
+        //Debug.Log("Slide Ended");
         if (stateHandler.isSliding)
         {
             StopCoroutine(SlideCoroutine());
+            playerCollider.height = normalColliderHeight;
+            //playerCollider.size = new Vector3(playerCollider.size.x,normalColliderHeight,playerCollider.size.z);
             stateHandler.isSliding = false;
         }
         Invoke(nameof(SlideCooldown), slideCooldown);
     }
 
-    #endregion Wall Run Functions
+    #endregion Slide Functions
 
 
     
