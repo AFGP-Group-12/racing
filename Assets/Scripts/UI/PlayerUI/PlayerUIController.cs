@@ -257,14 +257,22 @@ public class PlayerUIController : MonoBehaviour
         overlay.style.height = Length.Percent(100);
 
         float elapsed = 0f;
+        // Throttle updates to reduce UI recalculation frequency and prevent font dictionary threading conflicts
+        // Update every 2 frames instead of every frame
+        int frameSkip = 0;
 
         while (elapsed < duration)
         {
             elapsed += Time.deltaTime;
             float progress = elapsed / duration;
 
-            // Shrink the overlay from bottom to top (100% to 0%)
-            overlay.style.height = Length.Percent((1f - progress) * 100f);
+            // Only update UI every other frame to reduce threading conflicts
+            if (frameSkip % 2 == 0)
+            {
+                // Shrink the overlay from bottom to top (100% to 0%)
+                overlay.style.height = Length.Percent((1f - progress) * 100f);
+            }
+            frameSkip++;
 
             yield return null;
         }
