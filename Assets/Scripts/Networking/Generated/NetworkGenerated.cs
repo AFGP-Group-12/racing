@@ -31,6 +31,7 @@ namespace Messages
         racing_lobby_update,
         racing_send_lobby_data,
         racing_game_start,
+        racing_ability_action,
 
     };
 
@@ -88,6 +89,8 @@ namespace Messages
                     return racing_send_lobby_data_m.size;
                 case message_t.racing_game_start:
                     return racing_game_start_m.size;
+                case message_t.racing_ability_action:
+                    return racing_ability_action_m.size;
 
                 default:
                     return -1;
@@ -201,6 +204,7 @@ namespace Messages
         [FieldOffset(0)] public racing_lobby_update_m racing_lobby_update;
         [FieldOffset(0)] public racing_send_lobby_data_m racing_send_lobby_data;
         [FieldOffset(0)] public racing_game_start_m racing_game_start;
+        [FieldOffset(0)] public racing_ability_action_m racing_ability_action;
 
 
 
@@ -523,6 +527,19 @@ namespace Messages
         [FieldOffset(0)] public fixed byte bytes[size];
         [FieldOffset(0)] public UInt16 type;
 
+    };
+
+    [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
+    public unsafe struct racing_ability_action_m
+    {
+        public const int size = 14;
+        [FieldOffset(0)] public fixed byte bytes[size];
+        [FieldOffset(0)] public UInt16 type;
+
+        [FieldOffset(2)] public UInt16 action;
+        [FieldOffset(4)] public UInt16 from_id;
+        [FieldOffset(6)] public UInt16 target_player_id;
+        [FieldOffset(8)] public position_sm position;
     };
 
 }
