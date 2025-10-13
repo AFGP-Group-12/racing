@@ -202,7 +202,7 @@ public class PlayerMovement : MonoBehaviour
 
 
 
-        if (state == MovementState.wallrunning)
+        if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
         {
             WallRun();
         }
@@ -361,11 +361,12 @@ public class PlayerMovement : MonoBehaviour
 
             Invoke(nameof(JumpCooldown), jumpCooldown);
         }
-        if (state == MovementState.wallrunning)
+        if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
         {
             if (isWallRight)
             {
-                stateHandler.isWallrunning = false;
+                stateHandler.isWallrunningLeft = false;
+                stateHandler.isWallrunningRight = false;
                 rb.useGravity = true;
 
                 if (horizontalInput > 0)
@@ -377,7 +378,8 @@ public class PlayerMovement : MonoBehaviour
             }
             else if (isWallLeft)
             {
-                stateHandler.isWallrunning = false;
+                stateHandler.isWallrunningLeft = false;
+                stateHandler.isWallrunningRight = false;
                 rb.useGravity = true;
 
                 if (horizontalInput < 0)
@@ -409,7 +411,7 @@ public class PlayerMovement : MonoBehaviour
 
     void SetCameraRotation()
     {
-        if (state == MovementState.wallrunning)
+        if (state == MovementState.wallrunningright|| state == MovementState.wallrunningleft)
         {
             float wallCameraChange = isWallRight ? -1 : 1;
             visualScript.MoveRotation(wallCameraChange);
@@ -444,7 +446,7 @@ public class PlayerMovement : MonoBehaviour
             isWallLeft = Physics.Raycast(positionWithOffset, -orientation.right, out leftWallHit, 1f, wallLayer);
             isWallRight = Physics.Raycast(positionWithOffset, orientation.right, out rightWallHit, 1f, wallLayer);
 
-            if (state != MovementState.wallrunning && isWallRight && horizontalInput > 0)
+            if (state != MovementState.wallrunningright && state != MovementState.wallrunningleft && isWallRight && horizontalInput > 0)
             {
                 rb.useGravity = false;
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -453,11 +455,12 @@ public class PlayerMovement : MonoBehaviour
                 rb.AddForce(new Vector3(0f, wallUpwardForce, 0f), ForceMode.Impulse);
 
                 canBoost = true;
-                stateHandler.isWallrunning = true;
+                stateHandler.isWallrunningRight = true;
+                stateHandler.isWallrunningLeft = false;
                 //Debug.Log("WallRight");
             }
 
-            if (state != MovementState.wallrunning && isWallLeft && horizontalInput < 0)
+            if (state != MovementState.wallrunningright && state != MovementState.wallrunningleft  && isWallLeft && horizontalInput < 0)
             {
                 rb.useGravity = false;
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -466,7 +469,8 @@ public class PlayerMovement : MonoBehaviour
                 rb.AddForce(new Vector3(0f, wallUpwardForce, 0f), ForceMode.Impulse);
 
                 canBoost = true;
-                stateHandler.isWallrunning = true;
+                stateHandler.isWallrunningRight = false;
+                stateHandler.isWallrunningLeft = true;
                 //Debug.Log("WallLeft");
             }
         }
@@ -484,9 +488,9 @@ public class PlayerMovement : MonoBehaviour
 
         runArc = new Vector3(0f, gravityForce, 0f);
 
-        if (isWallRight && state == MovementState.wallrunning)
+        if (isWallRight && state == MovementState.wallrunningright)
         {
-            stateHandler.isWallrunning = true;
+            stateHandler.isWallrunningRight = true;
             wallNormal = rightWallHit.normal;
             wallForward = Vector3.Cross(wallNormal, transform.up);
 
@@ -504,9 +508,9 @@ public class PlayerMovement : MonoBehaviour
             //Debug.Log("WallRight");
         }
 
-        if (isWallLeft && state == MovementState.wallrunning)
+        if (isWallLeft && state == MovementState.wallrunningleft)
         {
-            stateHandler.isWallrunning = true;
+            stateHandler.isWallrunningLeft = true;
             wallNormal = leftWallHit.normal;
             wallForward = Vector3.Cross(wallNormal, transform.up);
 
@@ -527,7 +531,8 @@ public class PlayerMovement : MonoBehaviour
         if (isOnGround || !isWallLeft && !isWallRight)
         {
             rb.useGravity = true;
-            stateHandler.isWallrunning = false;
+            stateHandler.isWallrunningRight = false;
+            stateHandler.isWallrunningLeft = false;
         }
 
         RunArcDecrease();

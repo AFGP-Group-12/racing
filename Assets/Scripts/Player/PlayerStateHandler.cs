@@ -9,7 +9,8 @@ public class PlayerStateHandler : MonoBehaviour
     private MovementState prevState{ get; set; }
 
     public bool isSprinting { get; set; }
-    public bool isWallrunning { get; set; }
+    public bool isWallrunningLeft { get; set; }
+    public bool isWallrunningRight { get; set; }
     public bool isSliding { get; set; }
     public bool isDashing { get; set; }
     public bool isGrappling{ get; set; }
@@ -31,7 +32,8 @@ public class PlayerStateHandler : MonoBehaviour
         state = true switch
         {
             var _ when isGrappling => MovementState.grappling,
-            var _ when isWallrunning => MovementState.wallrunning,
+            var _ when isWallrunningLeft => MovementState.wallrunningleft,
+            var _ when isWallrunningRight => MovementState.wallrunningright,
             var _ when isDashing => MovementState.dashing,
             var _ when !isOnGround => MovementState.air,
             var _ when isSliding => MovementState.sliding,
