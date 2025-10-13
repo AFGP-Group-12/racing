@@ -8,7 +8,7 @@ public class GrappleStationary : Ability
     private PlayerStateHandler stateHandler;
     private PlayerAbilityManager abilityManager;
     private PlayerMovement movementScript;
-    private Transform orintation;
+    private Transform orientation;
     private Transform cameraTransform;
 
     [Header("Grapple Info")]

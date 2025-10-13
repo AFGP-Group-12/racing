@@ -19,7 +19,6 @@ public class Platform : Ability
 
 
     private Vector3 spawnCoordinates;
-    private GameObject platformObject;
     private GameObject previewObject;
     private PreviewPlatform previewScript;
     private Ray ray;
@@ -101,11 +100,18 @@ public class Platform : Ability
             previewScript = null;
             previewObject = null;
 
-            platformObject = Instantiate(platformPrefab, spawnCoordinates, Quaternion.identity);
-            platformObject.GetComponent<SpawnedPlatform>().SetVariables(minScale, maxScale, increaseIncrement, decreaseIncrement);
+            SpawnPlatform(spawnCoordinates);
+            if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataPlatform(spawnCoordinates);
+
             abilityManager.StartAbilityCooldown(abilityIndex, cooldown);
 
             usingAbility = false;
         }
+    }
+
+    public void SpawnPlatform(Vector3 pos)
+    {
+        GameObject tmp = Instantiate(platformPrefab, pos, Quaternion.identity);
+        tmp.GetComponent<SpawnedPlatform>().SetVariables(minScale, maxScale, increaseIncrement, decreaseIncrement);
     }
 }

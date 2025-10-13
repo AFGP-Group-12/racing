@@ -19,12 +19,15 @@ public class GameplayClient : MonoBehaviour
     public GameObject otherPlayerPrefab;
     private Dictionary<int, OtherPlayer> playerById;
 
-    public MovementState currentState { private get; set; }
+    public MovementState CurrentState { get; set; }
 
     // Networking
     private Vector3 MaxWorldBounds = new Vector3(100, 100, 100);
     public BaseNetworkClient client = null;
     bool hasReceivedConnectionReply = false;
+
+    // Abilities
+    public Platform platformAbility;
 
     public void Awake()
     {
@@ -38,7 +41,7 @@ public class GameplayClient : MonoBehaviour
     public void Start()
     {
         playerById = new Dictionary<int, OtherPlayer>();
-        currentState = MovementState.idle;
+        CurrentState = MovementState.idle;
     }
 
     public void Setup()
@@ -75,6 +78,9 @@ public class GameplayClient : MonoBehaviour
                 case message_t.racing_game_start:
                     Debug.Log("Game Start!");
                     StartCoroutine(LoadGameScene());
+                    break;
+                case message_t.racing_ability_action:
+                    HandleRecievedAbilityAction(message.racing_ability_action);
                     break;
                 default:
                     Debug.Log("Got Unexpected: " + message.get_t());
@@ -151,6 +157,69 @@ private IEnumerator SendPeriodicMessageCoroutine()
         Debug.Log("client not connected");
     }
 
+    public unsafe void SendAbilityDataPlatform(Vector3 position)
+    {
+        racing_ability_action_m m;
+        m.type = (UInt16)message_t.racing_ability_action;
+
+        m.action = 1;
+        Helpers.fillPosition(position, MaxWorldBounds, out m.position);
+
+        client.SendDataTcp(m.bytes, racing_ability_action_m.size);
+    }
+
+    public unsafe void SendAbilityDataGrappleStationary(Vector3 position)
+    {
+        racing_ability_action_m m;
+        m.type = (UInt16)message_t.racing_ability_action;
+
+        m.action = 2;
+        Helpers.fillPosition(position, MaxWorldBounds, out m.position);
+
+        client.SendDataTcp(m.bytes, racing_ability_action_m.size);
+    }
+
+    public unsafe void SendAbilityDataGrapplePlayer(int target_id)
+    {
+        racing_ability_action_m m;
+        m.type = (UInt16)message_t.racing_ability_action;
+
+        m.action = 3;
+        m.target_player_id = (UInt16)target_id;
+
+        client.SendDataTcp(m.bytes, racing_ability_action_m.size);
+    }
+
+    private unsafe void HandleRecievedAbilityAction(racing_ability_action_m message)
+    {
+        int id = message.from_id;
+        if (!playerById.ContainsKey(id))
+        {
+            OnPlayerJoin(id);
+            return;
+        }
+
+        switch(message.action)
+        {
+            case 0: // Null case
+                Debug.Log("Got Unexpected null from received ability action");
+                break;
+            case 1: // Platform
+                Vector3 pos = Helpers.readPosition(message.position, MaxWorldBounds);
+                platformAbility.SpawnPlatform(pos);
+                break;
+            case 2: // Stationary Grapple
+                pos = Helpers.readPosition(message.position, MaxWorldBounds);
+                break;
+            case 3: // Player Grapple
+                int target = message.target_player_id;
+                break;
+            default:
+                Debug.Log("Got Unexpected ability action: " + message.action);
+                break;
+        }
+    }
+
     private unsafe void SendMovementData(Transform transform)
     {
         movement_m m;
@@ -158,7 +227,7 @@ private IEnumerator SendPeriodicMessageCoroutine()
         Helpers.fillPosition(transform.position, MaxWorldBounds, out m.position);
         Helpers.fillPosition(new Vector3(0,0,0), MaxWorldBounds, out m.velocity);
         if (mainCamera != null) Helpers.fillRotation(mainCamera.transform.rotation.eulerAngles.y, out m.rotation);
-        m.state = (ushort)currentState;
+        m.state = (ushort)CurrentState;
         client.SendDataUdp(m.bytes, movement_m.size);
     }
     private unsafe void HandleRecievedPlayerMovement(movement_m_reply message)
