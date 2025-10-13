@@ -4,7 +4,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using TMPro;
 
 
 public class GameplayClient : MonoBehaviour
@@ -18,7 +17,7 @@ public class GameplayClient : MonoBehaviour
     public static GameObject player = null;
     public static GameObject mainCamera = null;
     public GameObject otherPlayerPrefab;
-    private Dictionary<int, PlayerData> playerById;
+    private Dictionary<int, OtherPlayer> playerById;
 
     // Networking
     private Vector3 MaxWorldBounds = new Vector3(100, 100, 100);
@@ -35,7 +34,7 @@ public class GameplayClient : MonoBehaviour
 
     public void Start()
     {
-        playerById = new Dictionary<int, PlayerData>();
+        playerById = new Dictionary<int, OtherPlayer>();
     }
 
     public void Setup()
@@ -82,9 +81,9 @@ public class GameplayClient : MonoBehaviour
         Physics.SyncTransforms();
 
         // update players positions
-        foreach (PlayerData p in playerById.Values)
+        foreach (OtherPlayer p in playerById.Values)
         {
-            p.update(doPrediction);
+            p.Update(doPrediction);
         }
     }
 
@@ -170,114 +169,25 @@ private IEnumerator SendPeriodicMessageCoroutine()
         Vector3 vel = Helpers.readPosition(message.velocity, MaxWorldBounds);
         double rotation = -1 * (double)(Helpers.readRotation(message.rotation) + 180) * Math.PI / 180.0;
 
-        playerById[id].addMovementReply(pos, vel, rotation);
+        playerById[id].AddMovementReply(pos, vel, rotation);
     }
 
     private void OnPlayerJoin(int id)
     {
         if (playerById.ContainsKey(id))
         {
-            playerById[id].destroy();
+            playerById[id].Destroy();
             playerById.Remove(id);
         }
-        playerById[id] = new PlayerData(otherPlayerPrefab, LobbyClient.instance.GetPlayerName(id), mainCamera.GetComponent<Camera>());
+        playerById[id] = new OtherPlayer(otherPlayerPrefab, LobbyClient.instance.GetPlayerName(id), mainCamera.GetComponent<Camera>());
     }
     private void OnPlayerLeave(int id, string username)
     {
         if (playerById.ContainsKey(id))
         {
-            playerById[id].destroy();
+            playerById[id].Destroy();
             playerById.Remove(id);
         }
 
     }
 }
-
-class PlayerData
-{
-    GameObject playerObj;
-    Canvas canvas;
-
-    private Vector3 originMovement;
-    private Vector3 targetMovement;
-    private Vector3 velocity;
-
-    private int lastRecievedMovementFrame = 0;
-    private float averageMovementDelayInFrames = 15;
-
-    private const float frameAdjustmentWeight = 0.3f;
-
-    public PlayerData(GameObject prefab, string name, Camera camera)
-    {
-        playerObj = UnityEngine.Object.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
-        canvas = playerObj.GetComponentInChildren<Canvas>();
-        canvas.worldCamera = camera;
-
-        TextMeshProUGUI text = playerObj.GetComponentInChildren<TextMeshProUGUI>();
-        text.SetText(name);
-    }
-
-    public void addMovementReply(Vector3 pos, Vector3 velocity, double rotation)
-    {
-        if (lastRecievedMovementFrame == 0) { targetMovement = pos; }
-        originMovement = targetMovement;
-        targetMovement = pos;
-
-        playerObj.transform.position = originMovement;
-        
-        Vector3 look_direction = new Vector3((float)Math.Cos(rotation), 0, (float)Math.Sin(rotation));
-        playerObj.transform.rotation = Quaternion.LookRotation(look_direction);
-
-        this.velocity = velocity;
-
-        int currentFrame = Time.frameCount;
-
-        averageMovementDelayInFrames *= (1 - frameAdjustmentWeight);
-        averageMovementDelayInFrames += (currentFrame - lastRecievedMovementFrame) * frameAdjustmentWeight;
-        lastRecievedMovementFrame = currentFrame;
-    }
-    public void update(bool doPrediction)
-    {
-        if (playerObj == null) { return; }
-
-        Vector3 origin;
-        Vector3 target;
-
-        if (doPrediction)
-        {
-            origin = targetMovement;
-            target = calculatePrediction();
-        }
-        else
-        {
-            target = targetMovement;
-            origin = originMovement;
-        }
-
-        Vector3 interpolation = (target - origin) * calculateInterpolation();
-
-        playerObj.transform.position = origin + interpolation;
-        canvas.transform.LookAt(canvas.worldCamera.transform);
-    }
-
-    private Vector3 calculatePrediction()
-    {
-        return targetMovement + (Time.deltaTime * averageMovementDelayInFrames * velocity);
-    }
-
-    private float calculateInterpolation()
-    {
-        return (Time.frameCount - lastRecievedMovementFrame) / averageMovementDelayInFrames;
-    }
-
-    public void destroy()
-    {
-        if (playerObj != null)
-        {
-            UnityEngine.Object.Destroy(playerObj);
-            playerObj = null;
-            canvas = null;
-        }
-    }
-
-};
