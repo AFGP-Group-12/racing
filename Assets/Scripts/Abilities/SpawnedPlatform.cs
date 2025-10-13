@@ -2,13 +2,13 @@ using UnityEngine;
 
 public class SpawnedPlatform : MonoBehaviour
 {
-    private float minScale;
+    private float minScale = 0f;
 
-    private float maxScale = 0f;
+    private float maxScale = 7f;
 
-    private float increaseIncrement = 0f;
+    private float increaseIncrement = 0.05f;
 
-    private float decreaseIncrement = 0f;
+    private float decreaseIncrement = 0.002f;
 
 
     private bool reachedMaxScale = false;
