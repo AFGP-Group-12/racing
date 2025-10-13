@@ -1,4 +1,5 @@
 using System;
+using System.Text.RegularExpressions;
 using System.Threading;
 using Unity.Mathematics;
 using Unity.VisualScripting;
@@ -10,6 +11,10 @@ public class PlayerMovement : MonoBehaviour
 {
 
     #region Variables
+
+    private PlayerContext contextScript;
+    private PlayerStateHandler stateHandler;
+
 
     [Header("Movement")]
     [SerializeField] float basicSpeed;
@@ -24,6 +29,8 @@ public class PlayerMovement : MonoBehaviour
 
     private float horizontalInput;
     private float verticalInput;
+
+    private float normalHeight;
 
     Vector3 moveDirection;
 
@@ -46,8 +53,8 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Ground Check")]
     [SerializeField] LayerMask groundLayer;
-    [SerializeField] Transform orientation;
     [SerializeField] float playerHeight = 1.96f;
+    private Transform orientation;
 
     [Header("Wall Running")]
     [SerializeField] LayerMask wallLayer;
@@ -70,6 +77,16 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Determines how strong the gravity will be while on the wall. Wallrunning disables unity's gravity and uses this instead")]
     [SerializeField] float maxGravityForce;
 
+    [Header("Slide")]
+    [SerializeField] float slideForce;
+    [SerializeField] float slideDuration;
+    [SerializeField] float slideCooldown;
+    [SerializeField] Camera playerCamera;
+    private float slideTimer = 0f;
+
+
+    private bool slideReady;
+
     public float gravityForce;
 
     private bool canBoost = false;
@@ -84,6 +101,12 @@ public class PlayerMovement : MonoBehaviour
     private bool isWallLeft;
     private bool isWallRight;
 
+    [Header("Gapple Movement")]
+
+    [SerializeField] float movementDivider;
+
+    public float airEntryMaxSpeed = float.PositiveInfinity;
+
     [Header("Camera")]
     PlayerScreenVisuals visualScript;
 
@@ -93,58 +116,49 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("State Machine")]
 
-    private MovementState state;
+    private MovementState state = MovementState.walking;
+    private MovementState lastState;
 
-    public enum MovementState
-    {
-        walking,
-        sprinting,
-        wallrunning,
-        sliding,
-        air,
-        dashing,
-        idle
-    }
 
-    private bool walking;
-    private bool sprinting;
-    private bool wallrunning;
-    private bool sliding;
-    private bool air;
-    private bool dashing;
-
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
     #endregion Variables
 
     #region MonoBehavior
 
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        input = GetComponent<PlayerInput>();
-        visualScript = GetComponent<PlayerScreenVisuals>();
+        contextScript = GetComponent<PlayerContext>();
+        stateHandler = contextScript.stateHandler;
 
-        input.actions["Move"].performed += OnMove;
-        input.actions["Move"].canceled += OnMoveStop;
-
-        input.actions["Jump"].started += OnJump;
-
-        input.actions["Sprint"].started += OnSprint;
-        input.actions["Sprint"].canceled += OnSprintEnd;
+        rb = contextScript.rb;
+        input = contextScript.input;
+        visualScript = contextScript.screenVisuals;
 
         rb.freezeRotation = true;
 
         jumpReady = true;
+        slideReady = true;
 
         moveSpeed = basicSpeed;
 
         isAccelerating = false;
 
         Time.timeScale = 1;
+        orientation = contextScript.orintation;
+
+        stateHandler.isSliding = false;
+
+        slideTimer = 0f;
+
     }
 
     void Update()
     {
         isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
+        stateHandler.isOnGround = isOnGround;
+        lastState = state;
+        state = stateHandler.state;
+
         //Debug.DrawRay(transform.position, Vector3.down * 5f, Color.green);
 
         if (isOnGround)
@@ -156,12 +170,8 @@ public class PlayerMovement : MonoBehaviour
             rb.linearDamping = 0f;
         }
 
-        // State Handler
-        StateHandler();
-
         // Movement
         SetMovementSpeed();
-        SpeedControl();
         Accelerate();
         StopMomentumJump();
         // SpeedCheck(); // For debugging purposes
@@ -169,7 +179,12 @@ public class PlayerMovement : MonoBehaviour
         // Wall Running
         WallRunCheck();
 
-        
+        if (slideTimer > 0f)
+        {
+            slideTimer -= Time.deltaTime;
+        }
+
+
     }
 
     void FixedUpdate()
@@ -178,60 +193,67 @@ public class PlayerMovement : MonoBehaviour
         visualScript.SetSpeedVisuals(basicSpeed, sprintSpeed, moveSpeed);
         SetCameraRotation();
 
-        
+
+
         if (state == MovementState.wallrunning)
         {
             WallRun();
         }
 
-        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air)
+        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air || state == MovementState.sliding || state == MovementState.grappling)
         {
             MovePlayer();
         }
+        SetAirExitSpeed();
+        SpeedControl();
     }
+
+
 
     #endregion MonoBehavior
 
 
-    #region State Handler
-    void StateHandler()
-    {
+    #region Basic Movement
 
-        if (wallrunning)
+    public void StartMovement(float horizontalInput, float verticalInput)
+    {
+        this.horizontalInput = horizontalInput;
+        this.verticalInput = verticalInput;
+
+        if (state == MovementState.sprinting)
         {
-            state = MovementState.wallrunning;
+            accelerationIncrement = math.abs(accelerationIncrement);
         }
-        else if (dashing)
+    }
+
+    public void StopMovement()
+    {
+        accelerationIncrement = -math.abs(accelerationIncrement);
+        horizontalInput = 0;
+        verticalInput = 0;
+    }
+
+    public void OnSprint()
+    {
+        stateHandler.isSprinting = true;
+        accelerationIncrement = math.abs(accelerationIncrement);
+        isAccelerating = true;
+        isKeepingMomentum = false;
+    }
+
+    public void OnSprintEnd()
+    {
+        if (isOnGround)
         {
-            state = MovementState.dashing;
-        }
-        else if (!isOnGround)
-        {
-            state = MovementState.air;
-        }
-        else if (sliding)
-        {
-            state = MovementState.sliding;
-        }
-        else if (isOnGround && sprinting)
-        {
-            state = MovementState.sprinting;
+            stateHandler.isSprinting = false;
+            accelerationIncrement = -math.abs(accelerationIncrement);
+            isAccelerating = false;
         }
         else
         {
-            state = MovementState.walking;
+            isKeepingMomentum = true;
         }
     }
-
-    void SpeedCheck()
-    {
-        // currentSpeed = rb.linearVelocity.magnitude;
-    }
-
-    #endregion State Handler
-
-
-    #region Basic Movement
 
     void SetMovementSpeed()
     {
@@ -240,7 +262,14 @@ public class PlayerMovement : MonoBehaviour
 
     void MovePlayer()
     {
-        moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        if (state == MovementState.grappling)
+        {
+            moveDirection = (moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput) / movementDivider;
+        }
+        else
+        {
+            moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
+        }
 
         if (isOnGround)
         {
@@ -261,11 +290,14 @@ public class PlayerMovement : MonoBehaviour
     // Makes sure the movement speed doesnt go over a certain amount
     void SpeedControl()
     {
+        
         Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
-        if (curVelocity.magnitude > moveSpeed)
+        float max = (state == MovementState.air) ? airEntryMaxSpeed : moveSpeed;
+
+        if (curVelocity.magnitude > max)
         {
-            Vector3 limitedVel = curVelocity.normalized * moveSpeed;
+            Vector3 limitedVel = curVelocity.normalized * max;
             rb.linearVelocity = new Vector3(limitedVel.x, rb.linearVelocity.y, limitedVel.z);
         }
 
@@ -291,123 +323,68 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    void SetAirExitSpeed()
+    {
+        // Just entered Air
+        if (state != MovementState.air)
+        {
+            Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            airEntryMaxSpeed = horizontalVelocity.magnitude;
+
+            if (airEntryMaxSpeed < moveSpeed)
+            {
+                airEntryMaxSpeed = moveSpeed;
+            }
+        }
+    }
+
     #endregion Basic Movement Functions
 
-
-    #region Wall Run Functions
-
-    void WallRunCheck()
-    {
-        if (!isOnGround)
-        {
-            Vector3 positionWithOffset = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
-
-            isWallLeft = Physics.Raycast(positionWithOffset, -orientation.right, out leftWallHit, 1f, wallLayer);
-            isWallRight = Physics.Raycast(positionWithOffset, orientation.right, out rightWallHit, 1f, wallLayer);
-
-            if (state != MovementState.wallrunning && isWallRight && horizontalInput > 0)
-            {
-                rb.useGravity = false;
-                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-                gravityForce = 0;
-
-                rb.AddForce(new Vector3(0f, wallUpwardForce, 0f), ForceMode.Impulse);
-
-                canBoost = true;
-                wallrunning = true;
-                //Debug.Log("WallRight");
-            }
-
-            if (state != MovementState.wallrunning && isWallLeft && horizontalInput < 0)
-            {
-                rb.useGravity = false;
-                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-                gravityForce = 0;
-
-                rb.AddForce(new Vector3(0f, wallUpwardForce, 0f), ForceMode.Impulse);
-
-                canBoost = true;
-                wallrunning = true;
-                //Debug.Log("WallLeft");
-            }
-        }
-
-    }
-
-    void WallRun()
-    {
-
-        rb.useGravity = false;
-
-        wallNormal = new Vector3(0, 0, 0);
-
-        wallForward = new Vector3(0, 0, 0);
-
-        runArc = new Vector3(0f, gravityForce, 0f);
-
-        if (isWallRight && state == MovementState.wallrunning)
-        {
-            wallrunning = true;
-            wallNormal = rightWallHit.normal;
-            wallForward = Vector3.Cross(wallNormal, transform.up);
-
-            if (Vector3.Dot(wallForward, orientation.forward) < 0)
-            {
-                wallForward = -wallForward;
-            }
-
-            if (canBoost)
-            {
-                rb.AddForce(wallForward * wallBoostForce, ForceMode.Impulse);
-                canBoost = false;
-            }
-            rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
-            //Debug.Log("WallRight");
-        }
-
-        if (isWallLeft && state == MovementState.wallrunning)
-        {
-            wallrunning = true;
-            wallNormal = leftWallHit.normal;
-            wallForward = Vector3.Cross(wallNormal, transform.up);
-
-            if (Vector3.Dot(wallForward, orientation.forward) < 0)
-            {
-                wallForward = -wallForward;
-            }
-
-            if (canBoost)
-            {
-                rb.AddForce(wallForward * wallBoostForce, ForceMode.Impulse);
-                canBoost = false;
-            }
-            rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
-            //Debug.Log("WallLeft");
-        }
-
-        if (isOnGround || !isWallLeft && !isWallRight)
-        {
-            rb.useGravity = true;
-            wallrunning = false;
-        }
-
-        RunArcDecrease();
-    }
-
-    void RunArcDecrease()
-
-
-    {
-        if (gravityForce > -math.abs(maxGravityForce))
-        {
-            gravityForce -= 0.5f;
-        }
-    }
-
-    #endregion Wall Run Functions
-
-
     #region Jump Functions
+
+    public void Jump()
+    {
+        if (jumpReady && isOnGround)
+        {
+            jumpReady = false;
+
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+
+            Invoke(nameof(JumpCooldown), jumpCooldown);
+        }
+        if (state == MovementState.wallrunning)
+        {
+            if (isWallRight)
+            {
+                stateHandler.isWallrunning = false;
+                rb.useGravity = true;
+
+                if (horizontalInput > 0)
+                {
+                    horizontalInput = 0;
+                }
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+                rb.AddForce(transform.up * wallJumpForceUp + (-orientation.right * wallJumpForceDirection), ForceMode.Impulse);
+            }
+            else if (isWallLeft)
+            {
+                stateHandler.isWallrunning = false;
+                rb.useGravity = true;
+
+                if (horizontalInput < 0)
+                {
+                    horizontalInput = 0;
+                }
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+                rb.AddForce(transform.up * wallJumpForceUp + (orientation.right * wallJumpForceDirection), ForceMode.Impulse);
+            }
+
+            Invoke(nameof(JumpCooldown), jumpCooldown);
+        }
+    }
+
     void StopMomentumJump()
     {
         if (isKeepingMomentum && !isOnGround)
@@ -416,7 +393,7 @@ public class PlayerMovement : MonoBehaviour
         }
         else if (isKeepingMomentum && isOnGround)
         {
-            sprinting = false;
+            stateHandler.isSprinting = false;
             accelerationIncrement = -math.abs(accelerationIncrement);
             isAccelerating = false;
             isKeepingMomentum = false;
@@ -441,96 +418,231 @@ public class PlayerMovement : MonoBehaviour
         jumpReady = true;
     }
 
+    void SlideCooldown()
+    {
+        slideReady = true;
+    }
+
     #endregion Jump Functions
 
-    
-    #region Input Functions
-    void OnMove(InputAction.CallbackContext context)
+
+    #region Wall Run Functions
+
+    void WallRunCheck()
     {
-        horizontalInput = context.ReadValue<Vector2>().x;
-        verticalInput = context.ReadValue<Vector2>().y;
-
-        if (state == MovementState.sprinting)
+        if (!isOnGround)
         {
-            accelerationIncrement = math.abs(accelerationIncrement);
-        }
-    }
+            Vector3 positionWithOffset = new Vector3(transform.position.x, transform.position.y + 0.25f, transform.position.z);
 
-    void OnMoveStop(InputAction.CallbackContext context)
-    {
-        accelerationIncrement = -math.abs(accelerationIncrement);
-        horizontalInput = 0;
-        verticalInput = 0;
-    }
+            isWallLeft = Physics.Raycast(positionWithOffset, -orientation.right, out leftWallHit, 1f, wallLayer);
+            isWallRight = Physics.Raycast(positionWithOffset, orientation.right, out rightWallHit, 1f, wallLayer);
 
-    void OnJump(InputAction.CallbackContext context)
-    {
-        if (jumpReady && isOnGround)
-        {
-            jumpReady = false;
-
-            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-
-            Invoke(nameof(JumpCooldown), jumpCooldown);
-        }
-        if (state == MovementState.wallrunning)
-        {
-            if (isWallRight)
+            if (state != MovementState.wallrunning && isWallRight && horizontalInput > 0)
             {
-                wallrunning = false;
-                rb.useGravity = true;
-                
-                if (horizontalInput > 0)
-                {
-                    horizontalInput = 0;
-                }
+                rb.useGravity = false;
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-                rb.AddForce(transform.up * wallJumpForceUp + (-orientation.right * wallJumpForceDirection), ForceMode.Impulse);
-            }
-            else if (isWallLeft)
-            {
-                wallrunning = false;
-                rb.useGravity = true;
+                gravityForce = 0;
 
-                if (horizontalInput < 0)
-                {
-                    horizontalInput = 0;
-                }
-                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-                rb.AddForce(transform.up * wallJumpForceUp + (orientation.right * wallJumpForceDirection), ForceMode.Impulse);
+                rb.AddForce(new Vector3(0f, wallUpwardForce, 0f), ForceMode.Impulse);
+
+                canBoost = true;
+                stateHandler.isWallrunning = true;
+                //Debug.Log("WallRight");
             }
 
-            Invoke(nameof(JumpCooldown), jumpCooldown);
+            if (state != MovementState.wallrunning && isWallLeft && horizontalInput < 0)
+            {
+                rb.useGravity = false;
+                rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+                gravityForce = 0;
+
+                rb.AddForce(new Vector3(0f, wallUpwardForce, 0f), ForceMode.Impulse);
+
+                canBoost = true;
+                stateHandler.isWallrunning = true;
+                //Debug.Log("WallLeft");
+            }
         }
+
     }
 
-    private void OnSprint(InputAction.CallbackContext context)
+    void WallRun()
     {
-        sprinting = true;
-        accelerationIncrement = math.abs(accelerationIncrement);
-        isAccelerating = true;
-        isKeepingMomentum = false;
+
+        rb.useGravity = false;
+
+        wallNormal = new Vector3(0, 0, 0);
+
+        wallForward = new Vector3(0, 0, 0);
+
+        runArc = new Vector3(0f, gravityForce, 0f);
+
+        if (isWallRight && state == MovementState.wallrunning)
+        {
+            stateHandler.isWallrunning = true;
+            wallNormal = rightWallHit.normal;
+            wallForward = Vector3.Cross(wallNormal, transform.up);
+
+            if (Vector3.Dot(wallForward, orientation.forward) < 0)
+            {
+                wallForward = -wallForward;
+            }
+
+            if (canBoost)
+            {
+                rb.AddForce(wallForward * wallBoostForce, ForceMode.Impulse);
+                canBoost = false;
+            }
+            rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
+            //Debug.Log("WallRight");
+        }
+
+        if (isWallLeft && state == MovementState.wallrunning)
+        {
+            stateHandler.isWallrunning = true;
+            wallNormal = leftWallHit.normal;
+            wallForward = Vector3.Cross(wallNormal, transform.up);
+
+            if (Vector3.Dot(wallForward, orientation.forward) < 0)
+            {
+                wallForward = -wallForward;
+            }
+
+            if (canBoost)
+            {
+                rb.AddForce(wallForward * wallBoostForce, ForceMode.Impulse);
+                canBoost = false;
+            }
+            rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
+            //Debug.Log("WallLeft");
+        }
+
+        if (isOnGround || !isWallLeft && !isWallRight)
+        {
+            rb.useGravity = true;
+            stateHandler.isWallrunning = false;
+        }
+
+        RunArcDecrease();
     }
 
-    private void OnSprintEnd(InputAction.CallbackContext context)
+    void RunArcDecrease()
     {
-        if (isOnGround)
+        if (gravityForce > -math.abs(maxGravityForce))
         {
-            sprinting = false;
-            accelerationIncrement = -math.abs(accelerationIncrement);
-            isAccelerating = false;
+            gravityForce -= 0.5f;
         }
-        else
+    }
+    private System.Collections.IEnumerator SlideCoroutine()
+    {
+        
+
+        Vector3 slideDirection = orientation.forward;
+
+        float elapsed = 0f;
+        Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
+        float tempSlideForce = slideForce * (curVelocity.magnitude / 18);
+
+        float slopeBoost = 0f;
+
+        float startZ = playerCamera.transform.localEulerAngles.z;
+        float tiltAngle = 6f;
+
+
+        while (elapsed < slideDuration && curVelocity.magnitude != 0)
         {
+            elapsed += Time.deltaTime;
+            tempSlideForce -= tempSlideForce * (Time.deltaTime / slideDuration);
+
+            if (isOnGround)
+            {
+                RaycastHit slopeHit;
+                if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.2f, groundLayer))
+                {
+                    Vector3 slopeDir = Vector3.ProjectOnPlane(slideDirection, slopeHit.normal).normalized;
+
+                    float slopeFactor = -Vector3.Dot(slopeHit.normal, Vector3.up);
+                    float targetBoost = tempSlideForce * Mathf.Max(slopeFactor, 0f);
+                    slopeBoost = Mathf.Lerp(slopeBoost, targetBoost, Time.deltaTime * 3f);
+
+                    if (slopeFactor < 0f)
+                    {
+                        slopeDir = new Vector3(slopeDir.x, 0f, slopeDir.z).normalized;
+                        slopeBoost = 0f;
+                    }
+
+                    rb.AddForce(slopeDir * (tempSlideForce + slopeBoost), ForceMode.VelocityChange);
+                    slideDirection = slopeDir;
+
+                    float progress = Mathf.Clamp01(elapsed / (slideDuration / 2f));
+                    float targetZ = Mathf.LerpAngle(startZ, tiltAngle, progress);
+                    Vector3 euler = playerCamera.transform.localEulerAngles;
+                    euler.z = targetZ;
+                    playerCamera.transform.localEulerAngles = euler;
+                }
+            }
+            else
+            {
+                // Airborne slide
+                rb.AddForce(slideDirection * tempSlideForce, ForceMode.VelocityChange);
+                slopeBoost = 0f;
+            }
+
+
+            yield return null;
+        }
+
+        float returnElapsed = 0f;
+        float returnDuration = 0.2f;
+        float currentZ = playerCamera.transform.localEulerAngles.z;
+
+        while (returnElapsed < returnDuration)
+        {
+            returnElapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(returnElapsed / returnDuration);
+
+            float z = Mathf.LerpAngle(tiltAngle, startZ, progress);
+            Vector3 euler = playerCamera.transform.localEulerAngles;
+            euler.z = z;
+            playerCamera.transform.localEulerAngles = euler;
+
+            yield return null;
+        }
+
+        Vector3 finalEuler = playerCamera.transform.localEulerAngles;
+        finalEuler.z = startZ;
+        playerCamera.transform.localEulerAngles = finalEuler;
+    }
+
+
+    public void Slide()
+    {
+        if (isOnGround && !stateHandler.isSliding && slideTimer <= 0f)
+        {
+            Debug.Log("Slide Started");
+            stateHandler.isSliding = true;
+            slideTimer = slideCooldown; // reset cooldown
+            StartCoroutine(SlideCoroutine());
             isKeepingMomentum = true;
         }
     }
+
+
+    public void SlideEnd()
+    {
+        Debug.Log("Slide Ended");
+        if (stateHandler.isSliding)
+        {
+            StopCoroutine(SlideCoroutine());
+            stateHandler.isSliding = false;
+        }
+        Invoke(nameof(SlideCooldown), slideCooldown);
+    }
+
+    #endregion Wall Run Functions
+
+
     
-    #endregion Input Functions
-
-
 
 
 }

@@ -1,0 +1,86 @@
+.hud-root {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.crosshair-dot {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    opacity: 0.9;
+    border-width: 1px;
+    border-color: rgba(0, 0, 0, 0.6);
+    border-top-left-radius: 50%;
+    border-top-right-radius: 50%;
+    border-bottom-left-radius: 50%;
+    border-bottom-right-radius: 50%;
+}
+
+.ability-bar {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+}
+
+.ability-grid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 40px;
+}
+
+.ability-container {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.ability-slot {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    background-color: rgb(255, 255, 255);
+    border-width: 8px;
+    border-color: rgb(0, 0, 0);
+    border-radius: 0;
+    overflow: visible;
+}
+
+.ability-icon {
+    width: 100%;
+    height: 100%;
+    scale-mode: scale-to-fit;
+    opacity: 1;
+}
+
+.keybind-label-bottom {
+    position: absolute;
+    bottom: -15px;
+    left: 50%;
+    translate: -50% 0;
+    width: 40px;
+    height: 40px;
+    unity-text-align: middle-center;
+    font-size: 24px;
+    color: rgb(0, 0, 0);
+    background-color: rgb(255, 255, 255);
+    -unity-font-style: bold;
+    border-width: 6px;
+    border-color: rgb(0, 0, 0);
+    padding-top: 2px;
+    line-height: 40px;
+    -unity-text-align: middle-center;
+}
+
+.ability-slot:hover {
+    border-color: rgba(255, 255, 255, 0.35);
+    background-color: rgba(255, 255, 255, 0.1);
+}

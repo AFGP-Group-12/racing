@@ -1,0 +1,242 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.InputSystem;
+
+public class PlayerAbilityManager : MonoBehaviour
+{
+    #region Variables
+    private PlayerContext contextScript;
+    private PlayerInput input;
+    public List<Ability> abilityList;
+
+    public List<Coroutine> abilityDurationList ;
+
+    public int abilityIndex = 1;
+    bool isChangeAbility = false;
+    private Ability emptyAbility;
+
+    private bool abilityInUse1 = false;
+    private bool abilityInUse2 = false;
+    private bool abilityInUse3 = false;
+
+
+    public event Action<int> OnAbilityCooldownStart;
+    public event Action<int> OnAbilityCooldownEnd;
+    public event Action<int> OnAbilityDurationStart;
+    public event Action<int> OnAbilityDurationEnd;
+    public event Action<int, Ability> OnAbilityChanged;
+
+    #endregion Variables
+
+
+    #region MonoBehaviour
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        contextScript = GetComponent<PlayerContext>();
+
+        input = contextScript.input;
+
+        emptyAbility = ScriptableObject.CreateInstance<EmptyAbility>();
+
+        abilityList = new List<Ability>
+        {
+            emptyAbility,
+            emptyAbility,
+            emptyAbility
+        };
+
+        abilityDurationList = new List<Coroutine>
+        {
+            null,
+            null,
+            null
+        };
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        IndexCheck();
+        AbilityPreviewUpdate();
+        AbilityInUseUpdate();
+
+    }
+
+    #endregion MonoBehaviour
+
+    #region Functions
+
+    void IndexCheck()
+    {
+        if (abilityIndex > 2)
+        {
+            abilityIndex = 0;
+        }
+        else if (abilityIndex < 0)
+        {
+            abilityIndex = 2;
+        }
+    }
+    public void SwitchActiveIndex(int indexAdditive)
+    {
+        abilityIndex += indexAdditive;
+    }
+
+    public void ChangeAbility(bool isChangeAbility)
+    {
+        this.isChangeAbility = isChangeAbility;
+    }
+
+    private void AbilityPreviewUpdate()
+    {
+        if (abilityList[0].isPreview)
+        {
+            abilityList[0].AbilityPreview(contextScript);
+        }
+        if (abilityList[1].isPreview)
+        {
+            abilityList[1].AbilityPreview(contextScript);
+        }
+        if (abilityList[2].isPreview)
+        {
+            abilityList[2].AbilityPreview(contextScript);
+        }
+    }
+
+    private void AbilityInUseUpdate()
+    {
+        
+        abilityInUse1 = abilityList[0].usingAbility;
+        abilityInUse2 = abilityList[1].usingAbility;
+        abilityInUse3 = abilityList[2].usingAbility;
+
+        if (abilityInUse1)
+        {
+            abilityList[0].AbilityInUse(contextScript);
+        }
+        if (abilityInUse2)
+        {
+            abilityList[1].AbilityInUse(contextScript);
+        }
+        if (abilityInUse3)
+        {
+            abilityList[2].AbilityInUse(contextScript);
+        }
+    }
+
+    void AddAbility(Ability ability)
+    {
+        if (abilityList == null || abilityList.Count == 0)
+        {
+            Debug.LogWarning("abilityList not initialized");
+            return;
+        }
+        if (ability == null)
+        {
+            Debug.LogWarning("ability is null");
+            return;
+        }
+
+        if (abilityList[abilityIndex].abilityIndex == -1)
+        {
+            abilityList[abilityIndex] = ability;
+            abilityList[abilityIndex].abilityIndex = abilityIndex;
+            abilityList[abilityIndex].OnInstantiate();
+            OnAbilityChanged?.Invoke(abilityIndex, abilityList[abilityIndex]);
+            abilityIndex += 1;
+        }
+        else if(isChangeAbility)
+        {
+            abilityList[abilityIndex] = ability;
+            abilityList[abilityIndex].abilityIndex = abilityIndex;
+            abilityList[abilityIndex].OnInstantiate();
+            OnAbilityChanged?.Invoke(abilityIndex, abilityList[abilityIndex]);
+        }
+    }
+    public void debugAdd(Ability ability) // Delete this once done
+    {
+        AddAbility(ability);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("AbilityBox"))
+        {
+            AddAbility(other.GetComponent<AbilityPickup>().GetAbility());
+        }
+    }
+
+    public void StartAbility1()
+    {
+        if (abilityList[0].abilityIndex == -1 || abilityInUse2 || abilityInUse3) return;
+
+        abilityList[0].Activate(contextScript, 0);
+    }
+    public void EndAbility1()
+    {
+        if (abilityList[0].abilityIndex == -1) return;
+
+        abilityList[0].DeActivate(contextScript);
+    }
+    public void StartAbility2()
+    {
+        if (abilityList[1].abilityIndex == -1 || abilityInUse1 || abilityInUse3) return;
+
+        abilityList[1].Activate(contextScript, 1);
+    }
+    public void EndAbility2()
+    {
+        if (abilityList[1].abilityIndex == -1) return;
+
+        abilityList[1].DeActivate(contextScript);
+    }
+    public void StartAbility3()
+    {
+        if (abilityList[2].abilityIndex == -1 || abilityInUse1 || abilityInUse2) return;
+
+        abilityList[2].Activate(contextScript, 2);
+    }
+    public void EndAbility3()
+    {
+        if (abilityList[2].abilityIndex == -1)
+            return;
+
+        abilityList[2].DeActivate(contextScript);
+    }
+
+    public void StartAbilityDuration(int abilityIndex, float duration)
+    {
+        abilityDurationList[abilityIndex] = StartCoroutine(AbilityDuration(abilityIndex, duration));
+    }
+    public void EndAbilityEarly(int abilityIndex)
+    {
+        StopCoroutine(abilityDurationList[abilityIndex]);
+    }
+    IEnumerator AbilityDuration(int abilityIndex, float duration)
+    {
+        OnAbilityDurationStart?.Invoke(abilityIndex);
+        yield return new WaitForSeconds(duration);
+        abilityList[abilityIndex].AbilityEnd();
+        OnAbilityDurationEnd?.Invoke(abilityIndex);
+    }
+
+
+    public void StartAbilityCooldown(int abilityIndex, float cooldown)
+    {
+        StartCoroutine(AbilityCooldown(abilityIndex, cooldown));
+    }
+    IEnumerator AbilityCooldown(int abilityIndex, float cooldown)
+    {
+        OnAbilityCooldownStart?.Invoke(abilityIndex);
+        yield return new WaitForSeconds(cooldown);
+        abilityList[abilityIndex].CooldownEnd();
+        OnAbilityCooldownEnd?.Invoke(abilityIndex);
+    }
+
+
+    #endregion Functions
+}
