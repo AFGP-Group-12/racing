@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 97686144600319017}
   - component: {fileID: 6964026083562876640}
   - component: {fileID: 3187394567747850170}
-  - component: {fileID: 32754395467257330}
+  - component: {fileID: 3609207752551917790}
   m_Layer: 0
   m_Name: Player Object
   m_TagString: Untagged
@@ -118,7 +118,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &32754395467257330
+--- !u!136 &3609207752551917790
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -202,6 +202,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 563512265344823795}
+  - {fileID: 618361242267306667}
   m_Father: {fileID: 5386568211178942212}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7651006634576081692
@@ -216,15 +217,15 @@ GameObject:
   - component: {fileID: 3836458721096162249}
   - component: {fileID: 3429061951387332628}
   - component: {fileID: 2228908584671281163}
-  - component: {fileID: 3502863722624259181}
-  - component: {fileID: 5973227786179744465}
-  - component: {fileID: 8118308743533648078}
-  - component: {fileID: 6342188381768307056}
-  - component: {fileID: 4166982844110775309}
-  - component: {fileID: 8597167863065967191}
+  - component: {fileID: 1784347749981011002}
+  - component: {fileID: 3924083376360871488}
+  - component: {fileID: 5149432888801985109}
+  - component: {fileID: 7819291645068659924}
+  - component: {fileID: 6328292273033215950}
+  - component: {fileID: 6426214075695272378}
   - component: {fileID: 8566347814016398955}
   - component: {fileID: 3564877386535356918}
-  - component: {fileID: 8734030400280063724}
+  - component: {fileID: 3656911224889164238}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -291,6 +292,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   basicSpeed: 12
   sprintSpeed: 18
+  maxSpeed: 25
   groundDrag: 5
   jumpForce: 45
   jumpCooldown: 0.25
@@ -303,14 +305,15 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   wallRunForce: 15
-  wallBoostForce: 100
+  wallBoostForce: 40
   wallUpwardForce: 20
-  wallJumpForceUp: 50
+  wallJumpForceUp: 20
   wallJumpForceDirection: 40
   maxGravityForce: 40
   slideForce: 5
   slideDuration: 1
   slideCooldown: 0.5
+  slideHeight: 1
   playerCamera: {fileID: 0}
   gravityForce: 0
   movementDivider: 200
@@ -333,7 +336,7 @@ MonoBehaviour:
   playerCameraScript: {fileID: 0}
   rotationIncrement: 0.25
   rotationAdditive: 2
---- !u!114 &3502863722624259181
+--- !u!114 &1784347749981011002
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -347,7 +350,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   debugDash: {fileID: 11400000, guid: 00f82068022fed245b0f0a0b48724180, type: 2}
   debugGiveDash: 0
---- !u!114 &5973227786179744465
+--- !u!114 &3924083376360871488
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -359,7 +362,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59bb2c35f6a3c2c4c9d54e47d9ab2deb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8118308743533648078
+--- !u!114 &5149432888801985109
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -371,8 +374,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1eda22e76cd5cb4cade8ce5ca8c75b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerObject: {fileID: 2811787371286987652}
   orintation: {fileID: 6213159212276226189}
---- !u!114 &6342188381768307056
+--- !u!114 &7819291645068659924
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -386,7 +390,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityList: []
   abilityIndex: 0
---- !u!114 &4166982844110775309
+--- !u!114 &6328292273033215950
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -398,8 +402,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e154bd423685b24fbf003d91e9c7c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grappleStartPoint: {fileID: 563512265344823795}
---- !u!120 &8597167863065967191
+  grappleStartPoint: {fileID: 618361242267306667}
+--- !u!120 &6426214075695272378
 LineRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
@@ -640,9 +644,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cd37c9220cc3e6148840198683c0e34e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  abilityManager: {fileID: 6342188381768307056}
-  uiDocument: {fileID: 8734030400280063724}
---- !u!114 &8734030400280063724
+  abilityManager: {fileID: 7819291645068659924}
+  uiDocument: {fileID: 3656911224889164238}
+--- !u!114 &3656911224889164238
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -661,3 +665,34 @@ MonoBehaviour:
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
   m_WorldSpaceHeight: 1080
+--- !u!1 &7941051853214393720
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 618361242267306667}
+  m_Layer: 0
+  m_Name: Gapple Start Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &618361242267306667
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7941051853214393720}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.176, y: 0.33299994, z: 0.904}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6213159212276226189}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
