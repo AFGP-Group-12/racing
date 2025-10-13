@@ -8,8 +8,6 @@ public class Platform : Ability
     private Transform cameraTransform;
 
 
-
-
     [Header("Platform Info")]
     public GameObject platformPrefab;
     public GameObject previewPrefab;
