@@ -363,7 +363,7 @@ namespace Messages
     [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
     public unsafe struct movement_m
     {
-        public const int size = 18;
+        public const int size = 20;
         [FieldOffset(0)] public fixed byte bytes[size];
         [FieldOffset(0)] public UInt16 type;
 
@@ -371,12 +371,13 @@ namespace Messages
         [FieldOffset(8)] public position_sm velocity;
         [FieldOffset(14)] public UInt16 rotation;
         [FieldOffset(16)] public UInt16 timestamp;
+        [FieldOffset(18)] public UInt16 state;
     };
 
     [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
     public unsafe struct movement_m_reply
     {
-        public const int size = 20;
+        public const int size = 22;
         [FieldOffset(0)] public fixed byte bytes[size];
         [FieldOffset(0)] public UInt16 type;
 
@@ -385,6 +386,7 @@ namespace Messages
         [FieldOffset(10)] public position_sm velocity;
         [FieldOffset(16)] public UInt16 rotation;
         [FieldOffset(18)] public UInt16 timestamp;
+        [FieldOffset(20)] public UInt16 state;
     };
 
     [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
