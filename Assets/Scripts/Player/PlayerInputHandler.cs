@@ -13,6 +13,8 @@ public class PlayerInputHandler : MonoBehaviour
 
     private PlayerAbilityManager abilityManager;
 
+    private PlayerStateHandler stateHandler;
+
     public Ability debugDash; // debugging
 
     public bool debugGiveDash = false;
@@ -29,6 +31,8 @@ public class PlayerInputHandler : MonoBehaviour
         input = contextScript.input;
 
         movementScript = contextScript.movement;
+
+        stateHandler = contextScript.stateHandler;
         abilityManager = contextScript.abilityManager;
 
         input.actions["Move"].performed += OnMove;
@@ -74,12 +78,20 @@ public class PlayerInputHandler : MonoBehaviour
         horizontalInput = context.ReadValue<Vector2>().x;
         verticalInput = context.ReadValue<Vector2>().y;
 
-        movementScript.StartMovement(horizontalInput, verticalInput);
+        if (!Mathf.Approximately(horizontalInput, 0) || !Mathf.Approximately(verticalInput, 0))
+        {
+            movementScript.StartMovement(horizontalInput, verticalInput);
+            stateHandler.isWalking = true;
+        }
+        else
+            stateHandler.isWalking = false;
+
     }
 
     void OnMoveStop(InputAction.CallbackContext context)
     {
         movementScript.StopMovement();
+        stateHandler.isWalking = false;
     }
 
     void OnJump(InputAction.CallbackContext context)

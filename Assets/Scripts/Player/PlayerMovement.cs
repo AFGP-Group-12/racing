@@ -199,7 +199,7 @@ public class PlayerMovement : MonoBehaviour
             WallRun();
         }
 
-        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air || state == MovementState.sliding || state == MovementState.grappleing)
+        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air || state == MovementState.sliding || state == MovementState.grappling)
         {
             MovePlayer();
         }
@@ -261,7 +261,7 @@ public class PlayerMovement : MonoBehaviour
 
     void MovePlayer()
     {
-        if (state == MovementState.grappleing)
+        if (state == MovementState.grappling)
         {
             moveDirection = (moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput) / movementDivider;
         }

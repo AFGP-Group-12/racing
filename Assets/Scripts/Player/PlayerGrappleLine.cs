@@ -32,7 +32,7 @@ public class PlayerGrappleLine : MonoBehaviour
     void Update()
     {
         startPoint = grappleStartPoint.position;
-        if (stateHandler.state == MovementState.grappleing)
+        if (stateHandler.state == MovementState.grappling)
         {
             currentEndPoint = Vector3.Lerp(currentEndPoint, endPoint, Time.deltaTime * 8f);
 
