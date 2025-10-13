@@ -52,6 +52,8 @@ MonoBehaviour:
     spriteSet: {fileID: 11400000, guid: d29f5f7ab29de4531a40b04715c1ddc7, type: 2}
   - state: 1
     spriteSet: {fileID: 11400000, guid: d29f5f7ab29de4531a40b04715c1ddc7, type: 2}
+  - state: 4
+    spriteSet: {fileID: 11400000, guid: 3063d2f170f4342589c05a3f5044e0e5, type: 2}
   targetRenderer: {fileID: 4878177146054576323}
   viewer: {fileID: 0}
   playerStateHandler: {fileID: 0}
