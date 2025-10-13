@@ -42,7 +42,7 @@ GameObject:
   - component: {fileID: 97686144600319017}
   - component: {fileID: 6964026083562876640}
   - component: {fileID: 3187394567747850170}
-  - component: {fileID: 32754395467257330}
+  - component: {fileID: 3609207752551917790}
   m_Layer: 0
   m_Name: Player Object
   m_TagString: Untagged
@@ -118,7 +118,7 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!136 &32754395467257330
+--- !u!136 &3609207752551917790
 CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -297,7 +297,6 @@ MonoBehaviour:
   jumpForce: 45
   jumpCooldown: 0.25
   jumpTurningForce: 2
-  isKeepingMomentum: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -337,7 +336,6 @@ MonoBehaviour:
   playerCameraScript: {fileID: 0}
   rotationIncrement: 0.25
   rotationAdditive: 2
-  transparencySmoothTime: 0.1
 --- !u!114 &1784347749981011002
 MonoBehaviour:
   m_ObjectHideFlags: 0

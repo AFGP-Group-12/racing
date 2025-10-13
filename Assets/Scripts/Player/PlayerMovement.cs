@@ -14,7 +14,7 @@ public class PlayerMovement : MonoBehaviour
 
     private PlayerContext contextScript;
     private PlayerStateHandler stateHandler;
-    private BoxCollider playerCollider;
+    private CapsuleCollider playerCollider;
 
 
     [Header("Movement")]
@@ -136,7 +136,7 @@ public class PlayerMovement : MonoBehaviour
     {
         contextScript = GetComponent<PlayerContext>();
         stateHandler = contextScript.stateHandler;
-        playerCollider = contextScript.playerObject.GetComponent<BoxCollider>();
+        playerCollider = contextScript.playerObject.GetComponent<CapsuleCollider>();
 
         rb = contextScript.rb;
         input = contextScript.input;
@@ -613,7 +613,8 @@ public class PlayerMovement : MonoBehaviour
             Vector3 euler = playerCamera.transform.localEulerAngles;
             euler.z = z;
             playerCamera.transform.localEulerAngles = euler;
-            playerCollider.size = new Vector3(playerCollider.size.x,normalColliderHeight,playerCollider.size.z);
+            playerCollider.height = normalColliderHeight;
+            //playerCollider.size = new Vector3(playerCollider.size.x,normalColliderHeight,playerCollider.size.z);
             yield return null;
         }
 
@@ -628,7 +629,8 @@ public class PlayerMovement : MonoBehaviour
         if (isOnGround && !stateHandler.isSliding && slideTimer <= 0f)
         {
             //Debug.Log("Slide Started");
-            playerCollider.size = new Vector3(playerCollider.size.x,slideHeight,playerCollider.size.z);
+            playerCollider.height = slideHeight;
+            //playerCollider.size = new Vector3(playerCollider.size.x,slideHeight,playerCollider.size.z);
             stateHandler.isSliding = true;
             slideTimer = slideCooldown; // reset cooldown
             StartCoroutine(SlideCoroutine());
@@ -642,7 +644,8 @@ public class PlayerMovement : MonoBehaviour
         if (stateHandler.isSliding)
         {
             StopCoroutine(SlideCoroutine());
-            playerCollider.size = new Vector3(playerCollider.size.x,normalColliderHeight,playerCollider.size.z);
+            playerCollider.height = normalColliderHeight;
+            //playerCollider.size = new Vector3(playerCollider.size.x,normalColliderHeight,playerCollider.size.z);
             stateHandler.isSliding = false;
         }
         Invoke(nameof(SlideCooldown), slideCooldown);
