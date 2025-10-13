@@ -1,10 +1,12 @@
+using System;
 using UnityEngine;
 
 public class PlayerStateHandler : MonoBehaviour
 {
     [Header("State Machine")]
 
-    public MovementState state{ get; private set;}
+    public MovementState state { get; private set; }
+    private MovementState prevState{ get; set; }
 
     public bool isSprinting { get; set; }
     public bool isWallrunning { get; set; }
@@ -12,37 +14,36 @@ public class PlayerStateHandler : MonoBehaviour
     public bool isDashing { get; set; }
     public bool isGrappling{ get; set; }
     public bool isOnGround { get; set; }
+    public bool isWalking { get; set; }
+
+    public event Action<MovementState> OnStateChanged;
 
     #region State Handler
+
+    void Awake()
+    {
+        state = MovementState.idle;
+        prevState = MovementState.idle;
+    }
+
     void Update()
     {
-        if (isGrappling)
+        state = true switch
         {
-            state = MovementState.grappleing;
-        }
-        else if (isWallrunning)
+            var _ when isGrappling => MovementState.grappling,
+            var _ when isWallrunning => MovementState.wallrunning,
+            var _ when isDashing => MovementState.dashing,
+            var _ when !isOnGround => MovementState.air,
+            var _ when isSliding => MovementState.sliding,
+            var _ when isOnGround && isSprinting => MovementState.sprinting,
+            var _ when isOnGround && isWalking && !isSprinting => MovementState.walking,
+            _ => MovementState.idle,
+        };
+
+        if (state != prevState)
         {
-            state = MovementState.wallrunning;
-        }
-        else if (isDashing)
-        {
-            state = MovementState.dashing;
-        }
-        else if (!isOnGround)
-        {
-            state = MovementState.air;
-        }
-        else if (isSliding)
-        {
-            state = MovementState.sliding;
-        }
-        else if (isOnGround && isSprinting)
-        {
-            state = MovementState.sprinting;
-        }
-        else
-        {
-            state = MovementState.walking;
+            OnStateChanged?.Invoke(state);
+            prevState = state;
         }
     }
 
