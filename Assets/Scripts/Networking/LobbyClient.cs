@@ -145,6 +145,8 @@ public class LobbyClient : MonoBehaviour
             case 6: // Private lobby joined
                 OnLobbyJoined.Invoke();
                 OnPlayerJoinLobby.Invoke(player_username);
+                lobby_code = Helpers.getStringFromMessage(message.lobby_code, 6);
+                SetLobbyCode.Invoke(lobby_code);
                 if (self_id == currentHost)
                     ChangeHost(currentHost);
                 break;
