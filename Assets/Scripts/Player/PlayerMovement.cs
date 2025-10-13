@@ -50,7 +50,7 @@ public class PlayerMovement : MonoBehaviour
     // [SerializeField] float currentSpeed; //Debugging purposes
 
     bool isAccelerating;
-    public bool isKeepingMomentum;
+    bool isKeepingMomentum;
 
 
     [Header("Ground Check")]
