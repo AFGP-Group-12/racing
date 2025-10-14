@@ -134,11 +134,8 @@ GameObject:
   - component: {fileID: 101107470}
   - component: {fileID: 101107469}
   - component: {fileID: 101107468}
-  - component: {fileID: 101107467}
   - component: {fileID: 101107466}
-  - component: {fileID: 101107465}
   - component: {fileID: 101107464}
-  - component: {fileID: 101107463}
   m_Layer: 5
   m_Name: MainMenu
   m_TagString: Untagged
@@ -146,23 +143,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &101107463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 101107462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0644188d536959c43aaa072f7e723a89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiDocument: {fileID: 101107473}
-  targetElementName: []
-  stroke: 6
-  inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
-  jitterAmplitude: 4
 --- !u!114 &101107464
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,23 +156,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 101107473}
---- !u!114 &101107465
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 101107462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0644188d536959c43aaa072f7e723a89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiDocument: {fileID: 0}
-  targetElementName: []
-  stroke: 6
-  inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
-  jitterAmplitude: 4
 --- !u!114 &101107466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -206,23 +169,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 101107473}
---- !u!114 &101107467
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 101107462}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0644188d536959c43aaa072f7e723a89, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  uiDocument: {fileID: 101107473}
-  targetElementName: []
-  stroke: 6
-  inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
-  jitterAmplitude: 4
 --- !u!114 &101107468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -236,7 +182,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 101107473}
-  targetElementName: []
+  targetElementName:
+  - optionsScribble
+  - profileScribble
+  - joinScribble
+  - loadingScribble
+  - loadingScribble
+  - playerListScribble
+  - lobbyOptionsScribble
   stroke: 6
   inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
   jitterAmplitude: 4
@@ -366,6 +319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c6c4338bf90cd9488f9d88433a47d12, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  self_id: -1
 --- !u!4 &193541651
 Transform:
   m_ObjectHideFlags: 0
@@ -397,7 +351,6 @@ MonoBehaviour:
   doPrediction: 0
   otherPlayerPrefab: {fileID: 2670139927068850257, guid: 96db6be734f374c73a5cf8da1bf0e0e4, type: 3}
   platformAbility: {fileID: 11400000, guid: 1f3fb68b381ee824fbfeb02016179f34, type: 2}
-  playerGrappleLine: {fileID: 0}
 --- !u!1 &589029238
 GameObject:
   m_ObjectHideFlags: 0

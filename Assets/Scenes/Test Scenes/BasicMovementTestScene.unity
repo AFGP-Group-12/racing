@@ -2045,6 +2045,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &797998754 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7651006634576081692, guid: a75c566014284484da8486c321e02eec, type: 3}
+  m_PrefabInstance: {fileID: 1320820708}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &830850024
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2773,7 +2778,7 @@ GameObject:
   - component: {fileID: 1021670479}
   - component: {fileID: 1021670478}
   - component: {fileID: 1021670477}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3873,11 +3878,101 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_ActionId
+      value: dce5419c-3172-45d9-a5d4-8e558f24eaf3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[24].m_ActionId
+      value: ceaef331-94dd-4550-a4f6-2c6854511ffd
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[23].m_ActionName
+      value: 'Player/Pause[/Keyboard/escape]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[24].m_ActionName
+      value: 'UI/Unpause[/Keyboard/escape]'
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7651006634576081692, guid: a75c566014284484da8486c321e02eec, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1320820725}
+    - targetCorrespondingSourceObject: {fileID: 7651006634576081692, guid: a75c566014284484da8486c321e02eec, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1320820724}
+    - targetCorrespondingSourceObject: {fileID: 7651006634576081692, guid: a75c566014284484da8486c321e02eec, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1320820726}
   m_SourcePrefab: {fileID: 100100000, guid: a75c566014284484da8486c321e02eec, type: 3}
+--- !u!114 &1320820709 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3656911224889164238, guid: a75c566014284484da8486c321e02eec, type: 3}
+  m_PrefabInstance: {fileID: 1320820708}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 797998754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1320820724
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 797998754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0644188d536959c43aaa072f7e723a89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 1320820709}
+  targetElementName:
+  - pauseScribble
+  stroke: 6
+  inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
+  jitterAmplitude: 4
+--- !u!114 &1320820725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 797998754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64546101818610641aa063ae3157ad44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 1320820709}
+  buttonClass: pausebutton
+  resourcesFolder: UI/Textures/SquiggleFrames
+  fps: 8
+  animateOnHoverOnly: 1
+  textJitterPixels: 0.8
+  textRotateDegrees: 0.6
+  textFps: 30
+--- !u!114 &1320820726
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 797998754}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f916a9040bd899a45a5ba8ec5e4ed7f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1343430497
 GameObject:
   m_ObjectHideFlags: 0

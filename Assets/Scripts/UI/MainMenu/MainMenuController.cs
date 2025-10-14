@@ -37,6 +37,10 @@ public class MainMenuController : MonoBehaviour
 
     void Awake()
     {
+        // Unlock and show cursor for main menu
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
+
         var root = uiDocument.rootVisualElement;
         createLobbyButton = root.Q<Button>("createLobbyButton");
         joinLobbyButton = root.Q<Button>("joinLobbyButton");
