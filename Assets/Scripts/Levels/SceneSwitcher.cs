@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using UnityEditor;
 
 public class SceneSwitcher : MonoBehaviour
 {
@@ -10,7 +11,13 @@ public class SceneSwitcher : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(nextScene);
+#if UNITY_EDITOR
+            EditorApplication.isPlaying = false;
+            Debug.Log("Exiting Play Mode in Editor");
+#else
+            Application.Quit();
+            Debug.Log("Game Exited");
+#endif
         }
     }
 }
