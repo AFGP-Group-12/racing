@@ -84,6 +84,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float slideDuration;
     [SerializeField] float slideCooldown;
 
+    Coroutine slideRoutine;
+
     [Tooltip("Keep in mind that the normal height is 2")]
     [SerializeField] float slideHeight;
     [SerializeField] Camera playerCamera;
@@ -614,8 +616,12 @@ public class PlayerMovement : MonoBehaviour
                 slopeBoost = 0f;
             }
 
-            
+
             yield return null;
+        }
+        if(elapsed >= slideDuration)
+        {
+            SlideEnd();
         }
     }
 
@@ -628,7 +634,7 @@ public class PlayerMovement : MonoBehaviour
             //playerCollider.size = new Vector3(playerCollider.size.x,slideHeight,playerCollider.size.z);
             stateHandler.isSliding = true;
             slideTimer = slideCooldown; // reset cooldown
-            StartCoroutine(SlideCoroutine());
+            slideRoutine = StartCoroutine(SlideCoroutine());
         }
     }
 
@@ -660,7 +666,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void SlideEnd()
     {
-        StopCoroutine(SlideCoroutine());
+        StopCoroutine(slideRoutine);
         StartCoroutine(FixCamera());
         stateHandler.isSliding = false;
         playerCollider.height = originalPlayerColliderHeight;
