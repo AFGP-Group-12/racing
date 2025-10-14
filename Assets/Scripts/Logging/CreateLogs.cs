@@ -1,28 +1,32 @@
 using UnityEngine;
+using System.Diagnostics;
 
 public class Logs : MonoBehaviour
 {
-    string filePath;
-    int deathCounter = 0;
+    private string filePath;
+    private int[] deathCounter = new int[5];
     private DeathboxHandler deathOccured;
+    private Stopwatch stopwatch;
 
     private void Start()
     {
+        stopwatch = new Stopwatch();
+        stopwatch.Start();
         deathOccured = GetComponent<DeathboxHandler>();
         filePath = Application.dataPath + "/logs.txt";
         deathOccured.OnPlayerDeath += IncrementDeathCounter;
+        deathOccured.OnLevelComplete += SendLevelLog;
     }
 
     private void IncrementDeathCounter(int levelIndex)
     {
-        deathCounter++;
-        appendLog();
+        deathCounter[levelIndex-1]++ ;
     }
-
-    public void appendLog()
+    private void SendLevelLog(int levelIndex)
     {
-        System.IO.File.AppendAllText(filePath, "Death!" + "\n");
-        System.IO.File.AppendAllText(filePath, deathCounter + "\n");
+        stopwatch.Stop();
+        System.IO.File.AppendAllText(filePath, "Level" + levelIndex + ": " + deathCounter[levelIndex-1] + ": " + stopwatch.Elapsed.TotalSeconds + "\n");
+        stopwatch.Reset();
     }
 
     void OnDestroy()
@@ -30,6 +34,10 @@ public class Logs : MonoBehaviour
         if (deathOccured != null)
         {
             deathOccured.OnPlayerDeath -= IncrementDeathCounter; 
+        }
+        if(deathOccured != null)
+        {
+            deathOccured.OnLevelComplete -= SendLevelLog;
         }
     }
 
