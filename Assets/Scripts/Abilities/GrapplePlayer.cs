@@ -89,9 +89,9 @@ public class GrapplePlayer : Ability
                 abilityManager.StartAbilityDuration(abilityIndex, duration);
 
                 GameObject otherPlayerGameObject = hit.collider.gameObject;
-                if (otherPlayerGameObject == null) return;
+                if (otherPlayerGameObject == null) { Debug.Log("otherPlayerGameObj null"); return; }
                 OtherPlayerIdHolder idHolder = otherPlayerGameObject.GetComponent<OtherPlayerIdHolder>();
-                if (idHolder == null) return;
+                if (idHolder == null) { Debug.Log("Idholder null");  return; }
 
                 if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrapplePlayer(idHolder.Id);
 
