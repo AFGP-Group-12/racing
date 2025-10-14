@@ -60,10 +60,14 @@ public class PlayerAbilityManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+    }
+
+    void FixedUpdate()
+    {
         IndexCheck();
         AbilityPreviewUpdate();
         AbilityInUseUpdate();
-
     }
 
     public void ResetAbilities()

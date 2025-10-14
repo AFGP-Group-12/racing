@@ -24,7 +24,7 @@ MonoBehaviour:
   grappleSpeed: 600
   maxGrappleDistance: 30
   verticalStrength: 12
-  horizontalStrength: 20
+  horizontalStrength: 60
   playerLayer:
     serializedVersion: 2
     m_Bits: 64

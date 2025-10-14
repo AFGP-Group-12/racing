@@ -20,7 +20,7 @@ MonoBehaviour:
   canAbility: 1
   usingAbility: 0
   isPreview: 0
-  dashForce: 7
-  dashForceY: 7
+  dashForce: 15
+  dashForceY: 8
   dashInnerDeadzone: 0.2
   dashOuterDeadzone: 0.7
