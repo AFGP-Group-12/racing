@@ -86,9 +86,8 @@ public class GrapplePlayer : Ability
 
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x,0f,rb.linearVelocity.z);
                 
+                abilityManager.StartAbilityDuration(abilityIndex, duration);
             }
-
-            abilityManager.StartAbilityDuration(abilityIndex, duration);
         }
 
     }

@@ -108,9 +108,9 @@ public class GrappleStationary : Ability
                 joint.massScale = grappleMassScale;
 
                 if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrappleStationary(grappleLocation);
+                abilityManager.StartAbilityDuration(abilityIndex, duration);
             }
 
-            abilityManager.StartAbilityDuration(abilityIndex, duration);
         }
 
     }
