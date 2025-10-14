@@ -8,13 +8,12 @@ public class Deathbox : MonoBehaviour
     [SerializeField]
     private int levelIndex;
 
-    public event Action<int> OnPlayerDeath;
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
+            other.GetComponent<DeathboxHandler>()?.HandlePlayerDeath(levelIndex);
             other.transform.position = respawnPoint;
-            OnPlayerDeath?.Invoke(levelIndex);
         }
     }
 }
