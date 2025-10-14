@@ -303,6 +303,18 @@ PrefabInstance:
       propertyPath: levelIndex
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.x
+      value: 195
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.z
+      value: 170
+      objectReference: {fileID: 0}
     - target: {fileID: 4539234244030969410, guid: e827312681962d04485b07c9078d5791, type: 3}
       propertyPath: m_Name
       value: Deathbox (4)
@@ -1119,6 +1131,18 @@ PrefabInstance:
     - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
       propertyPath: levelIndex
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.x
+      value: 212
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.y
+      value: -1.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.z
+      value: 446
       objectReference: {fileID: 0}
     - target: {fileID: 4539234244030969410, guid: e827312681962d04485b07c9078d5791, type: 3}
       propertyPath: m_Name
@@ -2333,6 +2357,18 @@ PrefabInstance:
       propertyPath: levelIndex
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.x
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.z
+      value: -96
+      objectReference: {fileID: 0}
     - target: {fileID: 4539234244030969410, guid: e827312681962d04485b07c9078d5791, type: 3}
       propertyPath: m_Name
       value: Deathbox (3)
@@ -2808,12 +2844,16 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.x
+      value: -5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
       propertyPath: respawnPoint.y
       value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
       propertyPath: respawnPoint.z
-      value: -27
+      value: 162
       objectReference: {fileID: 0}
     - target: {fileID: 4539234244030969410, guid: e827312681962d04485b07c9078d5791, type: 3}
       propertyPath: m_Name
@@ -2965,6 +3005,18 @@ PrefabInstance:
     - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
       propertyPath: levelIndex
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.x
+      value: -23
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 4017858472912944068, guid: e827312681962d04485b07c9078d5791, type: 3}
+      propertyPath: respawnPoint.z
+      value: 415
       objectReference: {fileID: 0}
     - target: {fileID: 4539234244030969410, guid: e827312681962d04485b07c9078d5791, type: 3}
       propertyPath: m_Name

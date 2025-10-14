@@ -15,6 +15,7 @@ public class Teleporter : MonoBehaviour
         {
             other.transform.parent.position = nextPosition;
             other.GetComponentInParent<DeathboxHandler>()?.HandleLevelComplete(currentLevel);
+            other.GetComponentInParent<PlayerAbilityManager>()?.ResetAbilities();
         }
     }
 }

@@ -66,6 +66,22 @@ public class PlayerAbilityManager : MonoBehaviour
 
     }
 
+    public void ResetAbilities()
+    {
+        abilityList = new List<Ability>
+        {
+            emptyAbility,
+            emptyAbility,
+            emptyAbility
+        };
+        abilityIndex = 0;
+        isChangeAbility = false;
+
+        OnAbilityChanged?.Invoke(0, abilityList[0]);
+        OnAbilityChanged?.Invoke(1, abilityList[0]);
+        OnAbilityChanged?.Invoke(2, abilityList[0]);
+    }
+
     #endregion MonoBehaviour
 
     #region Functions
