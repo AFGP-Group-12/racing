@@ -18,7 +18,7 @@ public class PlayerGrappleLine : MonoBehaviour
 
     Vector3 currentEndPoint;
 
-    public bool isForceingLine;
+    bool isForceingLine;
 
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
