@@ -68,6 +68,14 @@ public class PlayerAbilityManager : MonoBehaviour
 
     public void ResetAbilities()
     {
+        abilityList[0].DeActivate(contextScript);
+        abilityList[1].DeActivate(contextScript);
+        abilityList[2].DeActivate(contextScript);
+
+        abilityList[0].AbilityEnd();
+        abilityList[1].AbilityEnd();
+        abilityList[2].AbilityEnd();
+
         abilityList = new List<Ability>
         {
             emptyAbility,

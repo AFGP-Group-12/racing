@@ -72,7 +72,6 @@ public class GrapplePlayer : Ability
 
         if (canAbility)
         {
-            canAbility = false;
 
             ray = new Ray(cameraTransform.position, cameraTransform.forward);
             if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance, playerLayer))
@@ -88,6 +87,7 @@ public class GrapplePlayer : Ability
 
                 // if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrapplePlayer();
                 abilityManager.StartAbilityDuration(abilityIndex, duration);
+                canAbility = false;
             }
         }
 

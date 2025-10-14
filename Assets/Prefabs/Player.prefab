@@ -227,6 +227,7 @@ GameObject:
   - component: {fileID: 3564877386535356918}
   - component: {fileID: 3656911224889164238}
   - component: {fileID: 8736706981129764362}
+  - component: {fileID: 843077158305749316}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -311,7 +312,7 @@ MonoBehaviour:
   wallJumpForceUp: 40
   wallJumpForceDirection: 40
   maxGravityForce: 40
-  slideForce: 5
+  slideForce: 3
   slideDuration: 1
   slideCooldown: 0.5
   slideHeight: 1
@@ -403,8 +404,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e154bd423685b24fbf003d91e9c7c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lineRenderer: {fileID: 0}
   grappleStartPoint: {fileID: 618361242267306667}
-  isForceingLine: 0
 --- !u!120 &6426214075695272378
 LineRenderer:
   serializedVersion: 2
@@ -677,6 +678,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 143f394cc85766d49a48ec77a7d0b4a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &843077158305749316
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7651006634576081692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25c6d8a9499522e4ebc147156ace57ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7941051853214393720
