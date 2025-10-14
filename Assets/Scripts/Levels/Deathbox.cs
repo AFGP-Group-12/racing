@@ -12,8 +12,8 @@ public class Deathbox : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            other.GetComponent<DeathboxHandler>()?.HandlePlayerDeath(levelIndex);
-            other.transform.position = respawnPoint;
+            other.GetComponentInParent<DeathboxHandler>()?.HandlePlayerDeath(levelIndex);
+            other.transform.parent.position = respawnPoint;
         }
     }
 }

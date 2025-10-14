@@ -9,5 +9,6 @@ public class DeathboxHandler : MonoBehaviour
     public void HandlePlayerDeath(int levelIndex)
     {
         OnPlayerDeath?.Invoke(levelIndex);
+        Debug.Log($"Player died in {levelIndex}");
     }
 }
