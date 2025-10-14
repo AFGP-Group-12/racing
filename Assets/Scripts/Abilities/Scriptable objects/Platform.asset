@@ -24,6 +24,6 @@ MonoBehaviour:
   previewPrefab: {fileID: 8089513727467174478, guid: d6997112f4b678b49b3c5d3fe8264ff7, type: 3}
   minScale: 0
   maxScale: 7
-  increaseIncrement: 0.05
-  decreaseIncrement: 0.002
+  increaseIncrement: 0.5
+  decreaseIncrement: 0.02
   placementDistance: 10

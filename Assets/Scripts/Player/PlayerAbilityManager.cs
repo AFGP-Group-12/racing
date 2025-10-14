@@ -11,7 +11,7 @@ public class PlayerAbilityManager : MonoBehaviour
     private PlayerInput input;
     public List<Ability> abilityList;
 
-    public List<Coroutine> abilityDurationList ;
+    public List<Coroutine> abilityDurationList;
 
     public int abilityIndex = 1;
     bool isChangeAbility = false;

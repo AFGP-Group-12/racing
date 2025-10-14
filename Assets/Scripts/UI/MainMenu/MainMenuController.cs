@@ -22,6 +22,8 @@ public class MainMenuController : MonoBehaviour
     private Button optionsCloseButton;
 
     private VisualElement loadingOverlay;
+    private VisualElement popupOverlay;
+    private Label popupOverlayLabel;
 
     private VisualElement mainScreen;
     private VisualElement lobbyScreen;
@@ -46,6 +48,8 @@ public class MainMenuController : MonoBehaviour
         optionsCloseButton = root.Q<Button>("optionsCloseButton");
 
         loadingOverlay = root.Q<VisualElement>("loadingOverlay");
+        popupOverlay = root.Q<VisualElement>("popupOverlay");
+        popupOverlayLabel = root.Q<Label>("popupOverlayLabel");
 
         mainScreen = root.Q<VisualElement>("mainScreen");
         lobbyScreen = root.Q<VisualElement>("lobbyScreen");
@@ -93,8 +97,20 @@ public class MainMenuController : MonoBehaviour
         {
             mainScreen.RemoveFromClassList("hidden");
             lobbyScreen.AddToClassList("hidden");
+            loadingOverlay.AddToClassList("hidden");
         };
 
+        LobbyClient.instance.SetPopup += (string s) =>
+        {
+            if (s == null || s.Length == 0)
+            {
+                popupOverlay.AddToClassList("hidden");
+            } else
+            {
+                popupOverlay.RemoveFromClassList("hidden");
+                popupOverlayLabel.text = s;
+            }
+        };
         createLobbyButton.clicked += () =>
         {
             if (LobbyClient.instance.client.IsConnectedTcp())

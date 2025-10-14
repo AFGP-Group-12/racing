@@ -67,7 +67,7 @@ public class BaseNetworkClient
     {
         if (connectedTcp || tryingToConnectTcp) { return; }
 
-        this.onConnectTcpUserCallback += onConnectTcpUserCallback;
+        if (onConnectTcpUserCallback != null) this.onConnectTcpUserCallback += onConnectTcpUserCallback;
         tryingToConnectTcp = true;
         
         tcpSocket.BeginConnect(serverIp, serverPort, TcpConnectCallback, tcpSocket);
@@ -79,7 +79,7 @@ public class BaseNetworkClient
         if (!connectedTcp || connectedUdp || tryingToConnectUdp) { return; }
 
         udpSocket = new UdpClient(0, AddressFamily.InterNetwork);
-        this.onConnectUdpUserCallback += onConnectUdpUserCallback;
+        if (onConnectUdpUserCallback != null) this.onConnectUdpUserCallback += onConnectUdpUserCallback;
 
         initiate_udp_m m;
         m.type = (UInt16)message_t.initiate_udp;
@@ -93,12 +93,12 @@ public class BaseNetworkClient
         SendDataTcp(m.bytes, initiate_udp_m.size);
         
         tryingToConnectUdp = true;
-
-        readAgainUdp();
     }
 
     public unsafe void SendDataTcp(byte* data, int len)
     {
+        if (!connectedTcp) return;
+
         byte[] dataArr = new byte[len];
         for (int i = 0; i < len; i++)
         {
@@ -112,6 +112,8 @@ public class BaseNetworkClient
     {
         //IPEndPoint target = new IPEndPoint(IPAddress.Parse(serverIp), 8081);
         //IPEndPoint target = new IPEndPoint(IPAddress.Parse("127.0.0.1"), 8085);
+
+        if (!connectedUdp) return;
 
         byte[] dataArr = new byte[len];
         for (int i = 0; i < len; i++)
@@ -170,163 +172,194 @@ public class BaseNetworkClient
 
     private unsafe void TcpConnectCallback(IAsyncResult result)
     {
-
-        tcpSocket.EndConnect(result);
-
-        if (!tcpSocket.Connected)
+        try
         {
-            connectedTcp = false;
+            tcpSocket.EndConnect(result);
+
+            if (!tcpSocket.Connected)
+            {
+                connectedTcp = false;
+                tryingToConnectTcp = false;
+                Debug.Log("TcpConnectCallback wasn't able to connect.");
+                return;
+            }
+
+            tcpStream = tcpSocket.GetStream();
+
+            connectedTcp = true;
             tryingToConnectTcp = false;
-            Debug.Log("TcpConnectCallback wasn't able to connect.");
-            return;
+
+            connection_m m;
+            m.type = (UInt16)message_t.connection;
+            m.key[0] = (byte)'a';
+            m.key[1] = (byte)'e';
+            m.key[2] = (byte)'7';
+            m.key[3] = (byte)'0';
+            m.key[4] = (byte)'m';
+
+            Messages.Helpers.fillUsername(player_username, out m.username);
+            m.id = player_id;
+
+            SendDataTcp(m.bytes, connection_m.size);
+
+            if (onConnectTcpUserCallback != null) onConnectTcpUserCallback();
+            readAgainTcp();
         }
-
-        connectedTcp = true;
-        tryingToConnectTcp = false;
-
-        tcpStream = tcpSocket.GetStream();
-
-        connection_m m;
-        m.type = (UInt16)message_t.connection;
-        m.key[0] = (byte)'a';
-        m.key[1] = (byte)'e';
-        m.key[2] = (byte)'7';
-        m.key[3] = (byte)'0';
-        m.key[4] = (byte)'m';
-
-        Messages.Helpers.fillUsername(player_username, out m.username);
-        m.id = player_id;
-
-        SendDataTcp(m.bytes, connection_m.size);
-
-        onConnectTcpUserCallback();
-        readAgainTcp();
+        catch (Exception e)
+        {
+            Debug.LogError($"{e.Message}{e.StackTrace}");
+        }
     }
 
     private void UdpConnectCallback()
     {
-        connectedUdp = true;
-        tryingToConnectUdp = false;
-        onConnectUdpUserCallback();
-        readAgainUdp();
-
+        try
+        {
+            connectedUdp = true;
+            tryingToConnectUdp = false;
+            if (onConnectUdpUserCallback != null) onConnectUdpUserCallback();
+            readAgainUdp();
+        } catch (Exception e)
+        {
+            Debug.LogError($"{e.Message}{e.StackTrace}");
+        }
     }
 
     private unsafe void ReceiveCallbackTcp(IAsyncResult result)
     {
-        if (!connectedTcp) { connectedTcp = false; return; }
-
-        // We will assume that we read in whole messages for now...
-        int n = tcpStream.EndRead(result);
-        int read_offset = 0;
-
-        while (n > 0)
+        try
         {
-            message_t m_type = Messages.Helpers.GetMessageType(receiveBufferTcp, read_offset);
-            int message_len = Messages.Helpers.getMessageSize(m_type);
+            if (!connectedTcp) { return; }
 
-            // Handle error  cases.
-            if (message_len == -1)
+            // We will assume that we read in whole messages for now...
+            int n = tcpStream.EndRead(result);
+            int read_offset = 0;
+
+            while (n > 0)
             {
-                Debug.Log("Type not registered: " + m_type);
-                readAgainTcp();
-                return;
-            }
+                message_t m_type = Messages.Helpers.GetMessageType(receiveBufferTcp, read_offset);
+                int message_len = Messages.Helpers.getMessageSize(m_type);
 
-            if (n < message_len)
-            {
-                Debug.Log("Got incomplete message");
-                readAgainTcp();
-                return;
-            }
-
-            // Generate what the user will read.
-            generic_m m = new generic_m();
-            m.from(receiveBufferTcp, message_len, read_offset);
-
-            read_offset += message_len;
-            n -= message_len;
-            
-            bool skipUser = false; // Some messages will not be shown to the user.
-
-            if (m_type == message_t.connection_reply)
-            {
-                player_id = m.connection_reply.id;
-            }
-
-            // Server telling client to connect to a different server. In this case, the gameplay server.
-            if (m_type == message_t.server_info)
-            {
-                skipUser = true; // Not handled by user. 
-                string server_addr = System.Text.Encoding.UTF8.GetString(m.server_info.address, 32);
-                int port = m.server_info.port;
-
-                // Debug.Log($"Got some server info. Addr: {server_addr}, Port: {port}, Type: {(server_t)m.server_info.server_name}");
-
-                if ((server_t)m.server_info.name == server_t.gameplay_server && GameplayClient.instance.client == null)
+                // Handle error  cases.
+                if (message_len == -1)
                 {
-                    if (server_addr.Trim().Contains("127.0.0.1")) { server_addr = serverIp; }
-
-                    GameplayClient.instance.client = new BaseNetworkClient(server_addr, port, dataBufferSize, player_username, player_id);
-                    GameplayClient.instance.Setup();
+                    Debug.Log("Type not registered: " + m_type);
+                    readAgainTcp();
+                    return;
                 }
-            }
 
-            // Server has created a udp socket and informing the client its ready to connect.
-            if (m_type == message_t.initiate_udp_reply)
-            {
-                skipUser = true; // Not handled by user. 
-                if (tryingToConnectUdp)
+                if (n < message_len)
                 {
-                    if (m.initiate_udp_reply.granted != 0)
+                    Debug.Log("Got incomplete message");
+                    readAgainTcp();
+                    return;
+                }
+
+                // Generate what the user will read.
+                generic_m m = new generic_m();
+                m.from(receiveBufferTcp, message_len, read_offset);
+
+                read_offset += message_len;
+                n -= message_len;
+
+                bool skipUser = false; // Some messages will not be shown to the user.
+
+                if (m_type == message_t.connection_reply)
+                {
+                    player_id = m.connection_reply.id;
+                }
+
+                // Server telling client to connect to a different server. In this case, the gameplay server.
+                if (m_type == message_t.server_info)
+                {
+                    skipUser = true; // Not handled by user. 
+                    string server_addr = System.Text.Encoding.UTF8.GetString(m.server_info.address, 32);
+                    int port = m.server_info.port;
+
+                    // Debug.Log($"Got some server info. Addr: {server_addr}, Port: {port}, Type: {(server_t)m.server_info.server_name}");
+
+                    if ((server_t)m.server_info.name == server_t.gameplay_server && GameplayClient.instance.client == null)
                     {
-                        // Recieve the message
-                        int port = m.initiate_udp_reply.port;
-                        udpSocket.Connect(serverIp, port);
-                        UdpConnectCallback();
+                        if (server_addr.Trim().Contains("127.0.0.1")) { server_addr = serverIp; }
+
+                        GameplayClient.instance.client = new BaseNetworkClient(server_addr, port, dataBufferSize, player_username, player_id);
+                        GameplayClient.instance.Setup();
+                    }
+                }
+
+                // Server has created a udp socket and informing the client its ready to connect.
+                if (m_type == message_t.initiate_udp_reply)
+                {
+                    skipUser = true; // Not handled by user. 
+                    if (tryingToConnectUdp)
+                    {
+                        if (m.initiate_udp_reply.granted != 0)
+                        {
+                            // Recieve the message
+                            int port = m.initiate_udp_reply.port;
+                            udpSocket.Connect(serverIp, port);
+                            UdpConnectCallback();
+                        }
+                        else
+                        {
+                            Debug.Log("Udp connection request was rejected");
+                        }
                     }
                     else
                     {
-                        Debug.Log("Udp connection request was rejected");
+                        Debug.LogError("Received initiate_udp_reply while not trying to connect udp");
                     }
-                } else
+                }
+
+                if (!skipUser)
                 {
-                    Debug.LogError("Received initiate_udp_reply while not trying to connect udp");
+                    incomming_message_queue.Enqueue(m);
                 }
             }
 
-            if (!skipUser)
-            {
-                incomming_message_queue.Enqueue(m);
-            }
+            readAgainTcp();
         }
-
-        readAgainTcp();
+        catch (Exception e)
+        {
+            Debug.LogError($"{e.Message}{e.StackTrace}");
+        }
     }
 
     private unsafe void ReceiveCallbackUdp(IAsyncResult result)
     {
-        if (!connectedTcp || !connectedUdp) { return; }
-
-        System.Net.IPEndPoint endpoint = null;
-        byte[] data = udpSocket.EndReceive(result, ref endpoint);
-
-        if (data.Length <= 0)
+        try
         {
-            Debug.Log("Received " + data.Length + " size for tcpStream.EndRead()");
+            if (!connectedTcp || !connectedUdp) { return; }
+
+            System.Net.IPEndPoint endpoint = null;
+            byte[] data = udpSocket.EndReceive(result, ref endpoint);
+
+            if (data.Length <= 0)
+            {
+                Debug.Log("Received " + data.Length + " size for tcpStream.EndRead()");
+                readAgainUdp();
+                return;
+            }
+
+            // Udp Packets are discrete.
+            generic_m m = new generic_m();
+            m.from(data, data.Length);
+
+            message_t m_type = m.get_t();
+
+            incomming_message_queue.Enqueue(m);
+
             readAgainUdp();
-            return;
+
         }
-
-        // Udp Packets are discrete.
-        generic_m m = new generic_m();
-        m.from(data, data.Length);
-
-        message_t m_type = m.get_t();
-
-        incomming_message_queue.Enqueue(m);
-        
-        readAgainUdp();
+        catch (Exception e)
+        {
+            Debug.LogError($"{e.Message}{e.StackTrace}");
+        }
+    }
+    public void changeUsername(string user)
+    {
+        player_username = user;
     }
 
     private void readAgainTcp()
@@ -336,13 +369,6 @@ public class BaseNetworkClient
 
     private void readAgainUdp()
     {
-        try
-        {
-            udpSocket.BeginReceive(ReceiveCallbackUdp, udpSocket);
-        } 
-        catch(Exception e)
-        {
-            Debug.LogError(e);
-        }
+        udpSocket.BeginReceive(ReceiveCallbackUdp, udpSocket);
     }
 }
