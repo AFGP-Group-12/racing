@@ -76,6 +76,7 @@ public class GrapplePlayer : Ability
             ray = new Ray(cameraTransform.position, cameraTransform.forward);
             if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance, playerLayer))
             {
+                canAbility = false;
                 stateHandler.isGrappling = true;
                 usingAbility = true;
 
@@ -85,9 +86,14 @@ public class GrapplePlayer : Ability
 
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x,0f,rb.linearVelocity.z);
 
-                // if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrapplePlayer();
                 abilityManager.StartAbilityDuration(abilityIndex, duration);
-                canAbility = false;
+
+                GameObject otherPlayerGameObject = hit.collider.gameObject;
+                if (otherPlayerGameObject == null) { Debug.Log("otherPlayerGameObj null"); return; }
+                OtherPlayerIdHolder idHolder = otherPlayerGameObject.GetComponent<OtherPlayerIdHolder>();
+                if (idHolder == null) { Debug.Log("Idholder null");  return; }
+
+                if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrapplePlayer(idHolder.Id);
             }
         }
 
