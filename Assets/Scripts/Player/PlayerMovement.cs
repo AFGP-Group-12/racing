@@ -88,6 +88,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float slideHeight;
     [SerializeField] Camera playerCamera;
     private float slideTimer = 0f;
+    private float startZ;
 
     private float normalColliderHeight = 2f;
 
@@ -298,7 +299,7 @@ public class PlayerMovement : MonoBehaviour
     // Makes sure the movement speed doesnt go over a certain amount
     void SpeedControl()
     {
-        
+
         Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
         float max = (state == MovementState.air) ? airEntryMaxSpeed : moveSpeed;
@@ -546,11 +547,14 @@ public class PlayerMovement : MonoBehaviour
             gravityForce -= 0.5f;
         }
     }
+
     #endregion Wall Run Functions
 
     #region Slide Functions
+
     private System.Collections.IEnumerator SlideCoroutine()
     {
+
         Vector3 slideDirection = orientation.forward;
 
         float elapsed = 0f;
@@ -559,12 +563,16 @@ public class PlayerMovement : MonoBehaviour
 
         float slopeBoost = 0f;
 
-        float startZ = playerCamera.transform.localEulerAngles.z;
+        startZ = playerCamera.transform.localEulerAngles.z;
         float tiltAngle = 6f;
 
 
         while (elapsed < slideDuration && curVelocity.magnitude != 0)
         {
+            if (!stateHandler.isSliding)
+            {
+                break;
+            }
             elapsed += Time.deltaTime;
             tempSlideForce -= tempSlideForce * (Time.deltaTime / slideDuration);
 
@@ -588,11 +596,14 @@ public class PlayerMovement : MonoBehaviour
                     rb.AddForce(slopeDir * (tempSlideForce + slopeBoost), ForceMode.VelocityChange);
                     slideDirection = slopeDir;
 
-                    float progress = Mathf.Clamp01(elapsed / (slideDuration / 2f));
-                    float targetZ = Mathf.LerpAngle(startZ, tiltAngle, progress);
-                    Vector3 euler = playerCamera.transform.localEulerAngles;
-                    euler.z = targetZ;
-                    playerCamera.transform.localEulerAngles = euler;
+                    if (startZ != tiltAngle)
+                    {
+                        float progress = Mathf.Clamp01(elapsed / (slideDuration / 2f));
+                        float targetZ = Mathf.LerpAngle(0, tiltAngle, progress);
+                        Vector3 euler = playerCamera.transform.localEulerAngles;
+                        euler.z = targetZ;
+                        playerCamera.transform.localEulerAngles = euler;
+                    }
                 }
             }
             else
@@ -605,30 +616,7 @@ public class PlayerMovement : MonoBehaviour
             
             yield return null;
         }
-
-        float returnElapsed = 0f;
-        float returnDuration = 0.2f;
-        float currentZ = playerCamera.transform.localEulerAngles.z;
-
-        while (returnElapsed < returnDuration)
-        {
-            returnElapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(returnElapsed / returnDuration);
-
-            float z = Mathf.LerpAngle(tiltAngle, startZ, progress);
-            Vector3 euler = playerCamera.transform.localEulerAngles;
-            euler.z = z;
-            playerCamera.transform.localEulerAngles = euler;
-            playerCollider.height = normalColliderHeight;
-            //playerCollider.size = new Vector3(playerCollider.size.x,normalColliderHeight,playerCollider.size.z);
-            yield return null;
-        }
-
-        Vector3 finalEuler = playerCamera.transform.localEulerAngles;
-        finalEuler.z = startZ;
-        playerCamera.transform.localEulerAngles = finalEuler;
     }
-
 
     public void Slide()
     {
@@ -643,24 +631,39 @@ public class PlayerMovement : MonoBehaviour
         }
     }
 
+    private System.Collections.IEnumerator FixCamera()
+    {
+        float returnElapsed = 0f;
+        float returnDuration = 0.3f;
+        Vector3 current = playerCamera.transform.localEulerAngles;
+
+        while (returnElapsed<returnDuration && current.z != 0)
+        {
+            returnElapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(returnElapsed / returnDuration);
+
+            float z = Mathf.LerpAngle(current.z, 0, progress);
+            Vector3 euler = playerCamera.transform.localEulerAngles;
+            euler.z = z;
+            playerCamera.transform.localEulerAngles = euler;
+            current.z = z;
+
+            yield return null;
+        }
+
+        Vector3 finalEuler = playerCamera.transform.localEulerAngles;
+        finalEuler.z = startZ;
+        playerCamera.transform.localEulerAngles = finalEuler;
+    }  
+
 
     public void SlideEnd()
     {
-        //Debug.Log("Slide Ended");
-        if (stateHandler.isSliding)
-        {
-            StopCoroutine(SlideCoroutine());
-            playerCollider.height = normalColliderHeight;
-            //playerCollider.size = new Vector3(playerCollider.size.x,normalColliderHeight,playerCollider.size.z);
-            stateHandler.isSliding = false;
-        }
+        StopCoroutine(SlideCoroutine());
+        StartCoroutine(FixCamera());
+        stateHandler.isSliding = false;
         Invoke(nameof(SlideCooldown), slideCooldown);
     }
 
     #endregion Slide Functions
-
-
-    
-
-
 }
