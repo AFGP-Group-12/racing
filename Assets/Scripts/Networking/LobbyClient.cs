@@ -36,7 +36,7 @@ public class LobbyClient : MonoBehaviour
     DateTime timeSinceLastPing;
     int currentPing = -1;
     const int pingInterval = 5;
-    int self_id = -1;
+    public int self_id = -1;
     int currentHost = -1;
 
     bool gameStarted = false;

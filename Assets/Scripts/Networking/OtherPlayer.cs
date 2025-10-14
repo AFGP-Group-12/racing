@@ -89,7 +89,11 @@ public class OtherPlayer
     }
     public void Grapple(OtherPlayer otherPlayer)
     {
-        playerGrappleLine.ForceSetEndPoint(playerObj.transform, otherPlayer.playerObj.transform);
+        Grapple(otherPlayer.playerObj.transform);
+    }
+    public void Grapple(Transform transform)
+    {
+        playerGrappleLine.ForceSetEndPoint(playerObj.transform, transform);
     }
     public void EndGrapple()
     {
