@@ -228,6 +228,9 @@ GameObject:
   - component: {fileID: 3656911224889164238}
   - component: {fileID: 8736706981129764362}
   - component: {fileID: 843077158305749316}
+  - component: {fileID: 5574339947720632534}
+  - component: {fileID: 2048135158997568651}
+  - component: {fileID: 8159957993420048038}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -630,6 +633,14 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: fa1d493d-3f4b-45dc-90b2-3edaab87eb2f
     m_ActionName: 'Player/ChangeAbility[/Keyboard/f]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dce5419c-3172-45d9-a5d4-8e558f24eaf3
+    m_ActionName: 'Player/Pause[/Keyboard/escape]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ceaef331-94dd-4550-a4f6-2c6854511ffd
+    m_ActionName: 'UI/Unpause[/Keyboard/escape]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -690,6 +701,56 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25c6d8a9499522e4ebc147156ace57ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &5574339947720632534
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7651006634576081692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64546101818610641aa063ae3157ad44, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 3656911224889164238}
+  buttonClass: pausebutton
+  resourcesFolder: UI/Textures/SquiggleFrames
+  fps: 8
+  animateOnHoverOnly: 1
+  textJitterPixels: 0.8
+  textRotateDegrees: 0.6
+  textFps: 30
+--- !u!114 &2048135158997568651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7651006634576081692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0644188d536959c43aaa072f7e723a89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  uiDocument: {fileID: 3656911224889164238}
+  targetElementName:
+  - pauseScribble
+  stroke: 6
+  inkColor: {r: 0.12, g: 0.12, b: 0.12, a: 1}
+  jitterAmplitude: 4
+--- !u!114 &8159957993420048038
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7651006634576081692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f916a9040bd899a45a5ba8ec5e4ed7f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &7941051853214393720
