@@ -17,7 +17,7 @@ public class Logs : MonoBehaviour
         logPath = Application.dataPath + "/logs.txt";
         deathOccured.OnPlayerDeath += IncrementDeathCounter;
         deathOccured.OnLevelComplete += SendLevelLog;
-        AssetDatabase.DeleteAsset(logPath);
+        System.IO.File.WriteAllText(logPath, "");
     }
 
     private void IncrementDeathCounter(int levelIndex)
