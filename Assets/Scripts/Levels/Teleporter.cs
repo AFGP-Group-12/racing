@@ -1,15 +1,20 @@
+using System;
 using UnityEngine;
 
 public class Teleporter : MonoBehaviour
 {
     [SerializeField]
-    private string nextScene;
+    private int currentLevel;
+    [SerializeField]
+    private int nextLevel;
+
+    [SerializeField]
+    private Vector3 nextPosition;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene(nextScene);
         }
     }
 }

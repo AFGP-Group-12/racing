@@ -45,7 +45,7 @@ GameObject:
   - component: {fileID: 3609207752551917790}
   m_Layer: 0
   m_Name: Player Object
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -226,9 +226,10 @@ GameObject:
   - component: {fileID: 8566347814016398955}
   - component: {fileID: 3564877386535356918}
   - component: {fileID: 3656911224889164238}
+  - component: {fileID: 8736706981129764362}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -307,7 +308,7 @@ MonoBehaviour:
   wallRunForce: 15
   wallBoostForce: 40
   wallUpwardForce: 20
-  wallJumpForceUp: 20
+  wallJumpForceUp: 40
   wallJumpForceDirection: 40
   maxGravityForce: 40
   slideForce: 5
@@ -403,6 +404,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   grappleStartPoint: {fileID: 618361242267306667}
+  isForceingLine: 0
 --- !u!120 &6426214075695272378
 LineRenderer:
   serializedVersion: 2
@@ -665,6 +667,18 @@ MonoBehaviour:
   m_WorldSpaceSizeMode: 1
   m_WorldSpaceWidth: 1920
   m_WorldSpaceHeight: 1080
+--- !u!114 &8736706981129764362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7651006634576081692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 143f394cc85766d49a48ec77a7d0b4a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7941051853214393720
 GameObject:
   m_ObjectHideFlags: 0
