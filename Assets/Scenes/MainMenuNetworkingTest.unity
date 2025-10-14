@@ -347,6 +347,7 @@ GameObject:
   - component: {fileID: 193541651}
   - component: {fileID: 193541650}
   - component: {fileID: 193541652}
+  - component: {fileID: 193541653}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -397,6 +398,21 @@ MonoBehaviour:
   doPrediction: 0
   otherPlayerPrefab: {fileID: 2670139927068850257, guid: 96db6be734f374c73a5cf8da1bf0e0e4, type: 3}
   platformAbility: {fileID: 11400000, guid: 1f3fb68b381ee824fbfeb02016179f34, type: 2}
+  playerGrappleLine: {fileID: 193541653}
+--- !u!114 &193541653
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 193541649}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8e154bd423685b24fbf003d91e9c7c08, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  grappleStartPoint: {fileID: 0}
+  isForceingLine: 0
 --- !u!1 &589029238
 GameObject:
   m_ObjectHideFlags: 0
