@@ -33,6 +33,9 @@ public class OtherPlayer
 
         spriteController.viewer = camera.transform;
         player_id = id;
+
+        OtherPlayerIdHolder idHolder = playerObj.GetComponent<OtherPlayerIdHolder>();
+        idHolder.Id = id;
     }
 
     public void AddMovementReply(Vector3 pos, Vector3 velocity, double rotation, MovementState state)
@@ -83,6 +86,10 @@ public class OtherPlayer
     public void Grapple(Vector3 targetPoint)
     {
         playerGrappleLine.ForceSetEndPoint(playerObj.transform, targetPoint);
+    }
+    public void Grapple(OtherPlayer otherPlayer)
+    {
+        playerGrappleLine.ForceSetEndPoint(playerObj.transform, otherPlayer.playerObj.transform);
     }
     public void EndGrapple()
     {

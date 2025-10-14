@@ -12,6 +12,8 @@ public class PlayerGrappleLine : MonoBehaviour
 
     public Transform grappleStartPoint;
 
+    private Transform targetPlayerTransform = null;
+
     Vector3 startPoint;
 
     Vector3 endPoint;
@@ -36,6 +38,8 @@ public class PlayerGrappleLine : MonoBehaviour
         startPoint = transform.position;
         if (isForceingLine || (stateHandler != null && stateHandler.state == MovementState.grappling))
         {
+            if (targetPlayerTransform != null) { currentEndPoint = targetPlayerTransform.position; }
+
             currentEndPoint = Vector3.Lerp(currentEndPoint, endPoint, Time.deltaTime * 8f);
 
             lineRenderer.SetPosition(0, startPoint);
@@ -63,7 +67,15 @@ public class PlayerGrappleLine : MonoBehaviour
 
         SetEndPoint(endPoint);
     }
-    
+    public void ForceSetEndPoint(Transform playerTransform, Transform targetTransform)
+    {
+        grappleStartPoint = playerTransform;
+        isForceingLine = true;
+        targetPlayerTransform = targetTransform;
+
+        SetEndPoint(endPoint);
+    }
+
     public void DisableSetPoint()
     {
         isForceingLine = false;

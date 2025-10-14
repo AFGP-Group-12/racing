@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8585220723834997146}
   - component: {fileID: 7802723247491807399}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: SpriteViewer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -75,6 +75,8 @@ GameObject:
   - component: {fileID: 6489564947964704029}
   - component: {fileID: 9055054167459544875}
   - component: {fileID: 8086664325221170292}
+  - component: {fileID: 183488816234718350}
+  - component: {fileID: 8727136730884912929}
   m_Layer: 6
   m_Name: OtherPlayer
   m_TagString: Untagged
@@ -221,6 +223,41 @@ MonoBehaviour:
   lineRenderer: {fileID: 9055054167459544875}
   grappleStartPoint: {fileID: 0}
   isForceingLine: 0
+--- !u!136 &183488816234718350
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2670139927068850257}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.85263157
+  m_Height: 0.62105256
+  m_Direction: 1
+  m_Center: {x: 0.031578943, y: 0.8894736, z: 1.0631578}
+--- !u!114 &8727136730884912929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2670139927068850257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a6d1ea519bc4d46bda0fd1443245ef05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2755402824424945665
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,7 +268,7 @@ GameObject:
   m_Component:
   - component: {fileID: 589197922550327937}
   - component: {fileID: 4878177146054576323}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Billboard
   m_TagString: Untagged
   m_Icon: {fileID: 0}

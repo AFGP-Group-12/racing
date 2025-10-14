@@ -244,6 +244,7 @@ private IEnumerator SendPeriodicMessageCoroutine()
                 break;
             case 3: // Player Grapple
                 int target = message.target_player_id;
+                playerById[message.from_id].Grapple(playerById[target]);
                 break;
             case 4: // Any Grapple End
                 playerById[message.from_id].EndGrapple();
