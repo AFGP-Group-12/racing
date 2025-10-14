@@ -97,6 +97,27 @@ public class GameplayClient : MonoBehaviour
         }
     }
 
+    IEnumerator LoadSceneSinglePlayer(string scene)
+    {
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("MovementScene");
+
+        // Wait until the asynchronous scene fully loads
+        while (!asyncLoad.isDone)
+        {
+            yield return null;
+        }
+        Debug.Log("Scene Loaded");
+
+        yield return new WaitForSeconds(0.1f);
+
+        player = GameObject.Find("Player");
+
+        player.SetActive(false);
+
+        yield return new WaitForSeconds(2);
+
+        player.SetActive(true);
+    }
 
     IEnumerator LoadGameScene()
     {
@@ -268,7 +289,7 @@ private IEnumerator SendPeriodicMessageCoroutine()
             playerById[id].Destroy();
             playerById.Remove(id);
         }
-        playerById[id] = new OtherPlayer(otherPlayerPrefab, LobbyClient.instance.GetPlayerName(id), mainCamera.GetComponent<Camera>());
+        playerById[id] = new OtherPlayer(otherPlayerPrefab, LobbyClient.instance.GetPlayerName(id), mainCamera.GetComponent<Camera>(), id);
     }
     private void OnPlayerLeave(int id, string username)
     {

@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class OtherPlayer
 {
+    int player_id;
     GameObject playerObj;
     Canvas canvas;
     SpriteController spriteController;
@@ -19,7 +20,7 @@ public class OtherPlayer
 
     private const float frameAdjustmentWeight = 0.3f;
 
-    public OtherPlayer(GameObject prefab, string name, Camera camera)
+    public OtherPlayer(GameObject prefab, string name, Camera camera, int id)
     {
         playerObj = UnityEngine.Object.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
         canvas = playerObj.GetComponentInChildren<Canvas>();
@@ -31,6 +32,7 @@ public class OtherPlayer
         text.SetText(name);
 
         spriteController.viewer = camera.transform;
+        player_id = id;
     }
 
     public void AddMovementReply(Vector3 pos, Vector3 velocity, double rotation, MovementState state)
