@@ -119,7 +119,8 @@ public class GrappleStationary : Ability
 
     public override void AbilityEnd()
     {
-        GrappleEnd();
+        // it lasts until the player lets go
+        //GrappleEnd();
     }
 
     public override void DeActivate(PlayerContext ctx)
