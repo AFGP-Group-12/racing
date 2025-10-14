@@ -84,3 +84,111 @@
     border-color: rgba(255, 255, 255, 0.35);
     background-color: rgba(255, 255, 255, 0.1);
 }
+
+/* Pause Menu Styles */
+.pause-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    justify-content: center;
+    align-items: center;
+}
+
+.pause-panel {
+    width: 500px;
+    min-height: 400px;
+    padding: 32px;
+    background-color: white;
+    border-radius: 12px;
+    position: relative;
+    overflow: visible;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+    align-items: center;
+    justify-content: center;
+}
+
+.pause-title {
+    align-self: center;
+    font-size: 80px;
+    -unity-text-align: upper-center;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    -unity-font-style: bold;
+    margin-bottom: 32px;
+    margin-top: 16px;
+}
+
+.pause-button-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+Button.pausebutton {
+    padding: 10px 16px;
+    border-radius: 10px;
+    background-repeat: repeat;
+    color: rgb(34, 34, 34);
+    letter-spacing: 0.2px;
+    background-color: rgba(255, 255, 255, 0);
+    width: 305px;
+    margin-top: 5px;
+    margin-bottom: 7px;
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+    -unity-font-style: bold;
+    font-size: 32px;
+    padding: 18px 24px;
+    background-repeat: no-repeat no-repeat;
+    background-size: 100% 100%;
+    -unity-background-scale-mode: stretch-to-fill;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    background-image: resource('UI/Textures/Squiggle/squiggle_00');
+    -unity-background-image-tint-color: rgb(255, 255, 255);
+    background-position-x: left 0;
+    background-position-y: top 0;
+    -unity-slice-left: 9;
+    -unity-slice-top: 9;
+    -unity-slice-right: 9;
+    -unity-slice-bottom: 9;
+    -unity-slice-type: sliced;
+}
+
+Button.pausebutton:hover {
+    scale: 1.03;
+}
+
+.wobble-text {
+    position: relative;
+    font-size: 32px;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    -unity-text-align: middle-center;
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+}
+
+.scribble-layer {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+}
+
+.hidden {
+    display: none;
+}

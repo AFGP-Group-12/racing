@@ -2,6 +2,7 @@ using System;
 using Messages;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerInputHandler : MonoBehaviour
 {
@@ -23,6 +24,9 @@ public class PlayerInputHandler : MonoBehaviour
 
     public float verticalInput { get; private set; }
 
+    private UIDocument playerUI;
+    private VisualElement pauseMenuOverlay;
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -34,6 +38,27 @@ public class PlayerInputHandler : MonoBehaviour
 
         stateHandler = contextScript.stateHandler;
         abilityManager = contextScript.abilityManager;
+
+        // Get the UI Document and pause menu overlay
+        playerUI = GetComponent<UIDocument>();
+        if (playerUI != null)
+        {
+            var root = playerUI.rootVisualElement;
+            pauseMenuOverlay = root.Q<VisualElement>("PauseMenuOverlay");
+
+            // Ensure pause menu starts hidden
+            if (pauseMenuOverlay != null && !pauseMenuOverlay.ClassListContains("hidden"))
+            {
+                pauseMenuOverlay.AddToClassList("hidden");
+            }
+        }
+
+        // Start in Player action map
+        input.SwitchCurrentActionMap("Player");
+
+        // Lock cursor at start
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
 
         input.actions["Move"].performed += OnMove;
         input.actions["Move"].canceled += OnMoveStop;
@@ -60,18 +85,33 @@ public class PlayerInputHandler : MonoBehaviour
 
         input.actions["ChangeAbility"].started += OnChangeAbility;
         input.actions["ChangeAbility"].canceled += OnChangeAbilityEnd;
-    }
 
-    void OpenMenu()
-    {
-        input.SwitchCurrentActionMap("UI");
-    }
+        // Subscribe to Pause action from Player action map
+        var playerActionMap = input.actions.FindActionMap("Player");
+        if (playerActionMap != null)
+        {
+            var pauseAction = playerActionMap.FindAction("Pause");
+            if (pauseAction != null)
+            {
+                pauseAction.started += OnPause;
+            }
+        }
 
-    void CloseMenu()
-    {
-        input.SwitchCurrentActionMap("Player");
-    }
+        // Subscribe to Unpause action from UI action map
+        var uiActionMap = input.actions.FindActionMap("UI");
+        if (uiActionMap != null)
+        {
+            var unpauseAction = uiActionMap.FindAction("Unpause");
+            if (unpauseAction != null)
+            {
+                unpauseAction.started += OnUnpause;
+            }
+        }
 
+        // Ensure only Player action map is enabled at start
+        if (playerActionMap != null) playerActionMap.Enable();
+        if (uiActionMap != null) uiActionMap.Disable();
+    }
 
     void Update()
     {
@@ -171,6 +211,50 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnChangeAbilityEnd(InputAction.CallbackContext context)
     {
         abilityManager.ChangeAbility(false);
+    }
+
+    private void OnPause(InputAction.CallbackContext context)
+    {
+        Debug.Log("OnPause called");
+
+        // Show pause menu
+        if (pauseMenuOverlay != null)
+        {
+            pauseMenuOverlay.RemoveFromClassList("hidden");
+        }
+
+        // Unlock and show cursor
+        UnityEngine.Cursor.lockState = CursorLockMode.None;
+        UnityEngine.Cursor.visible = true;
+
+        // Disable Player action map and enable UI action map
+        var playerActionMap = input.actions.FindActionMap("Player");
+        var uiActionMap = input.actions.FindActionMap("UI");
+        
+        if (playerActionMap != null) playerActionMap.Disable();
+        if (uiActionMap != null) uiActionMap.Enable();
+    }
+
+    private void OnUnpause(InputAction.CallbackContext context)
+    {
+        Debug.Log("OnUnpause called");
+
+        // Hide pause menu
+        if (pauseMenuOverlay != null)
+        {
+            pauseMenuOverlay.AddToClassList("hidden");
+        }
+
+        // Lock and hide cursor
+        UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+        UnityEngine.Cursor.visible = false;
+
+        // Disable UI action map and enable Player action map
+        var playerActionMap = input.actions.FindActionMap("Player");
+        var uiActionMap = input.actions.FindActionMap("UI");
+        
+        if (uiActionMap != null) uiActionMap.Disable();
+        if (playerActionMap != null) playerActionMap.Enable();
     }
 
     #endregion Input Functions

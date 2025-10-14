@@ -1,43 +1,42 @@
 <ui:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/Resources/UI/PlayerUI/PlayerUI.uss?fileID=7433441132597879392&amp;guid=495127f34fbf41d4a8bc27f237b45bbe&amp;type=3#PlayerUI" />
-
-     <!-- Root stretches to full screen by default in a UIDocument -->
-  <ui:VisualElement name="PlayerHUD" class="hud-root">
-
-    <!-- Crosshair -->
-    <ui:VisualElement name="Crosshair" class="crosshair-dot" />
-
-    <!-- Ability bar (bottom-right) -->
-    <ui:VisualElement name="AbilityBar" class="ability-bar">
-      <!-- 3 abilities in a row -->
-      <ui:VisualElement name="AbilityGrid" class="ability-grid">
-
-        <!-- Slot 1 Container -->
-        <ui:VisualElement name="AbilityContainer1" class="ability-container">
-          <ui:VisualElement name="AbilitySlot1" class="ability-slot">
-            <ui:Image name="AbilityIcon1" class="ability-icon" />
-          </ui:VisualElement>
-          <ui:Label name="Keybind1" class="keybind-label-bottom" text="Q" />
+    <ui:VisualElement name="PlayerHUD" class="hud-root">
+        <ui:VisualElement name="Crosshair" class="crosshair-dot" />
+        <ui:VisualElement name="AbilityBar" class="ability-bar">
+            <ui:VisualElement name="AbilityGrid" class="ability-grid">
+                <ui:VisualElement name="AbilityContainer1" class="ability-container">
+                    <ui:VisualElement name="AbilitySlot1" class="ability-slot">
+                        <ui:Image name="AbilityIcon1" class="ability-icon" />
+                    </ui:VisualElement>
+                    <ui:Label name="Keybind1" text="Q" class="keybind-label-bottom" />
+                </ui:VisualElement>
+                <ui:VisualElement name="AbilityContainer2" class="ability-container">
+                    <ui:VisualElement name="AbilitySlot2" class="ability-slot">
+                        <ui:Image name="AbilityIcon2" class="ability-icon" />
+                    </ui:VisualElement>
+                    <ui:Label name="Keybind2" text="E" class="keybind-label-bottom" />
+                </ui:VisualElement>
+                <ui:VisualElement name="AbilityContainer3" class="ability-container">
+                    <ui:VisualElement name="AbilitySlot3" class="ability-slot">
+                        <ui:Image name="AbilityIcon3" class="ability-icon" />
+                    </ui:VisualElement>
+                    <ui:Label name="Keybind3" text="R" class="keybind-label-bottom" />
+                </ui:VisualElement>
+            </ui:VisualElement>
         </ui:VisualElement>
-
-        <!-- Slot 2 Container -->
-        <ui:VisualElement name="AbilityContainer2" class="ability-container">
-          <ui:VisualElement name="AbilitySlot2" class="ability-slot">
-            <ui:Image name="AbilityIcon2" class="ability-icon" />
-          </ui:VisualElement>
-          <ui:Label name="Keybind2" class="keybind-label-bottom" text="E" />
+        <ui:VisualElement name="PauseMenuOverlay" class="pause-overlay hidden">
+            <ui:GroupBox name="PausePanel" class="pause-panel">
+                <ui:VisualElement name="pauseScribble" picking-mode="Ignore" class="scribble-layer" />
+                <ui:Label text="PAUSED" name="PauseTitle" class="pause-title" />
+                <ui:GroupBox name="PauseButtonBox" class="pause-button-box">
+                    <ui:Button name="ResumeButton" selectable="false" double-click-selects-word="false" class="pausebutton">
+                        <ui:Label text="RESUME" class="wobble-text" />
+                    </ui:Button>
+                    <ui:Button name="ExitButton" selectable="false" double-click-selects-word="false" class="pausebutton">
+                        <ui:Label text="EXIT" class="wobble-text" />
+                    </ui:Button>
+                </ui:GroupBox>
+            </ui:GroupBox>
         </ui:VisualElement>
-
-        <!-- Slot 3 Container -->
-        <ui:VisualElement name="AbilityContainer3" class="ability-container">
-          <ui:VisualElement name="AbilitySlot3" class="ability-slot">
-            <ui:Image name="AbilityIcon3" class="ability-icon" />
-          </ui:VisualElement>
-          <ui:Label name="Keybind3" class="keybind-label-bottom" text="R" />
-        </ui:VisualElement>
-
-      </ui:VisualElement>
     </ui:VisualElement>
-
-  </ui:VisualElement>
 </ui:UXML>
