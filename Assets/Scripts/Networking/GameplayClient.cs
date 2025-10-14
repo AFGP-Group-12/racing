@@ -112,12 +112,6 @@ public class GameplayClient : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         player = GameObject.Find("Player");
-
-        player.SetActive(false);
-
-        yield return new WaitForSeconds(4);
-
-        player.SetActive(true);
     }
 
     IEnumerator LoadGameScene()
@@ -127,7 +121,7 @@ public class GameplayClient : MonoBehaviour
         // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
         // a sceneBuildIndex of 1 as shown in Build Settings.
 
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("MovementScene");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("PlaytestScene");
 
         // Wait until the asynchronous scene fully loads
         while (!asyncLoad.isDone)
@@ -141,16 +135,10 @@ public class GameplayClient : MonoBehaviour
         player = GameObject.Find("Player");
         mainCamera = GameObject.Find("Main Camera");
 
-        player.SetActive(false);
-
-        yield return new WaitForSeconds(2);
-
-        player.SetActive(true);
-
         StartCoroutine(SendPeriodicMessageCoroutine());
     }
 
-private IEnumerator SendPeriodicMessageCoroutine()
+    private IEnumerator SendPeriodicMessageCoroutine()
     {
         while (!hasReceivedConnectionReply)
         {
@@ -181,6 +169,7 @@ private IEnumerator SendPeriodicMessageCoroutine()
 
     public unsafe void SendAbilityDataPlatform(Vector3 position)
     {
+        if (client == null) return;
         racing_ability_action_m m;
         m.type = (UInt16)message_t.racing_ability_action;
 
@@ -191,7 +180,8 @@ private IEnumerator SendPeriodicMessageCoroutine()
     }
 
     public unsafe void SendAbilityDataGrappleStationary(Vector3 position)
-    {
+    { 
+        if (client == null) return;
         racing_ability_action_m m;
         m.type = (UInt16)message_t.racing_ability_action;
 
@@ -203,6 +193,7 @@ private IEnumerator SendPeriodicMessageCoroutine()
 
     public unsafe void SendAbilityDataGrapplePlayer(int target_id)
     {
+        if (client == null) return;
         racing_ability_action_m m;
         m.type = (UInt16)message_t.racing_ability_action;
 
@@ -213,6 +204,7 @@ private IEnumerator SendPeriodicMessageCoroutine()
     }
     public unsafe void SendAbilityDataGrappleEnd()
     {
+        if (client == null) return;
         racing_ability_action_m m;
         m.type = (UInt16)message_t.racing_ability_action;
 
@@ -261,6 +253,7 @@ private IEnumerator SendPeriodicMessageCoroutine()
 
     private unsafe void SendMovementData(Transform transform)
     {
+        if (client == null) return;
         movement_m m;
         m.type = (UInt16)message_t.movement;
         Helpers.fillPosition(transform.position, MaxWorldBounds, out m.position);
