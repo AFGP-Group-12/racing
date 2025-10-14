@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public abstract class Ability : ScriptableObject
 {
     [Header("General Ability Info")]

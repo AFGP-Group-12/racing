@@ -9,6 +9,7 @@ public class MainMenuController : MonoBehaviour
     private Button joinLobbyButton;
     private Button optionsButton;
     private Button exitGameButton;
+    private Button tutorialButton;
 
     private VisualElement connectionIcon;
     private Button connectButton;
@@ -41,6 +42,7 @@ public class MainMenuController : MonoBehaviour
         joinLobbyButton = root.Q<Button>("joinLobbyButton");
         optionsButton = root.Q<Button>("optionsButton");
         exitGameButton = root.Q<Button>("exitGameButton");
+        tutorialButton = root.Q<Button>("tutorialButton");
 
         optionsOverlay = root.Q<VisualElement>("optionsOverlay");
         optionsCloseButton = root.Q<Button>("optionsCloseButton");
@@ -116,6 +118,12 @@ public class MainMenuController : MonoBehaviour
                 LobbyClient.instance.CreateLobby();
                 loadingOverlay.RemoveFromClassList("hidden");
             }
+        };
+
+        tutorialButton.clicked += () =>
+        {
+            StartCoroutine(GameplayClient.instance.LoadSceneSinglePlayer("BasicMovementTestScene"));
+            Debug.Log("Tutorial Button Pressed");
         };
     }
 

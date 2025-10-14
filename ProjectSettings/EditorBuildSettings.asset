@@ -12,8 +12,11 @@ EditorBuildSettings:
     path: Assets/Scenes/MainMenuNetworkingTest.unity
     guid: 13c9b46657451964fafcf00cb83bec90
   - enabled: 1
-    path: Assets/Scenes/MovementScene.unity
-    guid: c4cba70f63ec92b41a5cc179590c69ca
+    path: Assets/Scenes/Test Scenes/BasicMovementTestScene.unity
+    guid: d2b2e9a9d8617bc4284f7a54ef71d42a
+  - enabled: 0
+    path: Assets/Scenes/Test Scenes/DashTestScene.unity
+    guid: 19294ec49f6f51d40940cf649937af23
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -199,7 +199,7 @@ public class PlayerMovement : MonoBehaviour
     void FixedUpdate()
     {
         // Camera
-        visualScript.SetSpeedVisuals(basicSpeed, maxSpeed, rb.linearVelocity.magnitude);
+        visualScript.SetSpeedVisuals(basicSpeed, maxSpeed, rb.linearVelocity.magnitude,state);
         SetCameraRotation();
 
 

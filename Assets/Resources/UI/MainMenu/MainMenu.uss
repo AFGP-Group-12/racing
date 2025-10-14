@@ -38,7 +38,7 @@ Button.mainbutton:hover {
     bottom: auto;
     left: 0%;
     position: relative;
-    top: 33%;
+    top: 21%;
     right: auto;
     align-self: center;
     align-content: auto;

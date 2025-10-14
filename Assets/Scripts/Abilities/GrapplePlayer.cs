@@ -94,7 +94,6 @@ public class GrapplePlayer : Ability
                 if (idHolder == null) { Debug.Log("Idholder null");  return; }
 
                 if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrapplePlayer(idHolder.Id);
-
             }
         }
 

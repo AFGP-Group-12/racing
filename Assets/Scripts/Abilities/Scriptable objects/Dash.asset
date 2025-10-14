@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Dash
   m_EditorClassIdentifier: 
   abilityName: Dash
-  icon: {fileID: 21300000, guid: 6739d07566d47cd478a8f0888affcb49, type: 3}
+  icon: {fileID: 21300000, guid: 511392fffa2bb16478607953ef2f6d51, type: 3}
   cooldown: 3
   duration: 0.5
   abilityIndex: 0

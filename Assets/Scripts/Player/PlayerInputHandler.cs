@@ -62,6 +62,16 @@ public class PlayerInputHandler : MonoBehaviour
         input.actions["ChangeAbility"].canceled += OnChangeAbilityEnd;
     }
 
+    void OpenMenu()
+    {
+        input.SwitchCurrentActionMap("UI");
+    }
+
+    void CloseMenu()
+    {
+        input.SwitchCurrentActionMap("Player");
+    }
+
 
     void Update()
     {
@@ -162,6 +172,6 @@ public class PlayerInputHandler : MonoBehaviour
     {
         abilityManager.ChangeAbility(false);
     }
-    
+
     #endregion Input Functions
 }
