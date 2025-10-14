@@ -5146,7 +5146,7 @@ MonoBehaviour:
 
 
     Pickup the ability. Press Q to dash. You will dash in the direction
-    you are facing.'
+    you are facing. This includes looking at an up or down angle.'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
