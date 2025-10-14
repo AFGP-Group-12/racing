@@ -1,7 +1,9 @@
 using Messages;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LobbyClient : MonoBehaviour
 {
@@ -19,6 +21,8 @@ public class LobbyClient : MonoBehaviour
 
     public event Action OnLobbyJoined;
     public event Action OnLobbyExited;
+
+    public event Action<string> SetPopup;
 
     public event Action<string> OnPlayerJoinLobby;
     public event Action<string> OnPlayerLeaveLobby;
@@ -131,6 +135,7 @@ public class LobbyClient : MonoBehaviour
                 break;
             case 3: // Invalid lobby code
                 Debug.LogError("Invalid Lobby Code!");
+                StartCoroutine(SetPopupCoroutine("Invalid Lobby Code!"));
                 OnLobbyExited.Invoke();
                 break;
             case 4: // Private lobby created
@@ -141,6 +146,7 @@ public class LobbyClient : MonoBehaviour
                 break;
             case 5: // Private lobby Full
                 Debug.LogError("Lobby full!");
+                StartCoroutine(SetPopupCoroutine("Lobby Full!"));
                 break;
             case 6: // Private lobby joined
                 OnLobbyJoined.Invoke();
@@ -164,6 +170,14 @@ public class LobbyClient : MonoBehaviour
 
         }
     }
+
+    IEnumerator SetPopupCoroutine(string text)
+    {
+        SetPopup(text);
+        yield return new WaitForSeconds(2);
+        SetPopup("");
+    }
+
 
     private void ChangeHost(int hostId)
     {
