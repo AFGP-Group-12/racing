@@ -52,7 +52,7 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     }
 
-    public void SetSpeedVisuals(float basicSpeed, float maxSpeed, float moveSpeed)
+    public void SetSpeedVisuals(float basicSpeed, float maxSpeed, float moveSpeed, MovementState state)
     {
 
         basicSpeed++;
@@ -73,8 +73,11 @@ public class PlayerScreenVisuals : MonoBehaviour
 
         speedLineRawImage.material.SetFloat("_Transparency", transparency);
 
-        currentAddedFov = transparency;
-        playerCamera.fieldOfView = startingFov + (addedFov * currentAddedFov);
+        if(state != MovementState.dashing && state != MovementState.grappling)
+        {
+            currentAddedFov = transparency;
+            playerCamera.fieldOfView = startingFov + (addedFov * currentAddedFov);
+        }
     }
 
 

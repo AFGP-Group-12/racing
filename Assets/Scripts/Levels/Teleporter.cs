@@ -7,13 +7,13 @@ public class Teleporter : MonoBehaviour
     private int currentLevel;
 
     [SerializeField]
-    private Vector3 nextPosition;
+    private Transform nextPosition;
 
     private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
-            other.transform.parent.position = nextPosition;
+            other.transform.parent.position = nextPosition.position;
             other.GetComponentInParent<DeathboxHandler>()?.HandleLevelComplete(currentLevel);
             other.GetComponentInParent<PlayerAbilityManager>()?.ResetAbilities();
         }
