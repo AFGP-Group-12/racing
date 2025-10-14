@@ -136,6 +136,8 @@ public class GrappleStationary : Ability
         usingAbility = false;
         Destroy(joint);
         abilityManager.StartAbilityCooldown(abilityIndex, cooldown);
+
+        if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrappleEnd();
     }
 
     public override void CooldownEnd()

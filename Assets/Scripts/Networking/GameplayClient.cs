@@ -28,7 +28,6 @@ public class GameplayClient : MonoBehaviour
 
     // Abilities
     public Platform platformAbility;
-    public PlayerGrappleLine playerGrappleLine;
 
     public void Awake()
     {
@@ -190,6 +189,15 @@ private IEnumerator SendPeriodicMessageCoroutine()
 
         client.SendDataTcp(m.bytes, racing_ability_action_m.size);
     }
+    public unsafe void SendAbilityDataGrappleEnd()
+    {
+        racing_ability_action_m m;
+        m.type = (UInt16)message_t.racing_ability_action;
+
+        m.action = 4;
+        
+        client.SendDataTcp(m.bytes, racing_ability_action_m.size);
+    }
 
     private unsafe void HandleRecievedAbilityAction(racing_ability_action_m message)
     {
@@ -211,11 +219,13 @@ private IEnumerator SendPeriodicMessageCoroutine()
                 break;
             case 2: // Stationary Grapple
                 pos = Helpers.readPosition(message.position, MaxWorldBounds);
-                playerGrappleLine.ForceSetEndPoint(pos);
-                playerGrappleLine.grappleStartPoint = playerById[message.from_id].playerObj.transform;
+                playerById[message.from_id].Grapple(pos);
                 break;
             case 3: // Player Grapple
                 int target = message.target_player_id;
+                break;
+            case 4: // Any Grapple End
+                playerById[message.from_id].EndGrapple();
                 break;
             default:
                 Debug.Log("Got Unexpected ability action: " + message.action);

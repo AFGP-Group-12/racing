@@ -5,9 +5,10 @@ using UnityEngine;
 
 public class OtherPlayer
 {
-    public GameObject playerObj;
+    GameObject playerObj;
     Canvas canvas;
     SpriteController spriteController;
+    PlayerGrappleLine playerGrappleLine;
 
     private Vector3 originMovement;
     private Vector3 targetMovement;
@@ -26,6 +27,7 @@ public class OtherPlayer
         canvas.worldCamera = camera;
 
         TextMeshProUGUI text = playerObj.GetComponentInChildren<TextMeshProUGUI>();
+        playerGrappleLine = playerObj.GetComponent<PlayerGrappleLine>();
         text.SetText(name);
 
         spriteController.viewer = camera.transform;
@@ -74,6 +76,15 @@ public class OtherPlayer
 
         playerObj.transform.position = origin + interpolation;
         canvas.transform.LookAt(canvas.worldCamera.transform);
+    }
+
+    public void Grapple(Vector3 targetPoint)
+    {
+        playerGrappleLine.ForceSetEndPoint(playerObj.transform, targetPoint);
+    }
+    public void EndGrapple()
+    {
+        playerGrappleLine.DisableSetPoint();
     }
 
     private Vector3 CalculatePrediction()
