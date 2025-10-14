@@ -4,11 +4,11 @@ public class Logs : MonoBehaviour
 {
     string filePath;
     int deathCounter = 0;
-    private Deathbox deathOccured;
+    private DeathboxHandler deathOccured;
 
     private void Start()
     {
-        deathOccured = FindFirstObjectByType<Deathbox>();
+        deathOccured = GetComponent<DeathboxHandler>();
         filePath = Application.dataPath + "/logs.txt";
         deathOccured.OnPlayerDeath += IncrementDeathCounter;
     }

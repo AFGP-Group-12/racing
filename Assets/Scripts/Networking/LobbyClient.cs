@@ -2,7 +2,6 @@ using Messages;
 using System;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
 
 public class LobbyClient : MonoBehaviour

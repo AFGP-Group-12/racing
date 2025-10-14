@@ -1,6 +1,4 @@
 using System;
-using JetBrains.Annotations;
-using Microsoft.Unity.VisualStudio.Editor;
 using UnityEngine;
 
 
