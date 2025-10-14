@@ -16,6 +16,8 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     [SerializeField] float addedFov; // How much fov do you want to be added to the field of view
 
+    [SerializeField] float fovSmoothTime = 0.15f; 
+
     private RawImage speedLineRawImage;
 
     [Header("Rotation on Move")]
@@ -36,6 +38,10 @@ public class PlayerScreenVisuals : MonoBehaviour
     private float transparency;
 
     private float currentAddedFov;
+
+    private float targetFOV;
+
+    private float fovVel; // velocity tracker for SmoothDamp
 
     Rigidbody rb;
 
@@ -73,11 +79,11 @@ public class PlayerScreenVisuals : MonoBehaviour
 
         speedLineRawImage.material.SetFloat("_Transparency", transparency);
 
-        if(state != MovementState.dashing && state != MovementState.grappling)
-        {
-            currentAddedFov = transparency;
-            playerCamera.fieldOfView = startingFov + (addedFov * currentAddedFov);
-        }
+        currentAddedFov = transparency;
+        targetFOV = startingFov + (addedFov * currentAddedFov);
+
+        targetFOV = Mathf.Lerp(startingFov, startingFov + addedFov, transparency);
+        playerCamera.fieldOfView = Mathf.SmoothDamp(playerCamera.fieldOfView, targetFOV, ref fovVel, fovSmoothTime);
     }
 
 

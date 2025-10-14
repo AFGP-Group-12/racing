@@ -65,7 +65,7 @@ public class Platform : Ability
         ray = new Ray(cameraTransform.position, cameraTransform.forward);
         //Debug.DrawRay(cameraTransform.position, cameraTransform.forward * placementDistance, Color.blue);
 
-        if (Physics.Raycast(ray, out RaycastHit hit, placementDistance))
+        if (Physics.Raycast(ray, out RaycastHit hit, placementDistance,hitLayers))
         {
             spawnCoordinates = hit.point;
         }
