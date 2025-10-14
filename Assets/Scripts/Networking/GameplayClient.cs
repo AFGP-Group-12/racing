@@ -28,6 +28,7 @@ public class GameplayClient : MonoBehaviour
 
     // Abilities
     public Platform platformAbility;
+    public PlayerGrappleLine playerGrappleLine;
 
     public void Awake()
     {
@@ -210,6 +211,8 @@ private IEnumerator SendPeriodicMessageCoroutine()
                 break;
             case 2: // Stationary Grapple
                 pos = Helpers.readPosition(message.position, MaxWorldBounds);
+                playerGrappleLine.ForceSetEndPoint(pos);
+                playerGrappleLine.grappleStartPoint = playerById[message.from_id].playerObj.transform;
                 break;
             case 3: // Player Grapple
                 int target = message.target_player_id;

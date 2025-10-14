@@ -106,6 +106,8 @@ public class GrappleStationary : Ability
                 joint.spring = grappleSpringForce;
                 joint.damper = grappleDamper;
                 joint.massScale = grappleMassScale;
+
+                if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrappleStationary(grappleLocation);
             }
 
             abilityManager.StartAbilityDuration(abilityIndex, duration);

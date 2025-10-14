@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class OtherPlayer
 {
-    GameObject playerObj;
+    public GameObject playerObj;
     Canvas canvas;
     SpriteController spriteController;
 
