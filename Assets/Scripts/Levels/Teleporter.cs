@@ -5,8 +5,6 @@ public class Teleporter : MonoBehaviour
 {
     [SerializeField]
     private int currentLevel;
-    [SerializeField]
-    private int nextLevel;
 
     [SerializeField]
     private Vector3 nextPosition;
@@ -15,6 +13,8 @@ public class Teleporter : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            other.transform.parent.position = nextPosition;
+            other.GetComponentInParent<DeathboxHandler>()?.HandleLevelComplete(currentLevel);
         }
     }
 }
