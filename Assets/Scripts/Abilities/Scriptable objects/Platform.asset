@@ -27,3 +27,6 @@ MonoBehaviour:
   increaseIncrement: 0.5
   decreaseIncrement: 0.02
   placementDistance: 10
+  hitLayers:
+    serializedVersion: 2
+    m_Bits: 1808

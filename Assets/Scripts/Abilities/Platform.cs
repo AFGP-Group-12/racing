@@ -16,6 +16,7 @@ public class Platform : Ability
     public float increaseIncrement;
     public float decreaseIncrement;
     public float placementDistance;
+    public LayerMask hitLayers;
 
 
     private Vector3 spawnCoordinates;
@@ -44,7 +45,7 @@ public class Platform : Ability
             canAbility = false;
 
             ray = new Ray(cameraTransform.position, cameraTransform.forward);
-            if (Physics.Raycast(ray, out RaycastHit hit, placementDistance))
+            if (Physics.Raycast(ray, out RaycastHit hit, placementDistance, hitLayers))
             {
                 spawnCoordinates = hit.point;
             }
