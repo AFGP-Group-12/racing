@@ -46,18 +46,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteSetsList:
-  - state: 7
+  - state: 8
     spriteSet: {fileID: 11400000, guid: 693dbf50fea05a44ea059df9bc71e96b, type: 2}
   - state: 0
     spriteSet: {fileID: 11400000, guid: d29f5f7ab29de4531a40b04715c1ddc7, type: 2}
   - state: 1
     spriteSet: {fileID: 11400000, guid: d29f5f7ab29de4531a40b04715c1ddc7, type: 2}
-  - state: 4
+  - state: 5
     spriteSet: {fileID: 11400000, guid: 3063d2f170f4342589c05a3f5044e0e5, type: 2}
+  - state: 4
+    spriteSet: {fileID: 11400000, guid: 322166cfd4179fe42880a0fdb7afaf8f, type: 2}
+  - state: 3
+    spriteSet: {fileID: 11400000, guid: b9f1c428b59e35142b3437deee27f82f, type: 2}
+  - state: 2
+    spriteSet: {fileID: 11400000, guid: b2ccb497cd87798498077bfe7ccf9b92, type: 2}
   targetRenderer: {fileID: 4878177146054576323}
   viewer: {fileID: 0}
   playerStateHandler: {fileID: 0}
-  currentMovementState: 7
+  currentMovementState: 0
   topBottomPitchThresholdDeg: 45
   yawSectorSizeDeg: 45
   fpsOverride: 0
@@ -222,7 +228,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lineRenderer: {fileID: 9055054167459544875}
   grappleStartPoint: {fileID: 0}
-  isForceingLine: 0
 --- !u!136 &183488816234718350
 CapsuleCollider:
   m_ObjectHideFlags: 0

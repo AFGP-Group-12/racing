@@ -87,6 +87,7 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Keep in mind that the normal height is 2")]
     [SerializeField] float slideHeight;
     [SerializeField] Camera playerCamera;
+    private float originalPlayerColliderHeight;
     private float slideTimer = 0f;
     private float startZ;
 
@@ -138,6 +139,7 @@ public class PlayerMovement : MonoBehaviour
         contextScript = GetComponent<PlayerContext>();
         stateHandler = contextScript.stateHandler;
         playerCollider = contextScript.playerObject.GetComponent<CapsuleCollider>();
+        originalPlayerColliderHeight = playerCollider.height;
 
         rb = contextScript.rb;
         input = contextScript.input;
@@ -158,7 +160,6 @@ public class PlayerMovement : MonoBehaviour
         stateHandler.isSliding = false;
 
         slideTimer = 0f;
-
     }
 
     void Update()
@@ -662,6 +663,7 @@ public class PlayerMovement : MonoBehaviour
         StopCoroutine(SlideCoroutine());
         StartCoroutine(FixCamera());
         stateHandler.isSliding = false;
+        playerCollider.height = originalPlayerColliderHeight;
         Invoke(nameof(SlideCooldown), slideCooldown);
     }
 
