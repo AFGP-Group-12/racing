@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
 
     private float acceleration; // Make this private its only like this for debugging purposes
     private float moveSpeed; // Make this private its only like this for debugging purposes
-    private float accelerationIncrement = 1f; // Amount the acceleration will be incremented by
+    private float accelerationIncrement = 2f; // Amount the acceleration will be incremented by
 
     private float horizontalInput;
     private float verticalInput;
@@ -166,6 +166,42 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
+        // isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
+        // stateHandler.isOnGround = isOnGround;
+        // lastState = state;
+        // state = stateHandler.state;
+
+        // //Debug.DrawRay(transform.position, Vector3.down * 5f, Color.green);
+
+        // if (isOnGround)
+        // {
+        //     rb.linearDamping = groundDrag;
+        // }
+        // else
+        // {
+        //     rb.linearDamping = 0f;
+        // }
+
+        // // Movement
+        // SetMovementSpeed();
+        // Accelerate();
+        // StopMomentumJump();
+        // // SpeedCheck(); // For debugging purposes
+
+        // // Wall Running
+        // WallRunCheck();
+
+        // if (slideTimer > 0f)
+        // {
+        //     slideTimer -= Time.deltaTime;
+        // }
+
+
+    }
+
+    void FixedUpdate()
+    {
+
         isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
         stateHandler.isOnGround = isOnGround;
         lastState = state;
@@ -197,10 +233,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
 
-    }
-
-    void FixedUpdate()
-    {
         // Camera
         visualScript.SetSpeedVisuals(basicSpeed, maxSpeed, rb.linearVelocity.magnitude,state);
         SetCameraRotation();
