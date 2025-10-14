@@ -46,6 +46,7 @@ public class PlayerStateHandler : MonoBehaviour
         {
             OnStateChanged?.Invoke(state);
             prevState = state;
+            if (GameplayClient.instance != null) { GameplayClient.instance.CurrentState = state; }
         }
     }
 

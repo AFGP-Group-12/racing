@@ -1,7 +1,7 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" editor-extension-mode="False">
     <Style src="project://database/Assets/Resources/UI/MainMenu/MainMenu.uss?fileID=7433441132597879392&amp;guid=e3c861fdf0a5bca4a8c8258d2aa772e0&amp;type=3#MainMenu" />
     <Style src="project://database/Assets/Resources/UI/MainMenu/LobbyScreen.uss?fileID=7433441132597879392&amp;guid=492333ebbe5530d46805ca24c09dacd7&amp;type=3#LobbyScreen" />
-    <ui:VisualElement name="root" class="root">
+    <ui:VisualElement name="root" enabled="true" class="root">
         <ui:VisualElement name="mainScreen" enabled="true" style="width: 100%; height: 100%; position: absolute;">
             <ui:VisualElement name="serverHealth" style="flex-grow: 1; position: absolute; top: 20px; right: 20px; flex-direction: row;">
                 <ui:Button text="Reconnect" name="connectButton" />
@@ -108,6 +108,14 @@
                     <ui:VisualElement name="loadingScribble" class="scribble-layer" style="flex-grow: 1;" />
                     <ui:VisualElement name="VisualElement" class="row" style="align-self: center; flex-direction: row;">
                         <ui:Label text="Loading..." name="Label" double-click-selects-word="false" class="form-label" style="align-self: flex-start; font-size: 36px; -unity-text-align: middle-center; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                    </ui:VisualElement>
+                </ui:GroupBox>
+            </ui:VisualElement>
+            <ui:VisualElement name="popupOverlay" class="overlay hidden" style="flex-grow: 1;">
+                <ui:GroupBox name="loadingPanel" class="loading-panel" style="flex-direction: row-reverse; justify-content: center;">
+                    <ui:VisualElement name="loadingScribble" class="scribble-layer" style="flex-grow: 1;" />
+                    <ui:VisualElement name="VisualElement" class="row" style="align-self: center; flex-direction: row;">
+                        <ui:Label text="Loading..." name="popupOverlayLabel" double-click-selects-word="false" class="form-label" style="align-self: flex-start; font-size: 36px; -unity-text-align: middle-center; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
                     </ui:VisualElement>
                 </ui:GroupBox>
             </ui:VisualElement>

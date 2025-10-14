@@ -14,7 +14,7 @@ public class SpawnedPlatform : MonoBehaviour
     private bool reachedMaxScale = false;
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
         if (increaseIncrement == 0)
         {

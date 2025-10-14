@@ -1,9 +1,9 @@
 using Messages;
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using TMPro;
-using UnityEditor.MemoryProfiler;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class LobbyClient : MonoBehaviour
 {
@@ -12,7 +12,9 @@ public class LobbyClient : MonoBehaviour
     private Dictionary<int, string> username_by_id = new Dictionary<int, string>();
 
     // Networking
-    private string connection_server_ip = "68.205.103.143";
+    private bool is_local = false;
+    private string connection_server_ip = "69.62.71.12";
+    private string local_connection_server_ip = "192.168.0.201";
     public BaseNetworkClient client;
 
     public static LobbyClient instance;
@@ -20,13 +22,33 @@ public class LobbyClient : MonoBehaviour
     public event Action OnLobbyJoined;
     public event Action OnLobbyExited;
 
+    public event Action<string> SetPopup;
+
     public event Action<string> OnPlayerJoinLobby;
     public event Action<string> OnPlayerLeaveLobby;
+
+    public event Action<int, string> SetPlayerPing;
+    public event Action<string> SetLobbyCode;
+    public event Action<string, bool> UpdateHost;
+
+    private System.Diagnostics.Stopwatch pingTimer;
+    private bool waitingForPing = false;
+    DateTime timeSinceLastPing;
+    int currentPing = -1;
+    const int pingInterval = 5;
+    int self_id = -1;
+    int currentHost = -1;
+
+    bool gameStarted = false;
 
     private void Awake()
     {
         instance = this;
         DontDestroyOnLoad(this.gameObject);
+
+
+        pingTimer = new System.Diagnostics.Stopwatch();
+        timeSinceLastPing = DateTime.Now;
     }
 
     void Start()
@@ -38,7 +60,7 @@ public class LobbyClient : MonoBehaviour
     public void ConnectToServer()
     {
         Debug.Log("Connecting to server...");
-        client = new BaseNetworkClient(connection_server_ip, 8080, 256, player_username);
+        client = new BaseNetworkClient(is_local ? local_connection_server_ip : connection_server_ip, 8080, 256, player_username);
         client.ConnectToServer(OnConnect);
     }
 
@@ -75,6 +97,8 @@ public class LobbyClient : MonoBehaviour
         player_username = new_username;
         // Send an update username message.
 
+        client.changeUsername(player_username);
+
         racing_lobby_action_m message;
         message.type = (ushort)message_t.racing_lobby_action;
         message.action = 4;
@@ -94,11 +118,16 @@ public class LobbyClient : MonoBehaviour
             case 0: // Public lobby joined sucessfully
                 OnLobbyJoined.Invoke();
                 OnPlayerJoinLobby.Invoke(player_username);
+                SetLobbyCode.Invoke("");
+                if (self_id == currentHost)
+                    ChangeHost(currentHost);
                 break;
             case 1: // Other player joined lobby
                 other_player_username = Helpers.readUsername(message.username);
                 username_by_id[message.other_player_id] = other_player_username;
                 OnPlayerJoinLobby.Invoke(other_player_username);
+                if (message.other_player_id == currentHost)
+                    ChangeHost(currentHost);
                 break;
             case 2: // Other player left lobby
                 other_player_username = username_by_id[message.other_player_id];
@@ -106,28 +135,62 @@ public class LobbyClient : MonoBehaviour
                 break;
             case 3: // Invalid lobby code
                 Debug.LogError("Invalid Lobby Code!");
+                StartCoroutine(SetPopupCoroutine("Invalid Lobby Code!"));
                 OnLobbyExited.Invoke();
                 break;
             case 4: // Private lobby created
                 OnLobbyJoined.Invoke();
                 OnPlayerJoinLobby.Invoke(player_username);
                 string lobby_code = Helpers.getStringFromMessage(message.lobby_code, 6);
-                Debug.Log(lobby_code);
+                SetLobbyCode.Invoke(lobby_code);
                 break;
             case 5: // Private lobby Full
                 Debug.LogError("Lobby full!");
+                StartCoroutine(SetPopupCoroutine("Lobby Full!"));
                 break;
             case 6: // Private lobby joined
                 OnLobbyJoined.Invoke();
                 OnPlayerJoinLobby.Invoke(player_username);
+                lobby_code = Helpers.getStringFromMessage(message.lobby_code, 6);
+                SetLobbyCode.Invoke(lobby_code);
+                if (self_id == currentHost)
+                    ChangeHost(currentHost);
                 break;
             case 7: // Lobby exited sucessfully
                 OnLobbyExited.Invoke();
                 Debug.Log("Exited");
-
+                break;
+            case 8: // Other player ping
+                other_player_username = username_by_id[message.other_player_id];
+                SetPlayerPing.Invoke(message.ping, other_player_username);
+                break;
+            case 9: // Host changed
+                ChangeHost(message.other_player_id);
                 break;
 
         }
+    }
+
+    IEnumerator SetPopupCoroutine(string text)
+    {
+        SetPopup(text);
+        yield return new WaitForSeconds(2);
+        SetPopup("");
+    }
+
+
+    private void ChangeHost(int hostId)
+    {
+        currentHost = hostId;
+
+        string hostUsername;
+        if (hostId == self_id)
+            hostUsername = player_username;
+        else if (username_by_id.ContainsKey(hostId))
+            hostUsername = username_by_id[hostId];
+        else
+            return;
+        UpdateHost.Invoke(hostUsername, hostId == self_id);
     }
 
     private void Update()
@@ -138,18 +201,64 @@ public class LobbyClient : MonoBehaviour
             switch (message.get_t())
             {
                 case message_t.connection_reply:
+                    self_id = message.connection_reply.id;
+                    Debug.Log("Self Id: " + self_id);
                     break;
                 case message_t.racing_lobby_update:
                     HandleLobbyUpdate(message.racing_lobby_update);
                     break;
+                case message_t.ping_reply:
+                    HandlePing();
+                    break;
                 default:
+                    Debug.Log("Got Unexpected: " + message.get_t());
                     break;
             }
         }
     }
+
+    private unsafe void HandlePing()
+    {
+        if (!waitingForPing) { Debug.LogError("Got ping when not expecting it!"); return; }
+
+        pingTimer.Stop();
+        currentPing = (int)pingTimer.ElapsedMilliseconds;
+        SetPlayerPing.Invoke(currentPing, player_username);
+
+        racing_lobby_action_m message;
+        message.type = (ushort)message_t.racing_lobby_action;
+        message.action = 6;
+        message.ping = (ushort)currentPing;
+        client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
+
+
+        waitingForPing = false;
+        timeSinceLastPing = DateTime.Now;
+        pingTimer.Reset();
+    }
+
+    private unsafe void FixedUpdate()
+    {
+        if (waitingForPing) { return; }
+
+        Double elapsedseconds = (DateTime.Now - timeSinceLastPing).TotalSeconds;
+        if (elapsedseconds >= pingInterval)
+        {
+            waitingForPing = true;
+
+            ping_m ping;
+            ping.type = (ushort)message_t.ping;
+            ping.random_number = (ushort)(UnityEngine.Random.value * 65536);
+
+            pingTimer.Start();
+            client.SendDataTcp(ping.bytes, ping_m.size);
+        }
+    }
     private void OnDestroy()
     {
-        client.Disconnect();
+        if (client != null)
+            client.Disconnect();
+        
     }
 
     public unsafe void LeaveLobby()
@@ -163,9 +272,17 @@ public class LobbyClient : MonoBehaviour
 
     public unsafe void StartGame()
     {
+        if (gameStarted) return;
+
         racing_lobby_action_m message;
         message.type = (ushort)message_t.racing_lobby_action;
         message.action = 5;
         client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
+        gameStarted = true;
+    }
+
+    public string GetPlayerName(int id)
+    {
+        return username_by_id.ContainsKey(id) ? username_by_id[id] : "404";
     }
 }
