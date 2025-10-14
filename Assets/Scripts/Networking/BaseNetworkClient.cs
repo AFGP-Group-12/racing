@@ -5,12 +5,14 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class BaseNetworkClient
 {
     // Server Info
     private string serverIp;
     private int serverPort;
+    private int serverUdpPort;
 
     // Networking Objects
     private TcpClient tcpSocket = null;
@@ -108,6 +110,23 @@ public class BaseNetworkClient
         tcpStream.BeginWrite(dataArr, 0, dataArr.Length, null, null);
     }
 
+    public unsafe void RegisterUdp()
+    {
+        racing_ability_action_m m;
+        m.type = (UInt16)message_t.racing_ability_action;
+
+        m.from_id = player_id;
+
+        byte[] dataArr = new byte[racing_ability_action_m.size];
+        for (int i = 0; i < racing_ability_action_m.size; i++)
+        {
+            dataArr[i] = m.bytes[i];
+        }
+
+
+        udpSocket.Send(dataArr, dataArr.Length, serverIp, 8081);//, target);
+    }
+
     public unsafe void SendDataUdp(byte* data, int len)
     {
         //IPEndPoint target = new IPEndPoint(IPAddress.Parse(serverIp), 8081);
@@ -123,7 +142,7 @@ public class BaseNetworkClient
 
         try
         {
-            udpSocket.Send(dataArr, dataArr.Length);//, target);
+            udpSocket.Send(dataArr, dataArr.Length, serverIp, serverUdpPort);//, target);
         }
         catch (Exception e)
         {
@@ -296,8 +315,7 @@ public class BaseNetworkClient
                         if (m.initiate_udp_reply.granted != 0)
                         {
                             // Recieve the message
-                            int port = m.initiate_udp_reply.port;
-                            udpSocket.Connect(serverIp, port);
+                            serverUdpPort = m.initiate_udp_reply.port;
                             UdpConnectCallback();
                         }
                         else

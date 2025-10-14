@@ -71,6 +71,7 @@ public class GameplayClient : MonoBehaviour
             {
                 case message_t.connection_reply:
                     hasReceivedConnectionReply = true;
+                    client.RegisterUdp();
                     break;
                 case message_t.movement_reply:
                     HandleRecievedPlayerMovement(message.movement_reply);
