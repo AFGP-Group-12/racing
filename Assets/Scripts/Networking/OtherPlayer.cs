@@ -10,6 +10,7 @@ public class OtherPlayer
     Canvas canvas;
     SpriteController spriteController;
     PlayerGrappleLine playerGrappleLine;
+    int inGrapple = 0;
 
     private Vector3 originMovement;
     private Vector3 targetMovement;
@@ -33,6 +34,9 @@ public class OtherPlayer
 
         spriteController.viewer = camera.transform;
         player_id = id;
+
+        OtherPlayerIdHolder idHolder = playerObj.GetComponent<OtherPlayerIdHolder>();
+        idHolder.Id = id;
     }
 
     public void AddMovementReply(Vector3 pos, Vector3 velocity, double rotation, MovementState state)
@@ -82,11 +86,22 @@ public class OtherPlayer
 
     public void Grapple(Vector3 targetPoint)
     {
-        playerGrappleLine.ForceSetEndPoint(playerObj.transform, targetPoint);
+        if (inGrapple == 0) playerGrappleLine.ForceSetEndPoint(playerObj.transform, targetPoint);
+        inGrapple++;
+    }
+    public void Grapple(OtherPlayer otherPlayer)
+    {
+        Grapple(otherPlayer.playerObj.transform);
+    }
+    public void Grapple(Transform transform)
+    {
+        if (inGrapple == 0) playerGrappleLine.ForceSetEndPoint(playerObj.transform, transform);
+        inGrapple++;
     }
     public void EndGrapple()
     {
         playerGrappleLine.DisableSetPoint();
+        inGrapple--;
     }
 
     private Vector3 CalculatePrediction()
