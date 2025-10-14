@@ -411,7 +411,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e154bd423685b24fbf003d91e9c7c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grappleStartPoint: {fileID: 0}
+  grappleStartPoint: {fileID: 193541651}
   isForceingLine: 0
 --- !u!1 &589029238
 GameObject:
