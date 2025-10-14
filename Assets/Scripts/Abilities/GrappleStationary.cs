@@ -82,11 +82,11 @@ public class GrappleStationary : Ability
 
         if (canAbility)
         {
-            canAbility = false;
 
             ray = new Ray(cameraTransform.position, cameraTransform.forward);
             if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance, grappleSurface))
             {
+                canAbility = false;
                 stateHandler.isGrappling = true;
                 grappleLocation = hit.point;
                 usingAbility = true;

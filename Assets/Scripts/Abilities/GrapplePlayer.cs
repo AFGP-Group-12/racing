@@ -72,11 +72,11 @@ public class GrapplePlayer : Ability
 
         if (canAbility)
         {
-            canAbility = false;
 
             ray = new Ray(cameraTransform.position, cameraTransform.forward);
             if (Physics.Raycast(ray, out RaycastHit hit, maxGrappleDistance, playerLayer))
             {
+                canAbility = false;
                 stateHandler.isGrappling = true;
                 usingAbility = true;
 
