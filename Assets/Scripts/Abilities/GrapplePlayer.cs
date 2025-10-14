@@ -86,7 +86,7 @@ public class GrapplePlayer : Ability
 
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x,0f,rb.linearVelocity.z);
 
-                if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrapplePlayer();
+                // if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrapplePlayer();
                 abilityManager.StartAbilityDuration(abilityIndex, duration);
             }
         }

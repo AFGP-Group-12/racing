@@ -97,13 +97,14 @@ public class GameplayClient : MonoBehaviour
         }
     }
 
-    IEnumerator LoadSceneSinglePlayer(string scene)
+    public IEnumerator LoadSceneSinglePlayer(string scene)
     {
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("MovementScene");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scene);
 
         // Wait until the asynchronous scene fully loads
         while (!asyncLoad.isDone)
         {
+            Debug.Log("Loading Scene...");
             yield return null;
         }
         Debug.Log("Scene Loaded");
@@ -114,7 +115,7 @@ public class GameplayClient : MonoBehaviour
 
         player.SetActive(false);
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(4);
 
         player.SetActive(true);
     }

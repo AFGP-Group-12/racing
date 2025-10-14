@@ -122,7 +122,8 @@ public class MainMenuController : MonoBehaviour
 
         tutorialButton.clicked += () =>
         {
-            UnityEngine.SceneManagement.SceneManager.LoadScene("BasicMovementTestScene");
+            StartCoroutine(GameplayClient.instance.LoadSceneSinglePlayer("BasicMovementTestScene"));
+            Debug.Log("Tutorial Button Pressed");
         };
     }
 
