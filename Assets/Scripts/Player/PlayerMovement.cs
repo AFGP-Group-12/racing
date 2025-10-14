@@ -151,6 +151,7 @@ public class PlayerMovement : MonoBehaviour
 
         isAccelerating = false;
 
+        Time.timeScale = 1;
         orientation = contextScript.orintation;
 
         stateHandler.isSliding = false;

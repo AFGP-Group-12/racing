@@ -8,7 +8,7 @@ public class GrappleStationary : Ability
     private PlayerStateHandler stateHandler;
     private PlayerAbilityManager abilityManager;
     private PlayerMovement movementScript;
-    private Transform orintation;
+    private Transform orientation;
     private Transform cameraTransform;
 
     [Header("Grapple Info")]
@@ -106,9 +106,11 @@ public class GrappleStationary : Ability
                 joint.spring = grappleSpringForce;
                 joint.damper = grappleDamper;
                 joint.massScale = grappleMassScale;
+
+                if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrappleStationary(grappleLocation);
+                abilityManager.StartAbilityDuration(abilityIndex, duration);
             }
 
-            abilityManager.StartAbilityDuration(abilityIndex, duration);
         }
 
     }
@@ -135,6 +137,8 @@ public class GrappleStationary : Ability
         usingAbility = false;
         Destroy(joint);
         abilityManager.StartAbilityCooldown(abilityIndex, cooldown);
+
+        if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrappleEnd();
     }
 
     public override void CooldownEnd()

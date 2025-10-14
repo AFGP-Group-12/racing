@@ -232,6 +232,10 @@ MonoBehaviour:
   spriteSetsList:
   - state: 7
     spriteSet: {fileID: 11400000, guid: 693dbf50fea05a44ea059df9bc71e96b, type: 2}
+  - state: 1
+    spriteSet: {fileID: 11400000, guid: d29f5f7ab29de4531a40b04715c1ddc7, type: 2}
+  - state: 0
+    spriteSet: {fileID: 11400000, guid: d29f5f7ab29de4531a40b04715c1ddc7, type: 2}
   targetRenderer: {fileID: 1285929773}
   viewer: {fileID: 881041746}
   playerStateHandler: {fileID: 1848555636}
@@ -458,7 +462,7 @@ SpriteRenderer:
   m_Size: {x: 5.9, y: 19.88863}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
+  m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &1458037292

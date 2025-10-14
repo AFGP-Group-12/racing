@@ -9,6 +9,7 @@ public class MainMenuController : MonoBehaviour
     private Button joinLobbyButton;
     private Button optionsButton;
     private Button exitGameButton;
+    private Button tutorialButton;
 
     private VisualElement connectionIcon;
     private Button connectButton;
@@ -21,6 +22,8 @@ public class MainMenuController : MonoBehaviour
     private Button optionsCloseButton;
 
     private VisualElement loadingOverlay;
+    private VisualElement popupOverlay;
+    private Label popupOverlayLabel;
 
     private VisualElement mainScreen;
     private VisualElement lobbyScreen;
@@ -39,11 +42,14 @@ public class MainMenuController : MonoBehaviour
         joinLobbyButton = root.Q<Button>("joinLobbyButton");
         optionsButton = root.Q<Button>("optionsButton");
         exitGameButton = root.Q<Button>("exitGameButton");
+        tutorialButton = root.Q<Button>("tutorialButton");
 
         optionsOverlay = root.Q<VisualElement>("optionsOverlay");
         optionsCloseButton = root.Q<Button>("optionsCloseButton");
 
         loadingOverlay = root.Q<VisualElement>("loadingOverlay");
+        popupOverlay = root.Q<VisualElement>("popupOverlay");
+        popupOverlayLabel = root.Q<Label>("popupOverlayLabel");
 
         mainScreen = root.Q<VisualElement>("mainScreen");
         lobbyScreen = root.Q<VisualElement>("lobbyScreen");
@@ -91,8 +97,20 @@ public class MainMenuController : MonoBehaviour
         {
             mainScreen.RemoveFromClassList("hidden");
             lobbyScreen.AddToClassList("hidden");
+            loadingOverlay.AddToClassList("hidden");
         };
 
+        LobbyClient.instance.SetPopup += (string s) =>
+        {
+            if (s == null || s.Length == 0)
+            {
+                popupOverlay.AddToClassList("hidden");
+            } else
+            {
+                popupOverlay.RemoveFromClassList("hidden");
+                popupOverlayLabel.text = s;
+            }
+        };
         createLobbyButton.clicked += () =>
         {
             if (LobbyClient.instance.client.IsConnectedTcp())
@@ -100,6 +118,12 @@ public class MainMenuController : MonoBehaviour
                 LobbyClient.instance.CreateLobby();
                 loadingOverlay.RemoveFromClassList("hidden");
             }
+        };
+
+        tutorialButton.clicked += () =>
+        {
+            StartCoroutine(GameplayClient.instance.LoadSceneSinglePlayer("BasicMovementTestScene"));
+            Debug.Log("Tutorial Button Pressed");
         };
     }
 
