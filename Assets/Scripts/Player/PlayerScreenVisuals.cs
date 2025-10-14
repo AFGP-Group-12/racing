@@ -16,7 +16,7 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     [SerializeField] float addedFov; // How much fov do you want to be added to the field of view
 
-    [SerializeField] float fovSmoothTime = 0.15f; 
+    private float fovSmoothTime = 0.15f; 
 
     private RawImage speedLineRawImage;
 
