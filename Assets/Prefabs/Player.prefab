@@ -312,7 +312,7 @@ MonoBehaviour:
   wallJumpForceUp: 40
   wallJumpForceDirection: 40
   maxGravityForce: 40
-  slideForce: 3
+  slideForce: 1
   slideDuration: 1
   slideCooldown: 0.5
   slideHeight: 1
