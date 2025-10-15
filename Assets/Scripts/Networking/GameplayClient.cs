@@ -71,7 +71,6 @@ public class GameplayClient : MonoBehaviour
             {
                 case message_t.connection_reply:
                     hasReceivedConnectionReply = true;
-                    client.RegisterUdp();
                     break;
                 case message_t.movement_reply:
                     HandleRecievedPlayerMovement(message.movement_reply);
@@ -153,6 +152,8 @@ public class GameplayClient : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
 
+
+        client.RegisterUdp();
 
         while (client.IsConnectedUdp())
         {
@@ -288,7 +289,9 @@ public class GameplayClient : MonoBehaviour
             playerById[id].Destroy();
             playerById.Remove(id);
         }
-        playerById[id] = new OtherPlayer(otherPlayerPrefab, LobbyClient.instance.GetPlayerName(id), mainCamera.GetComponent<Camera>(), id);
+        string othername = LobbyClient.instance.GetPlayerName(id);
+        if (othername != "404")
+            playerById[id] = new OtherPlayer(otherPlayerPrefab, othername, mainCamera.GetComponent<Camera>(), id);
     }
     private void OnPlayerLeave(int id, string username)
     {
