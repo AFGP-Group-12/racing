@@ -236,11 +236,10 @@ namespace Messages
     [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
     public unsafe struct initiate_udp_m
     {
-        public const int size = 4;
+        public const int size = 2;
         [FieldOffset(0)] public fixed byte bytes[size];
         [FieldOffset(0)] public UInt16 type;
 
-        [FieldOffset(2)] public UInt16 port;
     };
 
     [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]

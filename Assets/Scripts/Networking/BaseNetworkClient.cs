@@ -85,12 +85,6 @@ public class BaseNetworkClient
 
         initiate_udp_m m;
         m.type = (UInt16)message_t.initiate_udp;
-        try
-        {
-            // Port is opened when the udp socket is created.
-            m.port = (UInt16)((IPEndPoint)udpSocket.Client.LocalEndPoint).Port;
-        }
-        catch (Exception e) { Debug.LogError(e.Message); }
 
         SendDataTcp(m.bytes, initiate_udp_m.size);
         
@@ -108,25 +102,6 @@ public class BaseNetworkClient
         }
 
         tcpStream.BeginWrite(dataArr, 0, dataArr.Length, null, null);
-    }
-
-    public unsafe void RegisterUdp()
-    {
-        racing_ability_action_m m;
-        m.type = (UInt16)message_t.racing_ability_action;
-
-        m.from_id = player_id;
-
-        byte[] dataArr = new byte[racing_ability_action_m.size];
-        for (int i = 0; i < racing_ability_action_m.size; i++)
-        {
-            dataArr[i] = m.bytes[i];
-        }
-
-        for (int i = 0; i < 10; i++)
-        {
-            udpSocket.Send(dataArr, dataArr.Length, serverIp, 8081);
-        }
     }
 
     public unsafe void SendDataUdp(byte* data, int len)

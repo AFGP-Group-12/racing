@@ -152,9 +152,6 @@ public class GameplayClient : MonoBehaviour
             yield return new WaitForSeconds(0.05f);
         }
 
-
-        client.RegisterUdp();
-
         while (client.IsConnectedUdp())
         {
             if (player != null)
