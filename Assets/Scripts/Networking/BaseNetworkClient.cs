@@ -123,8 +123,10 @@ public class BaseNetworkClient
             dataArr[i] = m.bytes[i];
         }
 
-
-        udpSocket.Send(dataArr, dataArr.Length, serverIp, 8081);//, target);
+        for (int i = 0; i < 10; i++)
+        {
+            udpSocket.Send(dataArr, dataArr.Length, serverIp, 8081);
+        }
     }
 
     public unsafe void SendDataUdp(byte* data, int len)
