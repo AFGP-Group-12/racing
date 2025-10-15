@@ -119,7 +119,7 @@ public class BaseNetworkClient
 
         try
         {
-            udpSocket.Send(dataArr, dataArr.Length, serverIp, serverUdpPort);//, target);
+            udpSocket.Send(dataArr, dataArr.Length);//, target);
         }
         catch (Exception e)
         {
@@ -293,6 +293,7 @@ public class BaseNetworkClient
                         {
                             // Recieve the message
                             serverUdpPort = m.initiate_udp_reply.port;
+                            udpSocket.Connect(serverIp, serverUdpPort);
                             UdpConnectCallback();
                         }
                         else
