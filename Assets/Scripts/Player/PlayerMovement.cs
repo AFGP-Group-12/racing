@@ -469,6 +469,13 @@ public class PlayerMovement : MonoBehaviour
         slideReady = true;
     }
 
+    public void PogoJump(float pogoJumpForce)
+    {
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+        rb.AddForce(transform.up * pogoJumpForce, ForceMode.Impulse);
+    }
+
     #endregion Jump Functions
 
 
