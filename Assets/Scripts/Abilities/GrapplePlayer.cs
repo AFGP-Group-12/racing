@@ -9,7 +9,7 @@ public class GrapplePlayer : Ability
     private PlayerAbilityManager abilityManager;
     private PlayerMovement movementScript;
     private PlayerGrappleLine grappleLineScript;
-    private Transform orintation;
+    private Transform orientation;
     private Transform cameraTransform;
 
     [Header("Grapple Info")]
@@ -67,7 +67,7 @@ public class GrapplePlayer : Ability
         cameraTransform = ctx.cameraTransform;
         stateHandler = ctx.stateHandler;
         grappleLineScript = ctx.grappleLine;
-        orintation = ctx.orintation;
+        orientation = ctx.orientation;
         this.abilityIndex = abilityIndex;
 
         if (canAbility)
@@ -81,7 +81,7 @@ public class GrapplePlayer : Ability
                 usingAbility = true;
 
                 grappleLocation = hit.point;
-                horizontalForce = orintation.forward * horizontalStrength;
+                horizontalForce = orientation.forward * horizontalStrength;
                 grappleLineScript.SetEndPoint(hit.point);
 
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x,0f,rb.linearVelocity.z);
