@@ -13,35 +13,25 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     [SerializeField] GameObject speedLineGameObject;
     [SerializeField] Camera playerCamera;
-
     [SerializeField] float addedFov; // How much fov do you want to be added to the field of view
 
     private float fovSmoothTime = 0.15f; 
-
     private RawImage speedLineRawImage;
 
     [Header("Rotation on Move")]
 
     [SerializeField] PlayerCamera playerCameraScript;
-
     [SerializeField] float rotationIncrement;
-
-    [SerializeField] float rotationAdditive;
+    [SerializeField] float setRotationAdditive;
 
     private float targetRotation;
-
     private float curRotation = 0;
-
-
     private float startingFov;
-
     private float transparency;
-
     private float currentAddedFov;
-
     private float targetFOV;
-
     private float fovVel; // velocity tracker for SmoothDamp
+
 
     Rigidbody rb;
 
@@ -56,6 +46,9 @@ public class PlayerScreenVisuals : MonoBehaviour
 
         speedLineRawImage = speedLineGameObject.GetComponent<RawImage>();
 
+    }
+    void Update()
+    {
     }
 
     public void SetSpeedVisuals(float basicSpeed, float maxSpeed, float moveSpeed, MovementState state)
@@ -88,8 +81,11 @@ public class PlayerScreenVisuals : MonoBehaviour
 
 
     // ****Might come back here and clean it up a bit. I feel like it could be more efficient****
-    public void MoveRotation(float horizontalInput)
+    public void MoveRotation(float horizontalInput, bool customAdditive,float customRotationAdditive)
     {
+
+        float rotationAdditive = customAdditive ? customRotationAdditive : setRotationAdditive;
+
         if (math.abs(targetRotation) > math.abs(rotationAdditive))
         {
             targetRotation = rotationAdditive;

@@ -138,9 +138,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1.45
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.27, z: 0}
 --- !u!1 &4341851078776825866
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,6 +298,12 @@ MonoBehaviour:
   basicSpeed: 12
   sprintSpeed: 18
   maxSpeed: 25
+  setFloatHeight: 4.27
+  groundDetectionHeight: 6
+  springStrength: 50
+  damperStrength: 5
+  downwardForceOnSlope: 5
+  upwardForceOnSlope: 2
   groundDrag: 5
   jumpForce: 45
   jumpCooldown: 0.25
@@ -305,7 +311,16 @@ MonoBehaviour:
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
-  playerHeight: 1.96
+  playerHeight: 1.8
+  initialSlideForce: 25
+  constantSlideForce: 15
+  maxSlideForce: 120
+  slideDuration: 5
+  slideCooldown: 0.5
+  slideMaxSpeed: 30
+  slideFloatHeight: 1.8
+  slideColliderHeight: 1.5
+  currentSlideForce: 15
   wallLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -315,11 +330,6 @@ MonoBehaviour:
   wallJumpForceUp: 40
   wallJumpForceDirection: 40
   maxGravityForce: 40
-  slideForce: 1
-  slideDuration: 1
-  slideCooldown: 0.5
-  slideHeight: 1
-  playerCamera: {fileID: 0}
   gravityForce: 0
   movementDivider: 200
   airEntryMaxSpeed: Infinity
@@ -380,7 +390,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerObject: {fileID: 2811787371286987652}
-  orintation: {fileID: 6213159212276226189}
+  orientation: {fileID: 6213159212276226189}
 --- !u!114 &7819291645068659924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,7 +417,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e154bd423685b24fbf003d91e9c7c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 0}
+  lineRenderer: {fileID: 6426214075695272378}
   grappleStartPoint: {fileID: 618361242267306667}
 --- !u!120 &6426214075695272378
 LineRenderer:

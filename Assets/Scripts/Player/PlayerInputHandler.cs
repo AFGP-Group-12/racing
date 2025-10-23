@@ -152,11 +152,11 @@ public class PlayerInputHandler : MonoBehaviour
     private void OnSlide(InputAction.CallbackContext context)
     {
         //Debug.Log("Skude opressed");
-        movementScript.Slide();
+        movementScript.SlideHeld();
     }
     private void OnSlideEnd(InputAction.CallbackContext context)
     {
-        movementScript.SlideEnd();
+        movementScript.SlideReleased();
     }
 
     private void OnSprint(InputAction.CallbackContext context)
