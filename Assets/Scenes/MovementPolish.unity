@@ -2168,53 +2168,9 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2004549319}
     - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: setRotationAdditive
-      value: 1.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: speedLineGameObject
       value: 
       objectReference: {fileID: 648025791}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: jumpForce
-      value: 55
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: jumpBuffer
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: slideMaxSpeed
-      value: 45
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: damperStrength
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: setFloatHeight
-      value: 4.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: initialSlideForce
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: constantSlideForce
-      value: 25
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: upwardForceOnSlope
-      value: 7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: slideColliderHeight
-      value: 0.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 3429061951387332628, guid: a75c566014284484da8486c321e02eec, type: 3}
-      propertyPath: downwardForceOnSlope
-      value: 20
-      objectReference: {fileID: 0}
     - target: {fileID: 5386568211178942212, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
