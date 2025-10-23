@@ -319,7 +319,7 @@ public class PlayerMovement : MonoBehaviour
 
                 if (frontHit.distance > backHit.distance)
                 {
-                    Debug.Log(frontHit.distance + " > " + backHit.distance);
+                    // Debug.Log(frontHit.distance + " > " + backHit.distance);
                     float difference = frontHit.distance - backHit.distance;
                     difference /= 0.35f;
                     difference = math.clamp(difference, 0, 1);
@@ -328,7 +328,7 @@ public class PlayerMovement : MonoBehaviour
                 }
                 else if (frontHit.distance < backHit.distance)
                 {
-                    Debug.Log(frontHit.distance + " < " + backHit.distance);
+                    // Debug.Log(frontHit.distance + " < " + backHit.distance);
                     float difference = backHit.distance - frontHit.distance;
                     difference /= 0.35f;
                     difference = math.clamp(difference, 0, 1);

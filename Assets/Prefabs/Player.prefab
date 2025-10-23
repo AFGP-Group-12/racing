@@ -298,28 +298,32 @@ MonoBehaviour:
   basicSpeed: 12
   sprintSpeed: 18
   maxSpeed: 25
-  setFloatHeight: 4.27
+  currentSpringStrength: 0
+  currentDamperStrength: 0
+  groundDrag: 5
+  setFloatHeight: 4.5
   groundDetectionHeight: 6
   springStrength: 50
-  damperStrength: 5
-  downwardForceOnSlope: 5
-  upwardForceOnSlope: 2
-  groundDrag: 5
-  jumpForce: 45
+  damperStrength: 2
+  downwardForceOnSlope: 20
+  upwardForceOnSlope: 7
+  jumpForce: 55
   jumpCooldown: 0.25
   jumpTurningForce: 2
+  jumpBuffer: 0.5
+  currentJumpBuffer: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
   playerHeight: 1.8
-  initialSlideForce: 25
-  constantSlideForce: 15
+  initialSlideForce: 50
+  constantSlideForce: 25
   maxSlideForce: 120
   slideDuration: 5
   slideCooldown: 0.5
-  slideMaxSpeed: 30
+  slideMaxSpeed: 45
   slideFloatHeight: 1.8
-  slideColliderHeight: 1.5
+  slideColliderHeight: 0.7
   currentSlideForce: 15
   wallLayer:
     serializedVersion: 2
@@ -350,7 +354,7 @@ MonoBehaviour:
   addedFov: 5
   playerCameraScript: {fileID: 0}
   rotationIncrement: 0.25
-  rotationAdditive: 2
+  setRotationAdditive: 1.5
 --- !u!114 &1784347749981011002
 MonoBehaviour:
   m_ObjectHideFlags: 0
