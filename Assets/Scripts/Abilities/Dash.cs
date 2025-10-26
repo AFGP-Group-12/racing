@@ -9,6 +9,7 @@ public class Dash : Ability
     private PlayerStateHandler stateHandler;
     private PlayerAbilityManager abilityManager;
     private PlayerMovement movementScript;
+    private PlayerScreenVisuals visualScript;
     private Transform orientation;
     private Transform cameraTransform;
     private Vector3 horizontalForce;
@@ -20,11 +21,15 @@ public class Dash : Ability
 
     [Tooltip("If the user is trying to do an input with basically no verticallity this will help the user do so. So if the value is 0.2 and the user's y input is 0.1 the dash will take it in as 0")]
     [Range(0f, 0.5f)]
-    public float dashInnerDeadzone = 0.2f; 
+    public float dashInnerDeadzone = 0.2f;
 
     [Tooltip("This value acts as the maximum y input that can be taken in by the dash. So if its 0.7 then when the user looks straight up the value will be 0.7 rather than 1")]
     [Range(0.5f, 1f)]
     public float dashOuterDeadzone = 0.7f;
+    
+    public float shakeStrength = 5f;
+    public float strengthVelocity = 6f;
+    public float smoothTime = 2f;
 
 
     public override void OnInstantiate()
@@ -44,6 +49,7 @@ public class Dash : Ability
         abilityManager = ctx.abilityManager;
         orientation = ctx.orientation;
         cameraTransform = ctx.cameraTransform;
+        visualScript = ctx.screenVisuals;
 
         this.abilityIndex = abilityIndex;
 
@@ -76,9 +82,10 @@ public class Dash : Ability
                 verticalForce = new Vector3(0, cameraTransform.forward.y, 0);
             }
 
+            visualScript.ScreenShake(shakeStrength, strengthVelocity, smoothTime);
+
             //verticalForce = new Vector3(0, cameraTransform.forward.y, 0);
-
-
+            
             verticalForce *= dashForce;
             rb.AddForce(verticalForce * dashForceY, ForceMode.Impulse);
 
@@ -91,9 +98,11 @@ public class Dash : Ability
 
         // Add vertical force here when you figure it out
         rb.AddForce(horizontalForce, ForceMode.Impulse);
+        visualScript.ScreenShake(shakeStrength, strengthVelocity, smoothTime);
     }
     public override void AbilityEnd()
     {
+        visualScript.StopScreenShake();
         rb.useGravity = true;
         usingAbility = false;
         stateHandler.isDashing = false;

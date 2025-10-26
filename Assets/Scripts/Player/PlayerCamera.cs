@@ -12,6 +12,8 @@ public class PlayerCamera : MonoBehaviour
     private float yRotation;
     private float zRotation;
 
+    private Vector3 shakeAmount;
+
     [SerializeField] InputActionReference mouse;
 
 
@@ -35,7 +37,7 @@ public class PlayerCamera : MonoBehaviour
 
 
         // rotate the camera
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, zRotation);
+        transform.rotation = Quaternion.Euler(xRotation + shakeAmount.x, yRotation + shakeAmount.y, zRotation + shakeAmount.z);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
@@ -58,4 +60,23 @@ public class PlayerCamera : MonoBehaviour
     {
         return zRotation;
     }
+
+    public void SetShake(float strength, float strengthVelocity, float smoothTime)
+    {
+        float randomX = Random.value - 0.5f;
+        float randomY = Random.value - 0.5f;
+        float randomZ = Random.value - 0.5f;
+
+        // strength = Mathf.SmoothDamp(strength, 0f, ref strengthVelocity, smoothTime);
+
+        Debug.Log("??");
+        shakeAmount = new Vector3(randomX, randomY, randomZ) * strength;
+    }
+
+    public void StopShake()
+    {
+        shakeAmount = new Vector3(0, 0, 0);
+        transform.rotation = Quaternion.Euler(xRotation , yRotation , zRotation );
+    }
+    
 }

@@ -81,7 +81,7 @@ public class PlayerScreenVisuals : MonoBehaviour
 
 
     // ****Might come back here and clean it up a bit. I feel like it could be more efficient****
-    public void MoveRotation(float horizontalInput, bool customAdditive,float customRotationAdditive)
+    public void MoveRotation(float horizontalInput, bool customAdditive, float customRotationAdditive)
     {
 
         float rotationAdditive = customAdditive ? customRotationAdditive : setRotationAdditive;
@@ -123,6 +123,15 @@ public class PlayerScreenVisuals : MonoBehaviour
             playerCameraScript.setRotationZ(curRotation);
         }
 
+    }
+
+    public void ScreenShake(float strength, float strengthVelocity, float smoothTime)
+    {
+        playerCameraScript.SetShake(strength, strengthVelocity, smoothTime);
+    }
+    public void StopScreenShake()
+    {
+        playerCameraScript.StopShake();
     }
 
     // Used for debugging

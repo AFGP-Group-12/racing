@@ -24,3 +24,6 @@ MonoBehaviour:
   dashForceY: 8
   dashInnerDeadzone: 0.2
   dashOuterDeadzone: 0.7
+  shakeStrength: 1
+  strengthVelocity: 6
+  smoothTime: 0.5
