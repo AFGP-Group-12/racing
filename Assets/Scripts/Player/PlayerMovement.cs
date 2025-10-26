@@ -22,41 +22,73 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float sprintSpeed; // Should always be greater than moveSpeed
     [SerializeField] float maxSpeed; // The max speed. This accounts for gaining speed while in air which would be faster than the sprint speed. This is only used for the screen visuals
 
+    public float currentSpringStrength;
+    public float currentDamperStrength;
+    private float floatHeight = 5f;
+
     [Tooltip("Determines how quickly the player slows down when they stop moving")]
     [SerializeField] float groundDrag;
 
     private float acceleration; // Make this private its only like this for debugging purposes
     private float moveSpeed; // Make this private its only like this for debugging purposes
     private float accelerationIncrement = 2f; // Amount the acceleration will be incremented by
-
     private float horizontalInput;
     private float verticalInput;
-
     private float normalHeight;
-
+    private bool isOnGround;
     Vector3 moveDirection;
 
-    private bool isOnGround;
+    [Header("Float Capsule Movement")]
+    [SerializeField] float setFloatHeight = 4.5f;
+    [SerializeField] float groundDetectionHeight = 6f;
+    [SerializeField] float springStrength = 50f;
+    [SerializeField] float damperStrength = 5f;
+    [SerializeField] float downwardForceOnSlope = 5f;
+    [SerializeField] float upwardForceOnSlope = 3f;
 
     [Header("Jump")]
     [SerializeField] float jumpForce;
-    [SerializeField] float jumpCooldown;
 
     [Tooltip("Determines how much movement the player will have while in the air")]
     [SerializeField] float jumpTurningForce;
 
-    private bool jumpReady;
-
+    [SerializeField] float coyoteJumpWindow;
+    private float coyoteJumpTimer;
+    private bool coyoteJumpReady;
+    private float jumpBuffer = 0.5f;
+    private float currentJumpBuffer = 0f;
     // [SerializeField] float currentSpeed; //Debugging purposes
-
-    bool isAccelerating;
-    bool isKeepingMomentum;
+    private bool isAccelerating;
+    private bool isKeepingMomentum;
 
 
     [Header("Ground Check")]
     [SerializeField] LayerMask groundLayer;
     [SerializeField] float playerHeight = 1.96f;
     private Transform orientation;
+
+
+
+    [Header("Slide")]
+
+    [SerializeField] float initialSlideForce;
+    [SerializeField] float constantSlideForce;
+    [SerializeField] float maxSlideForce;
+    [SerializeField] float slideDuration;
+    [SerializeField] float slideCooldown;
+    [SerializeField] float slideMaxSpeed;
+    [SerializeField] float slideFloatHeight = 1;
+    [SerializeField] float slideColliderHeight = 1.5f;
+
+
+    public float currentSlideForce;
+    private float slideMinSpeed = 5f;
+    private float slideTimer = 0f;
+    private float normalColliderHeight;
+    private bool slideReady;
+    private bool slideHeld;
+
+
 
     [Header("Wall Running")]
     [SerializeField] LayerMask wallLayer;
@@ -78,25 +110,6 @@ public class PlayerMovement : MonoBehaviour
 
     [Tooltip("Determines how strong the gravity will be while on the wall. Wallrunning disables unity's gravity and uses this instead")]
     [SerializeField] float maxGravityForce;
-
-    [Header("Slide")]
-    [SerializeField] float slideForce;
-    [SerializeField] float slideDuration;
-    [SerializeField] float slideCooldown;
-
-    Coroutine slideRoutine;
-
-    [Tooltip("Keep in mind that the normal height is 2")]
-    [SerializeField] float slideHeight;
-    [SerializeField] Camera playerCamera;
-    private float originalPlayerColliderHeight;
-    private float slideTimer = 0f;
-    private float startZ;
-
-    private float normalColliderHeight = 2f;
-
-
-    private bool slideReady;
 
     public float gravityForce;
 
@@ -141,7 +154,12 @@ public class PlayerMovement : MonoBehaviour
         contextScript = GetComponent<PlayerContext>();
         stateHandler = contextScript.stateHandler;
         playerCollider = contextScript.playerObject.GetComponent<CapsuleCollider>();
-        originalPlayerColliderHeight = playerCollider.height;
+        // originalPlayerColliderHeight = playerCollider.height;
+        normalColliderHeight = playerCollider.height;
+
+        floatHeight = setFloatHeight;
+
+        currentSlideForce = constantSlideForce;
 
         rb = contextScript.rb;
         input = contextScript.input;
@@ -149,67 +167,47 @@ public class PlayerMovement : MonoBehaviour
 
         rb.freezeRotation = true;
 
-        jumpReady = true;
-        slideReady = true;
+        currentSpringStrength = springStrength;
+        currentDamperStrength = damperStrength;
+        coyoteJumpReady = false;
 
         moveSpeed = basicSpeed;
-
         isAccelerating = false;
-
-        Time.timeScale = 1;
-        orientation = contextScript.orintation;
+        orientation = contextScript.orientation;
 
         stateHandler.isSliding = false;
 
-        slideTimer = 0f;
-    }
+        slideHeld = false;
+        slideReady = true;
 
-    void Update()
-    {
-        // isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
-        // stateHandler.isOnGround = isOnGround;
-        // lastState = state;
-        // state = stateHandler.state;
+        Time.timeScale = 1;
 
-        // //Debug.DrawRay(transform.position, Vector3.down * 5f, Color.green);
-
-        // if (isOnGround)
-        // {
-        //     rb.linearDamping = groundDrag;
-        // }
-        // else
-        // {
-        //     rb.linearDamping = 0f;
-        // }
-
-        // // Movement
-        // SetMovementSpeed();
-        // Accelerate();
-        // StopMomentumJump();
-        // // SpeedCheck(); // For debugging purposes
-
-        // // Wall Running
-        // WallRunCheck();
-
-        // if (slideTimer > 0f)
-        // {
-        //     slideTimer -= Time.deltaTime;
-        // }
-
-
+        // slideTimer = 0f;
     }
 
     void FixedUpdate()
     {
 
         isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
+        if (isOnGround && currentJumpBuffer <= 0f)
+        {
+            stateHandler.isJumping = false;
+        }
+        
+        
+        //Debug.DrawRay(transform.position, Vector3.down * (playerHeight * 0.5f + 0.2f) , Color.blue);
+        
         stateHandler.isOnGround = isOnGround;
         lastState = state;
         state = stateHandler.state;
 
         //Debug.DrawRay(transform.position, Vector3.down * 5f, Color.green);
 
-        if (isOnGround)
+        if(state == MovementState.sliding)
+        {
+            rb.linearDamping = 1f;
+        }
+        else if (isOnGround)
         {
             rb.linearDamping = groundDrag;
         }
@@ -222,7 +220,11 @@ public class PlayerMovement : MonoBehaviour
         SetMovementSpeed();
         Accelerate();
         StopMomentumJump();
-        // SpeedCheck(); // For debugging purposes
+        JumpBuffer();
+        CoyoteTimerCheck();
+
+        // Slide
+        SlideCheck();
 
         // Wall Running
         WallRunCheck();
@@ -234,20 +236,26 @@ public class PlayerMovement : MonoBehaviour
 
 
         // Camera
-        visualScript.SetSpeedVisuals(basicSpeed, maxSpeed, rb.linearVelocity.magnitude,state);
+        visualScript.SetSpeedVisuals(basicSpeed, maxSpeed, rb.linearVelocity.magnitude, state);
         SetCameraRotation();
-
-
+        
+        // State Based Movement
+        if (state == MovementState.walking || state == MovementState.sprinting ||  state == MovementState.sliding || state == MovementState.idle)
+        {
+            FloatPlayer();
+        }
 
         if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
         {
             WallRun();
         }
 
-        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air || state == MovementState.sliding || state == MovementState.grappling)
+        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air  || state == MovementState.grappling)
         {
             MovePlayer();
         }
+
+        // Speed Control
         SetAirExitSpeed();
         SpeedControl();
     }
@@ -258,6 +266,110 @@ public class PlayerMovement : MonoBehaviour
 
 
     #region Basic Movement
+
+    void FloatPlayer()
+    {
+
+        Ray ray = new Ray(transform.position, Vector3.down);
+        Debug.DrawRay(transform.position + (orientation.forward * 0.65f) , Vector3.down, Color.red);
+        Debug.DrawRay(transform.position + (orientation.forward * 0.35f), Vector3.down, Color.red);
+
+        // This is how you lower the detection rays if they are needed
+        // Ray rayFront = new Ray(transform.position + (orientation.forward * 0.65f) - (Vector3.up * 0.2f), Vector3.down);
+        // Ray rayBack = new Ray(transform.position + (orientation.forward * 0.35f) - (Vector3.up * 0.2f), Vector3.down);
+
+        Ray rayFront = new Ray(transform.position + (orientation.forward * 0.65f) , Vector3.down);
+        Ray rayBack = new Ray(transform.position + (orientation.forward * 0.35f) , Vector3.down);
+
+        // Slide movement based on the float collider
+        if (state == MovementState.sliding && Physics.Raycast(ray, out RaycastHit slideHit, groundDetectionHeight, groundLayer))
+        {
+            if (Physics.Raycast(rayFront, out RaycastHit frontHit, 1.5f, groundLayer) && Physics.Raycast(rayBack, out RaycastHit backHit, 1.5f, groundLayer))
+            {
+                if (frontHit.distance > backHit.distance)
+                {
+                    // Debug.Log(frontHit.distance + " > " + backHit.distance);
+                    rb.AddForce(orientation.forward * currentSlideForce, ForceMode.Force);
+                    rb.AddForce(Vector3.down * downwardForceOnSlope, ForceMode.Impulse);
+
+                    if (currentSlideForce > maxSlideForce)
+                    {
+                        currentSlideForce = maxSlideForce;
+                    }
+                    else
+                    {
+                        currentSlideForce += 0.2f;
+                    }
+                }
+                else if (frontHit.distance < backHit.distance)
+                {
+                    // Debug.Log(frontHit.distance + " > " + backHit.distance);
+                    rb.AddForce(Vector3.up * upwardForceOnSlope, ForceMode.Impulse);
+                }
+            }
+            FloatVelocity(slideHit);
+        }
+
+        // Ground movement based on float capsule
+        else if (isOnGround && Physics.Raycast(ray, out RaycastHit hit, floatHeight, groundLayer))
+        {
+
+            if ((horizontalInput != 0 || verticalInput != 0) && Physics.Raycast(rayFront, out RaycastHit frontHit, 1.5f, groundLayer) && Physics.Raycast(rayBack, out RaycastHit backHit, 1.5f, groundLayer))
+            {
+
+                if (frontHit.distance > backHit.distance)
+                {
+                    // Debug.Log(frontHit.distance + " > " + backHit.distance);
+                    float difference = frontHit.distance - backHit.distance;
+                    difference /= 0.35f;
+                    difference = math.clamp(difference, 0, 1);
+                    difference = math.lerp(0, downwardForceOnSlope, difference);
+                    rb.AddForce(Vector3.down * difference, ForceMode.Impulse);
+                }
+                else if (frontHit.distance < backHit.distance)
+                {
+                    // Debug.Log(frontHit.distance + " < " + backHit.distance);
+                    float difference = backHit.distance - frontHit.distance;
+                    difference /= 0.35f;
+                    difference = math.clamp(difference, 0, 1);
+                    difference = math.lerp(0, upwardForceOnSlope, difference);
+                    rb.AddForce(Vector3.down * difference, ForceMode.Impulse);
+                }
+            }
+
+            FloatVelocity(hit);
+        }
+    }
+    
+    private void FloatVelocity(RaycastHit hit)
+    {
+        Vector3 velocity = rb.linearVelocity;
+        Vector3 rayDirection = transform.TransformDirection(Vector3.down);
+
+        Vector3 otherVelocity = Vector3.zero;
+        Rigidbody hitbody = hit.rigidbody;
+        if (hitbody != null)
+        {
+            otherVelocity = hitbody.linearVelocity;
+        }
+            
+        float rayDirectionVelocity = Vector3.Dot(rayDirection, velocity);
+        float otherDirectionVelocity = Vector3.Dot(rayDirection, otherVelocity);
+
+        float relativeVelocity = rayDirectionVelocity - otherDirectionVelocity;
+
+        float x = hit.distance - (floatHeight * 0.3f);
+        float springForce = (x * currentSpringStrength) - (relativeVelocity * currentDamperStrength);
+
+        //Debug.DrawRay(transform.position, Vector3.down * floatHeight , Color.red);
+
+        rb.AddForce(rayDirection * springForce, ForceMode.Acceleration);
+
+        if (hitbody != null)
+        {
+            hitbody.AddForceAtPosition(rayDirection * -springForce, hit.point, ForceMode.Acceleration);
+        }
+    }
 
     public void StartMovement(float horizontalInput, float verticalInput)
     {
@@ -337,7 +449,17 @@ public class PlayerMovement : MonoBehaviour
 
         Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
-        float max = (state == MovementState.air) ? airEntryMaxSpeed : moveSpeed;
+        //float max = (state == MovementState.air) ? airEntryMaxSpeed : moveSpeed;
+
+        float max = moveSpeed;
+        if (state == MovementState.air)
+        {
+            max = airEntryMaxSpeed;
+        }
+        else if (state == MovementState.sliding)
+        {
+            max = slideMaxSpeed;
+        }
 
         if (curVelocity.magnitude > max)
         {
@@ -369,16 +491,11 @@ public class PlayerMovement : MonoBehaviour
 
     void SetAirExitSpeed()
     {
-        // Just entered Air
-        if (state != MovementState.air)
+        // Only when we just switched to air this frame
+        if (lastState != MovementState.air && state == MovementState.air)
         {
-            Vector3 horizontalVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-            airEntryMaxSpeed = horizontalVelocity.magnitude;
-
-            if (airEntryMaxSpeed < moveSpeed)
-            {
-                airEntryMaxSpeed = moveSpeed;
-            }
+            Vector3 hv = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            airEntryMaxSpeed = Mathf.Max(hv.magnitude, moveSpeed);
         }
     }
 
@@ -386,18 +503,85 @@ public class PlayerMovement : MonoBehaviour
 
     #region Jump Functions
 
+    private void JumpBuffer()
+    {
+        if (currentJumpBuffer > 0f)
+        {
+            currentSpringStrength = 0f;
+            currentDamperStrength = 0f;
+            currentJumpBuffer -= Time.deltaTime;
+        }
+        else
+        {
+            currentSpringStrength = springStrength;
+            currentDamperStrength = damperStrength;
+            currentJumpBuffer = 0f;
+        }
+    }
+    private void CoyoteTimerCheck()
+    {
+        if (isOnGround)
+        {
+            coyoteJumpReady = false;
+            coyoteJumpTimer = coyoteJumpWindow;
+        }
+
+        if (currentJumpBuffer > 0 || !isOnGround && coyoteJumpTimer <= 0)
+        {
+            coyoteJumpReady = false;
+            coyoteJumpTimer = 0;
+        }
+        else if (!isOnGround && coyoteJumpTimer > 0)
+        {
+            coyoteJumpReady = true;
+            coyoteJumpTimer -= Time.deltaTime;
+        }
+    }
+
     public void Jump()
     {
-        if (jumpReady && isOnGround)
+        if (state == MovementState.sliding || (state == MovementState.sliding && coyoteJumpReady))
         {
-            jumpReady = false;
+            // This is a slide jump
+            currentJumpBuffer = jumpBuffer;
+            currentSpringStrength = 0f;
+            currentDamperStrength = 0f;
+
+            coyoteJumpReady = false;
+            coyoteJumpTimer = 0;
+            //currentSpringStrength = 0f;
+
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+
+            stateHandler.isJumping = true;
+            float forwardForce = currentSlideForce * 0.05f;
+            float jumpForceMultiplier = Mathf.Lerp(1f, 1.4f, currentSlideForce / maxSlideForce);
+
+            SlideEnd(); // Ends a slide if it is currently happening
+
+            rb.AddForce(orientation.forward * forwardForce, ForceMode.Impulse);
+            rb.AddForce(transform.up * jumpForce * jumpForceMultiplier, ForceMode.Impulse);
+
+        }
+        else if (isOnGround || coyoteJumpReady)
+        {
+            currentJumpBuffer = jumpBuffer;
+            currentSpringStrength = 0f;
+            currentDamperStrength = 0f;
+            //currentSpringStrength = 0f;
+
+            coyoteJumpReady = false;
+            coyoteJumpTimer = 0;
+
+            stateHandler.isJumping = true;
+
+            SlideEnd(); // Ends a slide if it is currently happening
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-
-            Invoke(nameof(JumpCooldown), jumpCooldown);
         }
+        
         if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
         {
             if (isWallRight)
@@ -405,6 +589,8 @@ public class PlayerMovement : MonoBehaviour
                 stateHandler.isWallrunningLeft = false;
                 stateHandler.isWallrunningRight = false;
                 rb.useGravity = true;
+
+                stateHandler.isJumping = true;
 
                 if (horizontalInput > 0)
                 {
@@ -419,6 +605,8 @@ public class PlayerMovement : MonoBehaviour
                 stateHandler.isWallrunningRight = false;
                 rb.useGravity = true;
 
+                stateHandler.isJumping = true;
+
                 if (horizontalInput < 0)
                 {
                     horizontalInput = 0;
@@ -426,8 +614,6 @@ public class PlayerMovement : MonoBehaviour
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
                 rb.AddForce(transform.up * wallJumpForceUp + (orientation.right * wallJumpForceDirection), ForceMode.Impulse);
             }
-
-            Invoke(nameof(JumpCooldown), jumpCooldown);
         }
     }
 
@@ -448,25 +634,24 @@ public class PlayerMovement : MonoBehaviour
 
     void SetCameraRotation()
     {
-        if (state == MovementState.wallrunningright|| state == MovementState.wallrunningleft)
+        if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
         {
             float wallCameraChange = isWallRight ? -1 : 1;
-            visualScript.MoveRotation(wallCameraChange);
+            visualScript.MoveRotation(wallCameraChange, false, 0f);
+        }
+        else if (state == MovementState.sliding)
+        {
+            visualScript.MoveRotation(1 , true , 2.5f);
         }
         else
         {
-            visualScript.MoveRotation(horizontalInput);
+            visualScript.MoveRotation(horizontalInput , false , 0f);
         }
-    }
-
-    void JumpCooldown()
-    {
-        jumpReady = true;
     }
 
     void SlideCooldown()
     {
-        slideReady = true;
+        //slideReady = true;
     }
 
     public void PogoJump(float pogoJumpForce)
@@ -594,122 +779,63 @@ public class PlayerMovement : MonoBehaviour
 
     #region Slide Functions
 
-    private System.Collections.IEnumerator SlideCoroutine()
+    public void SlideHeld()
     {
+        slideHeld = true;
+    }
+    public void SlideReleased()
+    {
+        slideHeld = false;
+    }
 
-        Vector3 slideDirection = orientation.forward;
+    private void Slide()
+    {
+        //Debug.Log("Slide Started");
+        floatHeight = slideFloatHeight;
+        playerCollider.height = slideColliderHeight;
+        rb.AddForce(orientation.forward * initialSlideForce, ForceMode.Impulse);
+        stateHandler.isSliding = true;
+        slideMinSpeed = moveSpeed * 0.6f;
+        slideTimer = slideCooldown; // reset cooldown
+        slideReady = false;
+        // slideRoutine = StartCoroutine(SlideCoroutine());
+    }
 
-        float elapsed = 0f;
+    private void SlideCheck()
+    {
         Vector3 curVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
-        float tempSlideForce = slideForce * (curVelocity.magnitude / 18);
-
-        float slopeBoost = 0f;
-
-        startZ = playerCamera.transform.localEulerAngles.z;
-        float tiltAngle = 6f;
-
-
-        while (elapsed < slideDuration && curVelocity.magnitude != 0)
+        if (state == MovementState.sliding && curVelocity.magnitude < slideMinSpeed)
         {
-            if (!stateHandler.isSliding)
-            {
-                break;
-            }
-            elapsed += Time.deltaTime;
-            tempSlideForce -= tempSlideForce * (Time.deltaTime / slideDuration);
-
-            if (isOnGround)
-            {
-                RaycastHit slopeHit;
-                if (Physics.Raycast(transform.position, Vector3.down, out slopeHit, playerHeight * 0.5f + 0.2f, groundLayer))
-                {
-                    Vector3 slopeDir = Vector3.ProjectOnPlane(slideDirection, slopeHit.normal).normalized;
-
-                    float slopeFactor = -Vector3.Dot(slopeHit.normal, Vector3.up);
-                    float targetBoost = tempSlideForce * Mathf.Max(slopeFactor, 0f);
-                    slopeBoost = Mathf.Lerp(slopeBoost, targetBoost, Time.deltaTime * 3f);
-
-                    if (slopeFactor < 0f)
-                    {
-                        slopeDir = new Vector3(slopeDir.x, 0f, slopeDir.z).normalized;
-                        slopeBoost = 0f;
-                    }
-
-                    rb.AddForce(slopeDir * (tempSlideForce + slopeBoost), ForceMode.VelocityChange);
-                    slideDirection = slopeDir;
-
-                    if (startZ != tiltAngle)
-                    {
-                        float progress = Mathf.Clamp01(elapsed / (slideDuration / 2f));
-                        float targetZ = Mathf.LerpAngle(0, tiltAngle, progress);
-                        Vector3 euler = playerCamera.transform.localEulerAngles;
-                        euler.z = targetZ;
-                        playerCamera.transform.localEulerAngles = euler;
-                    }
-                }
-            }
-            else
-            {
-                // Airborne slide
-                rb.AddForce(slideDirection * tempSlideForce, ForceMode.VelocityChange);
-                slopeBoost = 0f;
-            }
-
-
-            yield return null;
+            SlideEnd();
         }
-        if(elapsed >= slideDuration)
+
+        // Keeping this in case i need it later
+        // else if (state != MovementState.sliding)
+        // {
+        //     Debug.Log("End Slide 2");
+        //     SlideEnd();
+        // }
+
+        if (slideHeld && !stateHandler.isSliding && isOnGround && slideTimer <= 0f && slideReady)
+        {
+            Slide();
+        }
+        else if (!slideHeld && stateHandler.isSliding)
         {
             SlideEnd();
         }
     }
-
-    public void Slide()
+    
+    private void SlideEnd()
     {
-        if (isOnGround && !stateHandler.isSliding && slideTimer <= 0f)
-        {
-            //Debug.Log("Slide Started");
-            playerCollider.height = slideHeight;
-            //playerCollider.size = new Vector3(playerCollider.size.x,slideHeight,playerCollider.size.z);
-            stateHandler.isSliding = true;
-            slideTimer = slideCooldown; // reset cooldown
-            slideRoutine = StartCoroutine(SlideCoroutine());
-        }
-    }
-
-    private System.Collections.IEnumerator FixCamera()
-    {
-        float returnElapsed = 0f;
-        float returnDuration = 0.3f;
-        Vector3 current = playerCamera.transform.localEulerAngles;
-
-        while (returnElapsed<returnDuration && current.z != 0)
-        {
-            returnElapsed += Time.deltaTime;
-            float progress = Mathf.Clamp01(returnElapsed / returnDuration);
-
-            float z = Mathf.LerpAngle(current.z, 0, progress);
-            Vector3 euler = playerCamera.transform.localEulerAngles;
-            euler.z = z;
-            playerCamera.transform.localEulerAngles = euler;
-            current.z = z;
-
-            yield return null;
-        }
-
-        Vector3 finalEuler = playerCamera.transform.localEulerAngles;
-        finalEuler.z = startZ;
-        playerCamera.transform.localEulerAngles = finalEuler;
-    }  
-
-
-    public void SlideEnd()
-    {
-        StopCoroutine(slideRoutine);
-        StartCoroutine(FixCamera());
+        //Debug.Log("Slide Ended");
+        slideHeld = false;
+        floatHeight = setFloatHeight;
+        playerCollider.height = normalColliderHeight;
+        currentSlideForce = constantSlideForce;
         stateHandler.isSliding = false;
-        playerCollider.height = originalPlayerColliderHeight;
-        Invoke(nameof(SlideCooldown), slideCooldown);
+        slideReady = true;
+        // StopCoroutine(slideRoutine);
     }
 
     #endregion Slide Functions

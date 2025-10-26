@@ -9,7 +9,7 @@ public class Dash : Ability
     private PlayerStateHandler stateHandler;
     private PlayerAbilityManager abilityManager;
     private PlayerMovement movementScript;
-    private Transform orintation;
+    private Transform orientation;
     private Transform cameraTransform;
     private Vector3 horizontalForce;
     private Vector3 verticalForce;
@@ -42,7 +42,7 @@ public class Dash : Ability
         rb = ctx.rb;
         stateHandler = ctx.stateHandler;
         abilityManager = ctx.abilityManager;
-        orintation = ctx.orintation;
+        orientation = ctx.orientation;
         cameraTransform = ctx.cameraTransform;
 
         this.abilityIndex = abilityIndex;
@@ -57,7 +57,7 @@ public class Dash : Ability
             abilityManager.StartAbilityDuration(abilityIndex, duration);
             usingAbility = true;
             canAbility = false;
-            horizontalForce = orintation.forward * dashForce;
+            horizontalForce = orientation.forward * dashForce;
 
             if (cameraTransform.forward.y > dashOuterDeadzone)
             {

@@ -138,9 +138,9 @@ CapsuleCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.5
-  m_Height: 2
+  m_Height: 1.45
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 0.27, z: 0}
 --- !u!1 &4341851078776825866
 GameObject:
   m_ObjectHideFlags: 0
@@ -298,14 +298,34 @@ MonoBehaviour:
   basicSpeed: 12
   sprintSpeed: 18
   maxSpeed: 25
+  currentSpringStrength: 0
+  currentDamperStrength: 0
   groundDrag: 5
-  jumpForce: 45
+  setFloatHeight: 4.5
+  groundDetectionHeight: 6
+  springStrength: 50
+  damperStrength: 2
+  downwardForceOnSlope: 20
+  upwardForceOnSlope: 7
+  jumpForce: 55
   jumpCooldown: 0.25
   jumpTurningForce: 2
+  coyoteJumpWindow: 0
+  coyoteJumpTimer: 0
+  coyoteJumpReady: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
-  playerHeight: 1.96
+  playerHeight: 1.8
+  initialSlideForce: 50
+  constantSlideForce: 5
+  maxSlideForce: 120
+  slideDuration: 5
+  slideCooldown: 0.5
+  slideMaxSpeed: 45
+  slideFloatHeight: 1.8
+  slideColliderHeight: 0.7
+  currentSlideForce: 15
   wallLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -315,11 +335,6 @@ MonoBehaviour:
   wallJumpForceUp: 40
   wallJumpForceDirection: 40
   maxGravityForce: 40
-  slideForce: 1
-  slideDuration: 1
-  slideCooldown: 0.5
-  slideHeight: 1
-  playerCamera: {fileID: 0}
   gravityForce: 0
   movementDivider: 200
   airEntryMaxSpeed: Infinity
@@ -340,7 +355,7 @@ MonoBehaviour:
   addedFov: 5
   playerCameraScript: {fileID: 0}
   rotationIncrement: 0.25
-  rotationAdditive: 2
+  setRotationAdditive: 1.5
 --- !u!114 &1784347749981011002
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -380,7 +395,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerObject: {fileID: 2811787371286987652}
-  orintation: {fileID: 6213159212276226189}
+  orientation: {fileID: 6213159212276226189}
 --- !u!114 &7819291645068659924
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -407,7 +422,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e154bd423685b24fbf003d91e9c7c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 0}
+  lineRenderer: {fileID: 6426214075695272378}
   grappleStartPoint: {fileID: 618361242267306667}
 --- !u!120 &6426214075695272378
 LineRenderer:

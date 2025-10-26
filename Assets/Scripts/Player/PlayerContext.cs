@@ -12,7 +12,7 @@ public class PlayerContext : MonoBehaviour
     public PlayerAbilityManager abilityManager { get; private set; }  
     public PlayerGrappleLine grappleLine { get; private set; }
     public GameObject playerObject;
-    public Transform orintation;
+    public Transform orientation;
     public Transform cameraTransform { get; private set; }
 
     void Awake()
