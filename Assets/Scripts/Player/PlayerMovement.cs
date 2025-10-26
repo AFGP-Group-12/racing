@@ -48,20 +48,18 @@ public class PlayerMovement : MonoBehaviour
 
     [Header("Jump")]
     [SerializeField] float jumpForce;
-    [SerializeField] float jumpCooldown;
 
     [Tooltip("Determines how much movement the player will have while in the air")]
     [SerializeField] float jumpTurningForce;
 
-    private bool jumpReady;
-
-    public float jumpBuffer = 1f;
-    
-    public float currentJumpBuffer = 0f;
+    [SerializeField] float coyoteJumpWindow;
+    private float coyoteJumpTimer;
+    private bool coyoteJumpReady;
+    private float jumpBuffer = 0.5f;
+    private float currentJumpBuffer = 0f;
     // [SerializeField] float currentSpeed; //Debugging purposes
-
-    bool isAccelerating;
-    bool isKeepingMomentum;
+    private bool isAccelerating;
+    private bool isKeepingMomentum;
 
 
     [Header("Ground Check")]
@@ -171,8 +169,7 @@ public class PlayerMovement : MonoBehaviour
 
         currentSpringStrength = springStrength;
         currentDamperStrength = damperStrength;
-
-        jumpReady = true;
+        coyoteJumpReady = false;
 
         moveSpeed = basicSpeed;
         isAccelerating = false;
@@ -192,10 +189,12 @@ public class PlayerMovement : MonoBehaviour
     {
 
         isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
-        if(isOnGround && currentJumpBuffer <= 0f)
+        if (isOnGround && currentJumpBuffer <= 0f)
         {
             stateHandler.isJumping = false;
         }
+        
+        
         //Debug.DrawRay(transform.position, Vector3.down * (playerHeight * 0.5f + 0.2f) , Color.blue);
         
         stateHandler.isOnGround = isOnGround;
@@ -222,6 +221,7 @@ public class PlayerMovement : MonoBehaviour
         Accelerate();
         StopMomentumJump();
         JumpBuffer();
+        CoyoteTimerCheck();
 
         // Slide
         SlideCheck();
@@ -288,7 +288,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 if (frontHit.distance > backHit.distance)
                 {
-                    Debug.Log(frontHit.distance + " > " + backHit.distance);
+                    // Debug.Log(frontHit.distance + " > " + backHit.distance);
                     rb.AddForce(orientation.forward * currentSlideForce, ForceMode.Force);
                     rb.AddForce(Vector3.down * downwardForceOnSlope, ForceMode.Impulse);
 
@@ -298,12 +298,12 @@ public class PlayerMovement : MonoBehaviour
                     }
                     else
                     {
-                        currentSlideForce++;
+                        currentSlideForce += 0.2f;
                     }
                 }
                 else if (frontHit.distance < backHit.distance)
                 {
-                    Debug.Log(frontHit.distance + " > " + backHit.distance);
+                    // Debug.Log(frontHit.distance + " > " + backHit.distance);
                     rb.AddForce(Vector3.up * upwardForceOnSlope, ForceMode.Impulse);
                 }
             }
@@ -518,39 +518,60 @@ public class PlayerMovement : MonoBehaviour
             currentJumpBuffer = 0f;
         }
     }
+    private void CoyoteTimerCheck()
+    {
+        if (isOnGround)
+        {
+            coyoteJumpReady = false;
+            coyoteJumpTimer = coyoteJumpWindow;
+        }
+
+        if (currentJumpBuffer > 0 || !isOnGround && coyoteJumpTimer <= 0)
+        {
+            coyoteJumpReady = false;
+            coyoteJumpTimer = 0;
+        }
+        else if (!isOnGround && coyoteJumpTimer > 0)
+        {
+            coyoteJumpReady = true;
+            coyoteJumpTimer -= Time.deltaTime;
+        }
+    }
 
     public void Jump()
     {
-        if (state == MovementState.sliding && jumpReady)
+        if (state == MovementState.sliding || (state == MovementState.sliding && coyoteJumpReady))
         {
             // This is a slide jump
-            jumpReady = false;
             currentJumpBuffer = jumpBuffer;
             currentSpringStrength = 0f;
             currentDamperStrength = 0f;
+
+            coyoteJumpReady = false;
+            coyoteJumpTimer = 0;
             //currentSpringStrength = 0f;
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
             stateHandler.isJumping = true;
-            float forwardForce = currentSlideForce * 1.2f;
-            Debug.Log(forwardForce);
+            float forwardForce = currentSlideForce * 0.05f;
             float jumpForceMultiplier = Mathf.Lerp(1f, 1.4f, currentSlideForce / maxSlideForce);
 
             SlideEnd(); // Ends a slide if it is currently happening
 
             rb.AddForce(orientation.forward * forwardForce, ForceMode.Impulse);
             rb.AddForce(transform.up * jumpForce * jumpForceMultiplier, ForceMode.Impulse);
-            Invoke(nameof(JumpCooldown), jumpCooldown);
 
         }
-        else if (jumpReady && isOnGround)
+        else if (isOnGround || coyoteJumpReady)
         {
-            jumpReady = false;
             currentJumpBuffer = jumpBuffer;
             currentSpringStrength = 0f;
             currentDamperStrength = 0f;
             //currentSpringStrength = 0f;
+
+            coyoteJumpReady = false;
+            coyoteJumpTimer = 0;
 
             stateHandler.isJumping = true;
 
@@ -559,8 +580,6 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
             rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
-
-            Invoke(nameof(JumpCooldown), jumpCooldown);
         }
         
         if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
@@ -595,8 +614,6 @@ public class PlayerMovement : MonoBehaviour
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
                 rb.AddForce(transform.up * wallJumpForceUp + (orientation.right * wallJumpForceDirection), ForceMode.Impulse);
             }
-
-            Invoke(nameof(JumpCooldown), jumpCooldown);
         }
     }
 
@@ -630,11 +647,6 @@ public class PlayerMovement : MonoBehaviour
         {
             visualScript.MoveRotation(horizontalInput , false , 0f);
         }
-    }
-
-    void JumpCooldown()
-    {
-        jumpReady = true;
     }
 
     void SlideCooldown()

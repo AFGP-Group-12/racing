@@ -310,14 +310,15 @@ MonoBehaviour:
   jumpForce: 55
   jumpCooldown: 0.25
   jumpTurningForce: 2
-  jumpBuffer: 0.5
-  currentJumpBuffer: 0
+  coyoteJumpWindow: 0
+  coyoteJumpTimer: 0
+  coyoteJumpReady: 0
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
   playerHeight: 1.8
   initialSlideForce: 50
-  constantSlideForce: 25
+  constantSlideForce: 5
   maxSlideForce: 120
   slideDuration: 5
   slideCooldown: 0.5
