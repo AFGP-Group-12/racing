@@ -8,6 +8,8 @@ public class PlayerCamera : MonoBehaviour
 
     [SerializeField] Transform orientation;
 
+    private Transform parentTransform;
+
     private float xRotation;
     private float yRotation;
     private float zRotation;
@@ -22,6 +24,7 @@ public class PlayerCamera : MonoBehaviour
     {
         // Cursor is locked to the middle of the screen. Use unlock cursor function to unlock it.
         LockCursor();
+        parentTransform = transform.parent.transform;
     }
 
     // Update is called once per frame
@@ -37,7 +40,10 @@ public class PlayerCamera : MonoBehaviour
 
 
         // rotate the camera
-        transform.rotation = Quaternion.Euler(xRotation + shakeAmount.x, yRotation + shakeAmount.y, zRotation + shakeAmount.z);
+        transform.rotation = Quaternion.Euler(xRotation, yRotation, zRotation);
+        // transform.rotation = Quaternion.Euler(xRotation + shakeAmount.x, yRotation + shakeAmount.y, zRotation + shakeAmount.z);
+        transform.position = parentTransform.position + ((transform.right * shakeAmount.x) + (transform.up * shakeAmount.y));
+        //transform.localPosition = shakeAmount; // new Vector3(parentTransform.position.x + shakeAmount.x, parentTransform.position.y + shakeAmount.y, parentTransform.position.z);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
 
@@ -61,22 +67,26 @@ public class PlayerCamera : MonoBehaviour
         return zRotation;
     }
 
-    public void SetShake(float strength, float strengthVelocity, float smoothTime)
+    public void SetShake(AnimationCurve strengthCurve,float duration, float elapsedTime)
     {
         float randomX = Random.value - 0.5f;
         float randomY = Random.value - 0.5f;
         float randomZ = Random.value - 0.5f;
 
-        // strength = Mathf.SmoothDamp(strength, 0f, ref strengthVelocity, smoothTime);
 
-        Debug.Log("??");
+
+        duration = Mathf.Clamp(duration, 0f, 1f);
+
+        float strength = strengthCurve.Evaluate(elapsedTime / duration);
+        
+
         shakeAmount = new Vector3(randomX, randomY, randomZ) * strength;
     }
 
     public void StopShake()
     {
         shakeAmount = new Vector3(0, 0, 0);
-        transform.rotation = Quaternion.Euler(xRotation , yRotation , zRotation );
+        transform.rotation = Quaternion.Euler(xRotation , yRotation , zRotation);
     }
     
 }

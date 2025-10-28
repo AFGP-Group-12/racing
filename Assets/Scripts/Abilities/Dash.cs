@@ -1,5 +1,6 @@
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Abilities/Dash")]
@@ -26,10 +27,18 @@ public class Dash : Ability
     [Tooltip("This value acts as the maximum y input that can be taken in by the dash. So if its 0.7 then when the user looks straight up the value will be 0.7 rather than 1")]
     [Range(0.5f, 1f)]
     public float dashOuterDeadzone = 0.7f;
-    
-    public float shakeStrength = 5f;
-    public float strengthVelocity = 6f;
-    public float smoothTime = 2f;
+
+
+    [Tooltip("Changes the intensity of the screen shake")]
+    public AnimationCurve shakeStrength;
+
+    //[Tooltip("How long the screen shake visual effect should last")]
+    // public float shakeDuration = 0.5f;
+
+    [Tooltip("Changes the intensity of the fov change")]
+    public AnimationCurve addedFov;
+
+    // public float addedFovDuration = 0.5f;
 
 
     public override void OnInstantiate()
@@ -61,6 +70,9 @@ public class Dash : Ability
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
             abilityManager.StartAbilityDuration(abilityIndex, duration);
+            visualScript.ScreenShake(shakeStrength, duration);
+            visualScript.StartAddFOV(addedFov, duration);
+
             usingAbility = true;
             canAbility = false;
             horizontalForce = orientation.forward * dashForce;
@@ -82,8 +94,6 @@ public class Dash : Ability
                 verticalForce = new Vector3(0, cameraTransform.forward.y, 0);
             }
 
-            visualScript.ScreenShake(shakeStrength, strengthVelocity, smoothTime);
-
             //verticalForce = new Vector3(0, cameraTransform.forward.y, 0);
             
             verticalForce *= dashForce;
@@ -98,7 +108,6 @@ public class Dash : Ability
 
         // Add vertical force here when you figure it out
         rb.AddForce(horizontalForce, ForceMode.Impulse);
-        visualScript.ScreenShake(shakeStrength, strengthVelocity, smoothTime);
     }
     public override void AbilityEnd()
     {

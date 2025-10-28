@@ -232,6 +232,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &221304929 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5709478431911384287, guid: fb4079fd5f6f5304ba1292301b6b4bef, type: 3}
+  m_PrefabInstance: {fileID: 2082897159}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbac659f64333bb45912ef8e1fda3139, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &237592917
 GameObject:
   m_ObjectHideFlags: 0
@@ -2130,6 +2141,14 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: addedFov
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: baseAddedFov
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 2228908584671281163, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: playerCamera
       value: 
       objectReference: {fileID: 2004549323}
@@ -3314,6 +3333,10 @@ PrefabInstance:
       propertyPath: orientation
       value: 
       objectReference: {fileID: 24258137}
+    - target: {fileID: 8795886979534376656, guid: fb4079fd5f6f5304ba1292301b6b4bef, type: 3}
+      propertyPath: camPositionScript
+      value: 
+      objectReference: {fileID: 221304929}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

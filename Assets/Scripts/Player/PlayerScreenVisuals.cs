@@ -13,9 +13,7 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     [SerializeField] GameObject speedLineGameObject;
     [SerializeField] Camera playerCamera;
-    [SerializeField] float addedFov; // How much fov do you want to be added to the field of view
-
-    private float fovSmoothTime = 0.15f; 
+    [SerializeField] float baseAddedFov; // How much fov do you want to be added to the field of view
     private RawImage speedLineRawImage;
 
     [Header("Rotation on Move")]
@@ -26,11 +24,24 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     private float targetRotation;
     private float curRotation = 0;
+
+    private float fovSmoothTime = 0.15f; 
     private float startingFov;
     private float transparency;
-    private float currentAddedFov;
+    private float currentSprintFov;
     private float targetFOV;
     private float fovVel; // velocity tracker for SmoothDamp
+
+    [Header("Screen Shake")]
+    private AnimationCurve shakeCurve;
+    private float shakeDuration;
+    private float shakeElapsedTime;
+
+    [Header("Fov Change")]
+    private AnimationCurve fovCurve;
+    private float fovDuration;
+    private float fovElapsedTime;
+    private float extraFov;
 
 
     Rigidbody rb;
@@ -47,8 +58,10 @@ public class PlayerScreenVisuals : MonoBehaviour
         speedLineRawImage = speedLineGameObject.GetComponent<RawImage>();
 
     }
-    void Update()
+    void FixedUpdate()
     {
+        ScreenShakeCycle();
+        CycleAddFOV();
     }
 
     public void SetSpeedVisuals(float basicSpeed, float maxSpeed, float moveSpeed, MovementState state)
@@ -72,11 +85,11 @@ public class PlayerScreenVisuals : MonoBehaviour
 
         speedLineRawImage.material.SetFloat("_Transparency", transparency);
 
-        currentAddedFov = transparency;
-        targetFOV = startingFov + (addedFov * currentAddedFov);
+        currentSprintFov = transparency;
+        targetFOV = startingFov + (baseAddedFov * currentSprintFov);
 
-        targetFOV = Mathf.Lerp(startingFov, startingFov + addedFov, transparency);
-        playerCamera.fieldOfView = Mathf.SmoothDamp(playerCamera.fieldOfView, targetFOV, ref fovVel, fovSmoothTime);
+        targetFOV = Mathf.Lerp(startingFov, startingFov + baseAddedFov, transparency);
+        playerCamera.fieldOfView = Mathf.SmoothDamp(playerCamera.fieldOfView, targetFOV, ref fovVel, fovSmoothTime) + extraFov;
     }
 
 
@@ -125,11 +138,55 @@ public class PlayerScreenVisuals : MonoBehaviour
 
     }
 
-    public void ScreenShake(float strength, float strengthVelocity, float smoothTime)
+    public void ScreenShake(AnimationCurve strengthCurve, float duration )
     {
-        playerCameraScript.SetShake(strength, strengthVelocity, smoothTime);
+        shakeCurve = strengthCurve;
+        shakeDuration = duration;
+        shakeElapsedTime = 0;
+    }
+
+    private void ScreenShakeCycle()
+    {
+        if (shakeDuration > shakeElapsedTime)
+        {
+            shakeElapsedTime += Time.deltaTime;
+            playerCameraScript.SetShake(shakeCurve, shakeDuration, shakeElapsedTime);
+        }
+        else
+        {
+            shakeElapsedTime = 0;
+            shakeDuration = 0;
+        }
+
     }
     public void StopScreenShake()
+    {
+        playerCameraScript.StopShake();
+    }
+
+    public void StartAddFOV(AnimationCurve fovCurve, float duration)
+    {
+        this.fovCurve = fovCurve;
+        fovDuration = duration;
+        fovElapsedTime = 0;
+    }
+    
+    private void CycleAddFOV()
+    {
+        if (fovDuration > fovElapsedTime)
+        {
+            fovElapsedTime += Time.deltaTime;
+            extraFov = fovCurve.Evaluate(fovElapsedTime / fovDuration);
+        }
+        else
+        {
+            fovElapsedTime = 0;
+            fovDuration = 0;
+            extraFov = 0;
+        }
+
+    }
+    public void StopAddFOV()
     {
         playerCameraScript.StopShake();
     }
@@ -139,4 +196,8 @@ public class PlayerScreenVisuals : MonoBehaviour
     {
         playerCameraScript.setRotationZ(curRotation);
     }
+
+
+
+    
 }
