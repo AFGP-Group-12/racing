@@ -1,5 +1,36 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &329923780716269649
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5359838027045373666}
+  m_Layer: 0
+  m_Name: Gapple Start Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5359838027045373666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 329923780716269649}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.176, y: 0.33299994, z: 0.904}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6213159212276226189}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &672062159677512054
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,6 +234,7 @@ Transform:
   m_Children:
   - {fileID: 563512265344823795}
   - {fileID: 618361242267306667}
+  - {fileID: 5359838027045373666}
   m_Father: {fileID: 5386568211178942212}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &7651006634576081692
@@ -225,12 +257,12 @@ GameObject:
   - component: {fileID: 6426214075695272378}
   - component: {fileID: 8566347814016398955}
   - component: {fileID: 3564877386535356918}
-  - component: {fileID: 3656911224889164238}
   - component: {fileID: 8736706981129764362}
   - component: {fileID: 843077158305749316}
   - component: {fileID: 5574339947720632534}
   - component: {fileID: 2048135158997568651}
   - component: {fileID: 8159957993420048038}
+  - component: {fileID: 1683423192421660839}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -298,8 +330,6 @@ MonoBehaviour:
   basicSpeed: 12
   sprintSpeed: 18
   maxSpeed: 25
-  currentSpringStrength: 0
-  currentDamperStrength: 0
   groundDrag: 5
   setFloatHeight: 4.5
   groundDetectionHeight: 6
@@ -308,11 +338,8 @@ MonoBehaviour:
   downwardForceOnSlope: 20
   upwardForceOnSlope: 7
   jumpForce: 55
-  jumpCooldown: 0.25
   jumpTurningForce: 2
-  coyoteJumpWindow: 0
-  coyoteJumpTimer: 0
-  coyoteJumpReady: 0
+  coyoteJumpWindow: 0.3
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -320,12 +347,11 @@ MonoBehaviour:
   initialSlideForce: 50
   constantSlideForce: 5
   maxSlideForce: 120
-  slideDuration: 5
+  slideDuration: 1
   slideCooldown: 0.5
   slideMaxSpeed: 45
   slideFloatHeight: 1.8
   slideColliderHeight: 0.7
-  currentSlideForce: 15
   wallLayer:
     serializedVersion: 2
     m_Bits: 1024
@@ -337,7 +363,6 @@ MonoBehaviour:
   maxGravityForce: 40
   gravityForce: 0
   movementDivider: 200
-  airEntryMaxSpeed: Infinity
 --- !u!114 &2228908584671281163
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -352,7 +377,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speedLineGameObject: {fileID: 0}
   playerCamera: {fileID: 0}
-  addedFov: 5
+  baseAddedFov: 25
   playerCameraScript: {fileID: 0}
   rotationIncrement: 0.25
   setRotationAdditive: 1.5
@@ -422,7 +447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8e154bd423685b24fbf003d91e9c7c08, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  lineRenderer: {fileID: 6426214075695272378}
+  lineRenderer: {fileID: 0}
   grappleStartPoint: {fileID: 618361242267306667}
 --- !u!120 &6426214075695272378
 LineRenderer:
@@ -651,11 +676,11 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: dce5419c-3172-45d9-a5d4-8e558f24eaf3
-    m_ActionName: 'Player/Pause[/Keyboard/escape]'
+    m_ActionName: 'Player/Pause[/Keyboard/escape,/Keyboard/p]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: ceaef331-94dd-4550-a4f6-2c6854511ffd
-    m_ActionName: 'UI/Unpause[/Keyboard/escape]'
+    m_ActionName: 'UI/Unpause[/Keyboard/escape,/Keyboard/p]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -674,26 +699,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   abilityManager: {fileID: 7819291645068659924}
-  uiDocument: {fileID: 3656911224889164238}
---- !u!114 &3656911224889164238
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7651006634576081692}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_PanelSettings: {fileID: 11400000, guid: 46d9c5c1cc890fb4ea004b90cad4c989, type: 2}
-  m_ParentUI: {fileID: 0}
-  sourceAsset: {fileID: 9197481963319205126, guid: 4ea9af7bfe5890b479ceec5268bb51dd, type: 3}
-  m_SortingOrder: 0
-  m_WorldSpaceSizeMode: 1
-  m_WorldSpaceWidth: 1920
-  m_WorldSpaceHeight: 1080
+  uiDocument: {fileID: 0}
 --- !u!114 &8736706981129764362
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -730,7 +736,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64546101818610641aa063ae3157ad44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiDocument: {fileID: 3656911224889164238}
+  uiDocument: {fileID: 0}
   buttonClass: pausebutton
   resourcesFolder: UI/Textures/SquiggleFrames
   fps: 8
@@ -750,7 +756,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0644188d536959c43aaa072f7e723a89, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  uiDocument: {fileID: 3656911224889164238}
+  uiDocument: {fileID: 0}
   targetElementName:
   - pauseScribble
   stroke: 6
@@ -768,6 +774,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f916a9040bd899a45a5ba8ec5e4ed7f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1683423192421660839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7651006634576081692}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_PanelSettings: {fileID: 11400000, guid: 46d9c5c1cc890fb4ea004b90cad4c989, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: 4ea9af7bfe5890b479ceec5268bb51dd, type: 3}
+  m_SortingOrder: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 1920
+  m_WorldSpaceHeight: 1080
 --- !u!1 &7941051853214393720
 GameObject:
   m_ObjectHideFlags: 0
