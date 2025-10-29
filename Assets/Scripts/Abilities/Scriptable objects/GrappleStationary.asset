@@ -31,3 +31,54 @@ MonoBehaviour:
   grappleSpringForce: 4.5
   grappleDamper: 15
   grappleMassScale: 9
+  ShakeCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0.21339794
+      outSlope: 0.21339794
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.101057105
+      value: 0.021565378
+      inSlope: 0.36213407
+      outSlope: 0.36213407
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.39219588
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.1657444
+      value: 0.23663616
+      inSlope: 2.8675358
+      outSlope: 2.8675358
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.20108788
+    - serializedVersion: 3
+      time: 0.29201657
+      value: 0.066798925
+      inSlope: -0.0870862
+      outSlope: -0.0870862
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.11604013
+    - serializedVersion: 3
+      time: 0.99871826
+      value: 0
+      inSlope: -0.094522096
+      outSlope: -0.094522096
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

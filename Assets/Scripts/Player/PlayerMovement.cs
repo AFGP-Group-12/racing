@@ -22,8 +22,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float sprintSpeed; // Should always be greater than moveSpeed
     [SerializeField] float maxSpeed; // The max speed. This accounts for gaining speed while in air which would be faster than the sprint speed. This is only used for the screen visuals
 
-    public float currentSpringStrength;
-    public float currentDamperStrength;
+    private float currentSpringStrength;
+    private float currentDamperStrength;
     private float floatHeight = 5f;
 
     [Tooltip("Determines how quickly the player slows down when they stop moving")]
@@ -81,7 +81,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float slideColliderHeight = 1.5f;
 
 
-    public float currentSlideForce;
+    private float currentSlideForce;
     private float slideMinSpeed = 5f;
     private float slideTimer = 0f;
     private float normalColliderHeight;
@@ -129,7 +129,7 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float movementDivider;
 
-    public float airEntryMaxSpeed = float.PositiveInfinity;
+    private float airEntryMaxSpeed = float.PositiveInfinity;
 
     [Header("Camera")]
     PlayerScreenVisuals visualScript;

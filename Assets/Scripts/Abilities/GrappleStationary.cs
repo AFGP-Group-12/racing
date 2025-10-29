@@ -8,6 +8,7 @@ public class GrappleStationary : Ability
     private PlayerStateHandler stateHandler;
     private PlayerAbilityManager abilityManager;
     private PlayerMovement movementScript;
+    private PlayerScreenVisuals visualScript;
     private Transform orientation;
     private Transform cameraTransform;
 
@@ -23,12 +24,11 @@ public class GrappleStationary : Ability
 
     [Range(0f, 1f)]
     public float minGrappleExtend;
-
     public float grappleSpringForce;
-
     public float grappleDamper;
-
     public float grappleMassScale;
+
+    public AnimationCurve ShakeCurve;
 
     private PlayerGrappleLine grappleLineScript;
     private GameObject previewObject;
@@ -78,6 +78,7 @@ public class GrappleStationary : Ability
         cameraTransform = ctx.cameraTransform;
         stateHandler = ctx.stateHandler;
         grappleLineScript = ctx.grappleLine;
+        visualScript = ctx.screenVisuals;
         this.abilityIndex = abilityIndex;
 
         if (canAbility)
@@ -109,6 +110,7 @@ public class GrappleStationary : Ability
 
                 if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrappleStationary(grappleLocation);
                 abilityManager.StartAbilityDuration(abilityIndex, duration);
+                visualScript.ScreenShake(ShakeCurve, duration);
             }
 
         }

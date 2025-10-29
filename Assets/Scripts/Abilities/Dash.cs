@@ -1,5 +1,6 @@
 using Unity.Mathematics;
 using Unity.VisualScripting;
+using UnityEditor.UIElements;
 using UnityEngine;
 
 [CreateAssetMenu(menuName = "Abilities/Dash")]
@@ -9,6 +10,7 @@ public class Dash : Ability
     private PlayerStateHandler stateHandler;
     private PlayerAbilityManager abilityManager;
     private PlayerMovement movementScript;
+    private PlayerScreenVisuals visualScript;
     private Transform orientation;
     private Transform cameraTransform;
     private Vector3 horizontalForce;
@@ -20,11 +22,23 @@ public class Dash : Ability
 
     [Tooltip("If the user is trying to do an input with basically no verticallity this will help the user do so. So if the value is 0.2 and the user's y input is 0.1 the dash will take it in as 0")]
     [Range(0f, 0.5f)]
-    public float dashInnerDeadzone = 0.2f; 
+    public float dashInnerDeadzone = 0.2f;
 
     [Tooltip("This value acts as the maximum y input that can be taken in by the dash. So if its 0.7 then when the user looks straight up the value will be 0.7 rather than 1")]
     [Range(0.5f, 1f)]
     public float dashOuterDeadzone = 0.7f;
+
+
+    [Tooltip("Changes the intensity of the screen shake")]
+    public AnimationCurve shakeStrength;
+
+    //[Tooltip("How long the screen shake visual effect should last")]
+    // public float shakeDuration = 0.5f;
+
+    [Tooltip("Changes the intensity of the fov change")]
+    public AnimationCurve addedFov;
+
+    // public float addedFovDuration = 0.5f;
 
 
     public override void OnInstantiate()
@@ -44,6 +58,7 @@ public class Dash : Ability
         abilityManager = ctx.abilityManager;
         orientation = ctx.orientation;
         cameraTransform = ctx.cameraTransform;
+        visualScript = ctx.screenVisuals;
 
         this.abilityIndex = abilityIndex;
 
@@ -55,6 +70,9 @@ public class Dash : Ability
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
             abilityManager.StartAbilityDuration(abilityIndex, duration);
+            visualScript.ScreenShake(shakeStrength, duration);
+            visualScript.StartAddFOV(addedFov, duration);
+
             usingAbility = true;
             canAbility = false;
             horizontalForce = orientation.forward * dashForce;
@@ -77,8 +95,7 @@ public class Dash : Ability
             }
 
             //verticalForce = new Vector3(0, cameraTransform.forward.y, 0);
-
-
+            
             verticalForce *= dashForce;
             rb.AddForce(verticalForce * dashForceY, ForceMode.Impulse);
 
@@ -94,6 +111,7 @@ public class Dash : Ability
     }
     public override void AbilityEnd()
     {
+        visualScript.StopScreenShake();
         rb.useGravity = true;
         usingAbility = false;
         stateHandler.isDashing = false;
