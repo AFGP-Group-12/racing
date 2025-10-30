@@ -337,9 +337,9 @@ MonoBehaviour:
   damperStrength: 2
   downwardForceOnSlope: 20
   upwardForceOnSlope: 7
-  jumpForce: 55
+  jumpForce: 50
   jumpTurningForce: 2
-  coyoteJumpWindow: 0.3
+  coyoteJumpWindow: 0.1
   groundLayer:
     serializedVersion: 2
     m_Bits: 512
@@ -356,11 +356,11 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 1024
   wallRunForce: 15
-  wallBoostForce: 40
   wallUpwardForce: 20
   wallJumpForceUp: 40
   wallJumpForceDirection: 40
   maxGravityForce: 40
+  wallFovChange: 1
   gravityForce: 0
   movementDivider: 200
 --- !u!114 &2228908584671281163

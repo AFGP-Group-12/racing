@@ -70,7 +70,7 @@ public class Dash : Ability
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
 
             abilityManager.StartAbilityDuration(abilityIndex, duration);
-            visualScript.ScreenShake(shakeStrength, duration);
+            //visualScript.ScreenShake(shakeStrength, duration);
             visualScript.StartAddFOV(addedFov, duration);
 
             usingAbility = true;

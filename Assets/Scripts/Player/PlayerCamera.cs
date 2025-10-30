@@ -14,6 +14,9 @@ public class PlayerCamera : MonoBehaviour
     private float yRotation;
     private float zRotation;
 
+    private float xRotationOffset = 0;
+    private float yPositionOffset = 0;
+
     private Vector3 shakeAmount;
 
     [SerializeField] InputActionReference mouse;
@@ -40,9 +43,9 @@ public class PlayerCamera : MonoBehaviour
 
 
         // rotate the camera
-        transform.rotation = Quaternion.Euler(xRotation, yRotation, zRotation);
+        transform.rotation = Quaternion.Euler(xRotation + xRotationOffset, yRotation, zRotation);
         // transform.rotation = Quaternion.Euler(xRotation + shakeAmount.x, yRotation + shakeAmount.y, zRotation + shakeAmount.z);
-        transform.position = parentTransform.position + ((transform.right * shakeAmount.x) + (transform.up * shakeAmount.y));
+        transform.position = parentTransform.position + ((transform.right * shakeAmount.x) + (transform.up * shakeAmount.y) + (transform.up * yPositionOffset));
         //transform.localPosition = shakeAmount; // new Vector3(parentTransform.position.x + shakeAmount.x, parentTransform.position.y + shakeAmount.y, parentTransform.position.z);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
     }
@@ -65,6 +68,15 @@ public class PlayerCamera : MonoBehaviour
     public float getRotationZ()
     {
         return zRotation;
+    }
+
+    public void SetOffsetX(float xRotationOffset)
+    {
+        this.xRotationOffset = xRotationOffset;
+    }
+    public void SetPositionOffsetY(float yPositionOffset)
+    {
+        this.yPositionOffset = yPositionOffset;
     }
 
     public void SetShake(AnimationCurve strengthCurve,float duration, float elapsedTime)

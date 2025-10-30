@@ -32,6 +32,7 @@ public class PlayerScreenVisuals : MonoBehaviour
     private float targetFOV;
     private float fovVel; // velocity tracker for SmoothDamp
 
+
     [Header("Screen Shake")]
     private AnimationCurve shakeCurve;
     private float shakeDuration;
@@ -43,13 +44,23 @@ public class PlayerScreenVisuals : MonoBehaviour
     private float fovElapsedTime;
     private float extraFov;
 
+    [Header("Wall Running effect")]
+    private float wallFovChange;
 
+
+
+    private PlayerContext context;
+    private PlayerMovement movement;
+    private PlayerStateHandler stateHandler;
     Rigidbody rb;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        rb = GetComponent<Rigidbody>();
+        context = GetComponent<PlayerContext>();
+        movement = context.movement;
+        rb = context.rb;
+        stateHandler = context.stateHandler;
 
         rb.freezeRotation = true;
 
@@ -60,6 +71,7 @@ public class PlayerScreenVisuals : MonoBehaviour
     }
     void FixedUpdate()
     {
+        wallFovChange = movement.GetWallRunFovChange();
         ScreenShakeCycle();
         CycleAddFOV();
     }
@@ -137,6 +149,7 @@ public class PlayerScreenVisuals : MonoBehaviour
         }
 
     }
+    
 
     public void ScreenShake(AnimationCurve strengthCurve, float duration )
     {
@@ -173,7 +186,15 @@ public class PlayerScreenVisuals : MonoBehaviour
     
     private void CycleAddFOV()
     {
-        if (fovDuration > fovElapsedTime)
+        if (stateHandler.state == MovementState.wallrunningleft || stateHandler.state == MovementState.wallrunningright)
+        {
+            fovElapsedTime += 0.1f;
+            fovElapsedTime = Mathf.Clamp(fovElapsedTime, 0f, 1f);
+
+
+            extraFov = Mathf.Lerp(0, wallFovChange, fovElapsedTime);
+        }
+        else if (fovDuration > fovElapsedTime)
         {
             fovElapsedTime += Time.deltaTime;
             extraFov = fovCurve.Evaluate(fovElapsedTime / fovDuration);
