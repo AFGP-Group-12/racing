@@ -12,6 +12,8 @@ public class PlayerGrappleLine : MonoBehaviour
 
     public Transform grappleStartPoint;
 
+    public GameObject startPointObject;
+
     private Transform targetPlayerTransform = null;
 
     Vector3 startPoint;
@@ -35,7 +37,8 @@ public class PlayerGrappleLine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        startPoint = transform.position;
+        // startPoint = transform.position;
+        startPoint = startPointObject.transform.position;
         if (isForceingLine || (stateHandler != null && stateHandler.state == MovementState.grappling))
         {
             if (targetPlayerTransform != null) { currentEndPoint = targetPlayerTransform.position; }

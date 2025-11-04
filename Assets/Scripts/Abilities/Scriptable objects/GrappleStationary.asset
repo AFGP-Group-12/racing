@@ -21,15 +21,15 @@ MonoBehaviour:
   usingAbility: 0
   isPreview: 1
   previewPrefab: {fileID: 7403508374583288671, guid: 298516cbb1c20084895d6e28e2bb8521, type: 3}
-  grappleSpeed: 15
-  maxGrappleDistance: 20
+  grappleSpeed: 8
+  maxGrappleDistance: 10
   grappleSurface:
     serializedVersion: 2
     m_Bits: 256
   maxGrappleExtend: 0.85
   minGrappleExtend: 0
   grappleSpringForce: 4.5
-  grappleDamper: 15
+  grappleDamper: 10
   grappleMassScale: 9
   ShakeCurve:
     serializedVersion: 2
@@ -53,8 +53,8 @@ MonoBehaviour:
       inWeight: 0.39219588
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.1657444
-      value: 0.23663616
+      time: 0.15730752
+      value: 0.37096527
       inSlope: 2.8675358
       outSlope: 2.8675358
       tangentMode: 0
@@ -62,19 +62,19 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.20108788
     - serializedVersion: 3
-      time: 0.29201657
-      value: 0.066798925
-      inSlope: -0.0870862
-      outSlope: -0.0870862
+      time: 0.2831519
+      value: 0.00004356634
+      inSlope: 0.012809822
+      outSlope: 0.012809822
       tangentMode: 0
       weightedMode: 0
       inWeight: 0.33333334
-      outWeight: 0.11604013
+      outWeight: 0.09783447
     - serializedVersion: 3
       time: 0.99871826
       value: 0
-      inSlope: -0.094522096
-      outSlope: -0.094522096
+      inSlope: -0.00006088371
+      outSlope: -0.00006088371
       tangentMode: 34
       weightedMode: 0
       inWeight: 0.33333334

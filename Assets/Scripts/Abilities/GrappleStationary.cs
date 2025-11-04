@@ -108,6 +108,13 @@ public class GrappleStationary : Ability
                 joint.damper = grappleDamper;
                 joint.massScale = grappleMassScale;
 
+                joint.spring = 150f;   // tune for your scale
+                joint.damper =  12f;
+                joint.massScale = 1f;      
+
+                rb.solverIterations = 12;            // position solver
+                rb.solverVelocityIterations = 4;     // velocity solver       
+
                 if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrappleStationary(grappleLocation);
                 abilityManager.StartAbilityDuration(abilityIndex, duration);
                 visualScript.ScreenShake(ShakeCurve, duration);

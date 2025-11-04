@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: GrapplePlayer
   icon: {fileID: 21300000, guid: e3d9879993ec9b645a4ce360ef70f57e, type: 3}
-  cooldown: 1
+  cooldown: 15
   duration: 0.2
-  abilityIndex: 0
+  abilityIndex: 1
   canAbility: 1
   usingAbility: 0
   isPreview: 1
