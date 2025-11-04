@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float groundDrag;
 
     private float acceleration; // Make this private its only like this for debugging purposes
-    public float moveSpeed; // Make this private its only like this for debugging purposes
+    private float moveSpeed; // Make this private its only like this for debugging purposes
     private float accelerationIncrement = 2f; // Amount the acceleration will be incremented by
     private float horizontalInput;
     private float verticalInput;
