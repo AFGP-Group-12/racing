@@ -101,8 +101,10 @@ public class GrappleStationary : Ability
                 float d = Vector3.Distance(playerObject.transform.position, grappleLocation);
 
                 // start taut
-                joint.maxDistance = d * 0.9f;   // 90% of initial distance
-                joint.minDistance = d * Mathf.Clamp(minGrappleExtend, 0f, 0.85f);
+                // joint.maxDistance = d * 0.9f;   // 90% of initial distance
+                // joint.minDistance = d * Mathf.Clamp(minGrappleExtend, 0f, 0.85f);
+                joint.maxDistance = d;
+                joint.minDistance = d;
 
                 joint.spring = grappleSpringForce;
                 joint.damper = grappleDamper;

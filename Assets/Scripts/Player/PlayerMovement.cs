@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float groundDrag;
 
     private float acceleration; // Make this private its only like this for debugging purposes
-    private float moveSpeed; // Make this private its only like this for debugging purposes
+    public float moveSpeed; // Make this private its only like this for debugging purposes
     private float accelerationIncrement = 2f; // Amount the acceleration will be incremented by
     private float horizontalInput;
     private float verticalInput;
@@ -216,8 +216,8 @@ public class PlayerMovement : MonoBehaviour
 
         // Movement
         SetMovementSpeed();
+        SprintCheck();
         Accelerate();
-        StopMomentumJump();
         JumpBuffer();
         CoyoteTimerCheck();
 
@@ -269,8 +269,8 @@ public class PlayerMovement : MonoBehaviour
     {
 
         Ray ray = new Ray(transform.position, Vector3.down);
-        Debug.DrawRay(transform.position + (orientation.forward * 0.65f) , Vector3.down, Color.red);
-        Debug.DrawRay(transform.position + (orientation.forward * 0.35f), Vector3.down, Color.red);
+        //Debug.DrawRay(transform.position + (orientation.forward * 0.65f) , Vector3.down, Color.red);
+        //Debug.DrawRay(transform.position + (orientation.forward * 0.35f), Vector3.down, Color.red);
 
         // This is how you lower the detection rays if they are needed
         // Ray rayFront = new Ray(transform.position + (orientation.forward * 0.65f) - (Vector3.up * 0.2f), Vector3.down);
@@ -400,25 +400,26 @@ public class PlayerMovement : MonoBehaviour
     public void OnSprint()
     {
         stateHandler.isSprinting = true;
-        accelerationIncrement = math.abs(accelerationIncrement);
-        isAccelerating = true;
-        isKeepingMomentum = false;
     }
 
     public void OnSprintEnd()
     {
-        if (isOnGround)
+        stateHandler.isSprinting = false;
+    }
+    
+    private void SprintCheck()
+    {
+        if (stateHandler.isSprinting == true && isOnGround)
         {
-            stateHandler.isSprinting = false;
-            accelerationIncrement = -math.abs(accelerationIncrement);
-            isAccelerating = false;
+            accelerationIncrement = math.abs(accelerationIncrement);
+            isAccelerating = true;
         }
-        else
+        else if(stateHandler.isSprinting == false && isOnGround)
         {
-            isKeepingMomentum = true;
+            accelerationIncrement = -math.abs(accelerationIncrement);
+            isAccelerating = false;      
         }
     }
-
     void SetMovementSpeed()
     {
         moveSpeed = basicSpeed + ((sprintSpeed - basicSpeed) * (acceleration / 100));
@@ -641,21 +642,6 @@ public class PlayerMovement : MonoBehaviour
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
                 rb.AddForce(transform.up * wallJumpForceUp + (orientation.right * wallJumpForceDirection), ForceMode.Impulse);
             }
-        }
-    }
-
-    void StopMomentumJump()
-    {
-        if (isKeepingMomentum && !isOnGround)
-        {
-            return;
-        }
-        else if (isKeepingMomentum && isOnGround)
-        {
-            stateHandler.isSprinting = false;
-            accelerationIncrement = -math.abs(accelerationIncrement);
-            isAccelerating = false;
-            isKeepingMomentum = false;
         }
     }
 

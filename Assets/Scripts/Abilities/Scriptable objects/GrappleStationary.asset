@@ -16,12 +16,12 @@ MonoBehaviour:
   icon: {fileID: 21300000, guid: d0e9b6d5ffce23848be62e42753d716d, type: 3}
   cooldown: 0.2
   duration: 1
-  abilityIndex: 0
+  abilityIndex: 1
   canAbility: 1
   usingAbility: 0
   isPreview: 1
   previewPrefab: {fileID: 7403508374583288671, guid: 298516cbb1c20084895d6e28e2bb8521, type: 3}
-  grappleSpeed: 8
+  grappleSpeed: 10
   maxGrappleDistance: 10
   grappleSurface:
     serializedVersion: 2
