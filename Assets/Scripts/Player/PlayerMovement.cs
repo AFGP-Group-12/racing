@@ -34,7 +34,6 @@ public class PlayerMovement : MonoBehaviour
     private float accelerationIncrement = 2f; // Amount the acceleration will be incremented by
     private float horizontalInput;
     private float verticalInput;
-    private float normalHeight;
     private bool isOnGround;
     Vector3 moveDirection;
 
@@ -53,6 +52,8 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float jumpTurningForce;
 
     [SerializeField] float coyoteJumpWindow;
+
+    private float compressedJumpForce;
     private float coyoteJumpTimer;
     private bool coyoteJumpReady;
     private float jumpBuffer = 0.5f;
@@ -96,9 +97,6 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("How fast you want the player to move when wall running")]
     [SerializeField] float wallRunForce;
 
-    [Tooltip("How fast do you want the initial wall boost to be")]
-    [SerializeField] float wallBoostForce;
-
     [Tooltip("How strong you want the initial wall run arc to be")]
     [SerializeField] float wallUpwardForce;
 
@@ -111,9 +109,9 @@ public class PlayerMovement : MonoBehaviour
     [Tooltip("Determines how strong the gravity will be while on the wall. Wallrunning disables unity's gravity and uses this instead")]
     [SerializeField] float maxGravityForce;
 
-    public float gravityForce;
+    [SerializeField] float wallFovChange;
 
-    private bool canBoost = false;
+    public float gravityForce;
 
     Vector3 wallNormal;
     Vector3 wallForward;
@@ -218,8 +216,8 @@ public class PlayerMovement : MonoBehaviour
 
         // Movement
         SetMovementSpeed();
+        SprintCheck();
         Accelerate();
-        StopMomentumJump();
         JumpBuffer();
         CoyoteTimerCheck();
 
@@ -236,7 +234,7 @@ public class PlayerMovement : MonoBehaviour
 
 
         // Camera
-        visualScript.SetSpeedVisuals(basicSpeed, maxSpeed, rb.linearVelocity.magnitude, state);
+        visualScript.SetSpeedVisuals(basicSpeed, maxSpeed, new Vector3(rb.linearVelocity.x,0,rb.linearVelocity.z).magnitude, state);
         SetCameraRotation();
         
         // State Based Movement
@@ -271,8 +269,8 @@ public class PlayerMovement : MonoBehaviour
     {
 
         Ray ray = new Ray(transform.position, Vector3.down);
-        Debug.DrawRay(transform.position + (orientation.forward * 0.65f) , Vector3.down, Color.red);
-        Debug.DrawRay(transform.position + (orientation.forward * 0.35f), Vector3.down, Color.red);
+        //Debug.DrawRay(transform.position + (orientation.forward * 0.65f) , Vector3.down, Color.red);
+        //Debug.DrawRay(transform.position + (orientation.forward * 0.35f), Vector3.down, Color.red);
 
         // This is how you lower the detection rays if they are needed
         // Ray rayFront = new Ray(transform.position + (orientation.forward * 0.65f) - (Vector3.up * 0.2f), Vector3.down);
@@ -360,6 +358,16 @@ public class PlayerMovement : MonoBehaviour
 
         float x = hit.distance - (floatHeight * 0.3f);
         float springForce = (x * currentSpringStrength) - (relativeVelocity * currentDamperStrength);
+        if (-springForce > 20f)
+        {
+            float differenceForce = ((-springForce) - 20f) / 20f;
+            float clamp = Mathf.Clamp(0f, 1f, differenceForce);
+            compressedJumpForce = Mathf.Lerp(jumpForce * 0.8f, jumpForce * 1.3f, clamp);
+        }
+        else
+        {
+            compressedJumpForce = 0f;
+        }
 
         //Debug.DrawRay(transform.position, Vector3.down * floatHeight , Color.red);
 
@@ -392,25 +400,26 @@ public class PlayerMovement : MonoBehaviour
     public void OnSprint()
     {
         stateHandler.isSprinting = true;
-        accelerationIncrement = math.abs(accelerationIncrement);
-        isAccelerating = true;
-        isKeepingMomentum = false;
     }
 
     public void OnSprintEnd()
     {
-        if (isOnGround)
+        stateHandler.isSprinting = false;
+    }
+    
+    private void SprintCheck()
+    {
+        if (stateHandler.isSprinting == true && isOnGround)
         {
-            stateHandler.isSprinting = false;
-            accelerationIncrement = -math.abs(accelerationIncrement);
-            isAccelerating = false;
+            accelerationIncrement = math.abs(accelerationIncrement);
+            isAccelerating = true;
         }
-        else
+        else if(stateHandler.isSprinting == false && isOnGround)
         {
-            isKeepingMomentum = true;
+            accelerationIncrement = -math.abs(accelerationIncrement);
+            isAccelerating = false;      
         }
     }
-
     void SetMovementSpeed()
     {
         moveSpeed = basicSpeed + ((sprintSpeed - basicSpeed) * (acceleration / 100));
@@ -544,6 +553,7 @@ public class PlayerMovement : MonoBehaviour
         {
             // This is a slide jump
             currentJumpBuffer = jumpBuffer;
+
             currentSpringStrength = 0f;
             currentDamperStrength = 0f;
 
@@ -560,12 +570,21 @@ public class PlayerMovement : MonoBehaviour
             SlideEnd(); // Ends a slide if it is currently happening
 
             rb.AddForce(orientation.forward * forwardForce, ForceMode.Impulse);
-            rb.AddForce(transform.up * jumpForce * jumpForceMultiplier, ForceMode.Impulse);
+
+            if (compressedJumpForce > 0)
+            {
+                rb.AddForce(transform.up * compressedJumpForce * jumpForceMultiplier, ForceMode.Impulse);
+            }
+            else
+            {
+                rb.AddForce(transform.up * jumpForce * jumpForceMultiplier, ForceMode.Impulse);
+            }
 
         }
         else if (isOnGround || coyoteJumpReady)
         {
             currentJumpBuffer = jumpBuffer;
+
             currentSpringStrength = 0f;
             currentDamperStrength = 0f;
             //currentSpringStrength = 0f;
@@ -579,7 +598,14 @@ public class PlayerMovement : MonoBehaviour
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
-            rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            if (compressedJumpForce > 0)
+            {
+                rb.AddForce(transform.up * compressedJumpForce, ForceMode.Impulse);
+            }
+            else
+            {
+                rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
+            }
         }
         
         if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
@@ -590,6 +616,7 @@ public class PlayerMovement : MonoBehaviour
                 stateHandler.isWallrunningRight = false;
                 rb.useGravity = true;
 
+                airEntryMaxSpeed = sprintSpeed;
                 stateHandler.isJumping = true;
 
                 if (horizontalInput > 0)
@@ -605,6 +632,7 @@ public class PlayerMovement : MonoBehaviour
                 stateHandler.isWallrunningRight = false;
                 rb.useGravity = true;
 
+                airEntryMaxSpeed = sprintSpeed;
                 stateHandler.isJumping = true;
 
                 if (horizontalInput < 0)
@@ -614,21 +642,6 @@ public class PlayerMovement : MonoBehaviour
                 rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
                 rb.AddForce(transform.up * wallJumpForceUp + (orientation.right * wallJumpForceDirection), ForceMode.Impulse);
             }
-        }
-    }
-
-    void StopMomentumJump()
-    {
-        if (isKeepingMomentum && !isOnGround)
-        {
-            return;
-        }
-        else if (isKeepingMomentum && isOnGround)
-        {
-            stateHandler.isSprinting = false;
-            accelerationIncrement = -math.abs(accelerationIncrement);
-            isAccelerating = false;
-            isKeepingMomentum = false;
         }
     }
 
@@ -683,7 +696,6 @@ public class PlayerMovement : MonoBehaviour
 
                 rb.AddForce(new Vector3(0f, wallUpwardForce, 0f), ForceMode.Impulse);
 
-                canBoost = true;
                 stateHandler.isWallrunningRight = true;
                 stateHandler.isWallrunningLeft = false;
                 //Debug.Log("WallRight");
@@ -697,7 +709,6 @@ public class PlayerMovement : MonoBehaviour
 
                 rb.AddForce(new Vector3(0f, wallUpwardForce, 0f), ForceMode.Impulse);
 
-                canBoost = true;
                 stateHandler.isWallrunningRight = false;
                 stateHandler.isWallrunningLeft = true;
                 //Debug.Log("WallLeft");
@@ -728,11 +739,6 @@ public class PlayerMovement : MonoBehaviour
                 wallForward = -wallForward;
             }
 
-            if (canBoost)
-            {
-                rb.AddForce(wallForward * wallBoostForce, ForceMode.Impulse);
-                canBoost = false;
-            }
             rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
             //Debug.Log("WallRight");
         }
@@ -746,12 +752,6 @@ public class PlayerMovement : MonoBehaviour
             if (Vector3.Dot(wallForward, orientation.forward) < 0)
             {
                 wallForward = -wallForward;
-            }
-
-            if (canBoost)
-            {
-                rb.AddForce(wallForward * wallBoostForce, ForceMode.Impulse);
-                canBoost = false;
             }
             rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
             //Debug.Log("WallLeft");
@@ -773,6 +773,10 @@ public class PlayerMovement : MonoBehaviour
         {
             gravityForce -= 0.5f;
         }
+    }
+    public float GetWallRunFovChange()
+    {
+        return wallFovChange;
     }
 
     #endregion Wall Run Functions

@@ -14,13 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Dash
   icon: {fileID: 21300000, guid: 511392fffa2bb16478607953ef2f6d51, type: 3}
-  cooldown: 3
+  cooldown: 8
   duration: 0.5
-  abilityIndex: 0
-  canAbility: 0
+  abilityIndex: 1
+  canAbility: 1
   usingAbility: 0
   isPreview: 0
-  dashForce: 15
+  dashForce: 4
   dashForceY: 8
   dashInnerDeadzone: 0.2
   dashOuterDeadzone: 0.7
@@ -37,8 +37,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0.034516446
     - serializedVersion: 3
-      time: 0.02129705
-      value: 0.9966214
+      time: 0.025691582
+      value: 0.672807
       inSlope: 0.03264578
       outSlope: 0.03264578
       tangentMode: 0
@@ -46,8 +46,8 @@ MonoBehaviour:
       inWeight: 0.1771446
       outWeight: 0.119547635
     - serializedVersion: 3
-      time: 0.35275757
-      value: 0.994612
+      time: 0.35776246
+      value: 0.6683829
       inSlope: -0.37825042
       outSlope: -0.37825042
       tangentMode: 0
@@ -72,15 +72,15 @@ MonoBehaviour:
     - serializedVersion: 3
       time: 0
       value: 0
-      inSlope: 189.18678
-      outSlope: 189.18678
+      inSlope: 96.244484
+      outSlope: 96.244484
       tangentMode: 34
       weightedMode: 0
       inWeight: 0
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.021404982
-      value: 4.0495396
+      time: 0.0264709
+      value: 2.547678
       inSlope: 13.06733
       outSlope: 13.06733
       tangentMode: 0
