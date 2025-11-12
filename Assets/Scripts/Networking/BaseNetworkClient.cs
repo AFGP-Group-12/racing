@@ -20,6 +20,7 @@ public class BaseNetworkClient
     private NetworkStream tcpStream = null;
     
     private byte[] receiveBufferTcp;
+    private byte[] leftoverBufferTcp;
     private int dataBufferSize;
 
     // Communication back to the main thread.
@@ -57,6 +58,7 @@ public class BaseNetworkClient
             SendBufferSize = dataBufferSize
         };
         receiveBufferTcp = new byte[dataBufferSize];
+        leftoverBufferTcp = new byte[dataBufferSize];
 
         incomming_message_queue = new ConcurrentQueue<generic_m>();
 
@@ -220,43 +222,61 @@ public class BaseNetworkClient
             Debug.LogError($"{e.Message}{e.StackTrace}");
         }
     }
-
+    int fragment_leftover = 0;
     private unsafe void ReceiveCallbackTcp(IAsyncResult result)
     {
         try
         {
             if (!connectedTcp) { return; }
 
-            // We will assume that we read in whole messages for now...
             int n = tcpStream.EndRead(result);
             int read_offset = 0;
 
             while (n > 0)
             {
-                message_t m_type = Messages.Helpers.GetMessageType(receiveBufferTcp, read_offset);
+                if (fragment_leftover != 0 && read_offset != 0)
+                    Debug.Log("fragment_leftover != 0 && read_offset != 0. fragment: " + fragment_leftover + ", read_offset: " + read_offset);
+               
+                message_t m_type;
+                if (fragment_leftover > 0)
+                    m_type = Messages.Helpers.GetMessageType(leftoverBufferTcp, 0);
+                else
+                    m_type = Messages.Helpers.GetMessageType(receiveBufferTcp, read_offset);
+
                 int message_len = Messages.Helpers.getMessageSize(m_type);
 
-                // Handle error  cases.
                 if (message_len == -1)
                 {
-                    Debug.Log("Type not registered: " + m_type);
+                    Debug.Log("Type not registered: " + m_type + " of size " + n);
+                    fragment_leftover = 0;
                     readAgainTcp();
                     return;
                 }
 
-                if (n < message_len)
+                if (n + fragment_leftover < message_len)
                 {
-                    Debug.Log("Got incomplete message");
-                    readAgainTcp();
+                    Debug.Log("Got incomplete message. Should be len " + message_len + ", but is len " + n + ". Type: " + m_type + ". fragment: " + fragment_leftover);
+                    
+                    for (int i = 0; i < n; i++)
+                        leftoverBufferTcp[fragment_leftover + i] = receiveBufferTcp[i + read_offset];
+
+                    fragment_leftover += n;
+                    readAgainTcp(message_len - n);
                     return;
                 }
+
 
                 // Generate what the user will read.
                 generic_m m = new generic_m();
-                m.from(receiveBufferTcp, message_len, read_offset);
+                if (fragment_leftover == 0)
+                    m.from(receiveBufferTcp, message_len, read_offset);
+                else
+                    m.from(leftoverBufferTcp, receiveBufferTcp, message_len, fragment_leftover);
 
                 read_offset += message_len;
                 n -= message_len;
+
+                fragment_leftover = 0;
 
                 bool skipUser = false; // Some messages will not be shown to the user.
 
@@ -358,9 +378,9 @@ public class BaseNetworkClient
         player_username = user;
     }
 
-    private void readAgainTcp()
+    private void readAgainTcp(int read = 0)
     {
-        tcpStream.BeginRead(receiveBufferTcp, 0, dataBufferSize, ReceiveCallbackTcp, null);
+        tcpStream.BeginRead(receiveBufferTcp, 0, read == 0 ? dataBufferSize : read, ReceiveCallbackTcp, null);
     }
 
     private void readAgainUdp()

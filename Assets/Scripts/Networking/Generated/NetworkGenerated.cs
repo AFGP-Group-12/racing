@@ -19,6 +19,7 @@ namespace Messages
         request_last_position_reply,
         entity_target_move_id,
         entity_target_move_vec,
+        navmesh_data,
         movement,
         movement_reply,
         connection,
@@ -65,6 +66,8 @@ namespace Messages
                     return entity_target_move_id_m.size;
                 case message_t.entity_target_move_vec:
                     return entity_target_move_vec_m.size;
+                case message_t.navmesh_data:
+                    return navmesh_data_m.size;
                 case message_t.movement:
                     return movement_m.size;
                 case message_t.movement_reply:
@@ -178,8 +181,8 @@ namespace Messages
     public unsafe struct generic_m
     {
         public const int size = 256;
-        [FieldOffset(0)] private fixed byte bytes[size];
         [FieldOffset(0)] private UInt16 type;
+        [FieldOffset(0)] public fixed byte bytes[size];
         [FieldOffset(0)] public initiate_udp_m initiate_udp;
         [FieldOffset(0)] public initiate_udp_m_reply initiate_udp_reply;
         [FieldOffset(0)] public server_registration_m server_registration;
@@ -192,6 +195,7 @@ namespace Messages
         [FieldOffset(0)] public request_last_position_m_reply request_last_position_reply;
         [FieldOffset(0)] public entity_target_move_id_m entity_target_move_id;
         [FieldOffset(0)] public entity_target_move_vec_m entity_target_move_vec;
+        [FieldOffset(0)] public navmesh_data_m navmesh_data;
         [FieldOffset(0)] public movement_m movement;
         [FieldOffset(0)] public movement_m_reply movement_reply;
         [FieldOffset(0)] public connection_m connection;
@@ -205,6 +209,8 @@ namespace Messages
         [FieldOffset(0)] public racing_send_lobby_data_m racing_send_lobby_data;
         [FieldOffset(0)] public racing_game_start_m racing_game_start;
         [FieldOffset(0)] public racing_ability_action_m racing_ability_action;
+        [FieldOffset(0)] public position_sm position;
+        [FieldOffset(0)] public username_sm username;
 
 
 
@@ -225,6 +231,17 @@ namespace Messages
                 if (i >= size || data_offset >= data.Length)
                     break;
                 bytes[i] = data[data_offset];
+            }
+        }
+        public void from(byte[] b1, byte[] b2, int n, int swap_index)
+        {
+            for (int i = 0; i < swap_index && i < n && i < b1.Length && i < size; i++)
+            {
+                bytes[i] = b1[i];
+            }
+            for (int i = swap_index; i < n && i - swap_index < b2.Length && i < size; i++)
+            {
+                bytes[i] = b2[i - swap_index];
             }
         }
         public message_t get_t()
@@ -361,6 +378,18 @@ namespace Messages
 
         [FieldOffset(2)] public UInt16 entity_id;
         [FieldOffset(4)] public position_sm target_position;
+    };
+
+    [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
+    public unsafe struct navmesh_data_m
+    {
+        public const int size = 214;
+        [FieldOffset(0)] public fixed byte bytes[size];
+        [FieldOffset(0)] public UInt16 type;
+
+        [FieldOffset(2)] public UInt16 n;
+        [FieldOffset(4)] public fixed byte node_positions[30 * position_sm.size];
+        [FieldOffset(184)] public fixed byte node_types[30];
     };
 
     [StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]

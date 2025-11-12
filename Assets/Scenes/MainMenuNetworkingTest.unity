@@ -350,6 +350,8 @@ MonoBehaviour:
   playerUpdatesPerSecond: 5
   doPrediction: 0
   otherPlayerPrefab: {fileID: 2670139927068850257, guid: 96db6be734f374c73a5cf8da1bf0e0e4, type: 3}
+  navMeshNode: {fileID: 2373578754589195978, guid: 932d751f7f1e25242b9945863d2c4ed7, type: 3}
+  navMeshBounds: {fileID: 2373578754589195978, guid: eb2e0d279471bb943ac7eb43fef9fc74, type: 3}
   platformAbility: {fileID: 11400000, guid: 1f3fb68b381ee824fbfeb02016179f34, type: 2}
 --- !u!1 &589029238
 GameObject:

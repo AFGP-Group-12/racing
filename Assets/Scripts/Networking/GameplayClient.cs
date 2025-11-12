@@ -17,7 +17,12 @@ public class GameplayClient : MonoBehaviour
     public static GameObject player = null;
     public static GameObject mainCamera = null;
     public GameObject otherPlayerPrefab;
+    public GameObject navMeshNode = null;
+    public GameObject navMeshBounds = null;
     private Dictionary<int, OtherPlayer> playerById;
+
+    private List<Vector3> navmeshnodes = new List<Vector3>();
+    private List<int> navmeshtypes = new List<int>();
 
     public MovementState CurrentState { get; set; }
 
@@ -82,6 +87,9 @@ public class GameplayClient : MonoBehaviour
                 case message_t.racing_ability_action:
                     HandleRecievedAbilityAction(message.racing_ability_action);
                     break;
+                case message_t.navmesh_data:
+                    HandleNavmeshData(message);
+                    break;
                 default:
                     Debug.Log("Got Unexpected: " + message.get_t());
                     break;
@@ -94,6 +102,19 @@ public class GameplayClient : MonoBehaviour
         foreach (OtherPlayer p in playerById.Values)
         {
             p.Update(doPrediction);
+        }
+
+        if (player != null)
+        {
+            for (int i = 0; i < navmeshnodes.Count; i++)
+            {
+                if (navmeshtypes[i] == 0)
+                    Instantiate(navMeshNode, navmeshnodes[i], Quaternion.identity);
+                else
+                    Instantiate(navMeshBounds, navmeshnodes[i], Quaternion.identity);
+            }
+            navmeshnodes.Clear();
+            navmeshtypes.Clear();
         }
     }
 
@@ -298,5 +319,29 @@ public class GameplayClient : MonoBehaviour
             playerById.Remove(id);
         }
 
+    }
+
+    private unsafe void HandleNavmeshData(generic_m message)
+    {
+        navmesh_data_m nav_mes = message.navmesh_data;
+
+        Debug.Log("Got " + nav_mes.n + " nodes");
+        const int positions_offset = 4;
+        const int scale = 1000;
+
+        generic_m p = new generic_m();
+        
+        byte[] tmp = new byte[position_sm.size];
+        for (int i = 0; i < nav_mes.n; i++)
+        {
+            for (int j = 0; j < position_sm.size; j++)
+            {
+                tmp[j] = message.bytes[positions_offset + i * position_sm.size + j];
+            }
+            p.from(tmp, position_sm.size);
+            Vector3 pos = Helpers.readPosition(p.position, new Vector3(scale, scale, scale));
+            navmeshnodes.Add(pos);
+            navmeshtypes.Add(nav_mes.node_types[i]);
+        }
     }
 }
