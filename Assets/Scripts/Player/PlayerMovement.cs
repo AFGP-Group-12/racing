@@ -726,7 +726,7 @@ public class PlayerMovement : MonoBehaviour
 
         wallForward = new Vector3(0, 0, 0);
 
-        runArc = new Vector3(0f, gravityForce, 0f);
+        runArc = new Vector3(rb.linearVelocity.x, gravityForce, rb.linearVelocity.z);
 
         if (isWallRight && state == MovementState.wallrunningright)
         {
@@ -739,7 +739,7 @@ public class PlayerMovement : MonoBehaviour
                 wallForward = -wallForward;
             }
 
-            rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
+            rb.AddForce((wallForward * wallRunForce) + runArc, ForceMode.Force);
             //Debug.Log("WallRight");
         }
 
@@ -753,7 +753,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 wallForward = -wallForward;
             }
-            rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
+            rb.AddForce((wallForward * wallRunForce) + runArc, ForceMode.Force);
             //Debug.Log("WallLeft");
         }
 
