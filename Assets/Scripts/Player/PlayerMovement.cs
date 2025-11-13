@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float groundDrag;
 
     private float acceleration; // Make this private its only like this for debugging purposes
-    private float moveSpeed; // Make this private its only like this for debugging purposes
+    public float moveSpeed; // Make this private its only like this for debugging purposes
     private float accelerationIncrement = 2f; // Amount the acceleration will be incremented by
     private float horizontalInput;
     private float verticalInput;
@@ -419,6 +419,18 @@ public class PlayerMovement : MonoBehaviour
             accelerationIncrement = -math.abs(accelerationIncrement);
             isAccelerating = false;      
         }
+        else if (stateHandler.isSprinting == true)
+        {
+            acceleration = 100;
+            accelerationIncrement = math.abs(accelerationIncrement);
+            isAccelerating = true;
+        }
+        else if (stateHandler.isSprinting == false)
+        {
+            acceleration = 0;
+            accelerationIncrement = -math.abs(accelerationIncrement);
+            isAccelerating = false;
+        }
     }
     void SetMovementSpeed()
     {
@@ -505,6 +517,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector3 hv = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             airEntryMaxSpeed = Mathf.Max(hv.magnitude, moveSpeed);
+            // airEntryMaxSpeed = Mathf.Clamp(airEntryMaxSpeed,moveSpeed,maxSpeed);
         }
     }
 
