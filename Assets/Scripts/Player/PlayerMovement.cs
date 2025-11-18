@@ -44,6 +44,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float damperStrength = 5f;
     [SerializeField] float downwardForceOnSlope = 5f;
     [SerializeField] float upwardForceOnSlope = 3f;
+    [SerializeField] float compressedJumpMult = 1.3f;
 
     [Header("Jump")]
     [SerializeField] float jumpForce;
@@ -80,6 +81,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float slideMaxSpeed;
     [SerializeField] float slideFloatHeight = 1;
     [SerializeField] float slideColliderHeight = 1.5f;
+    [SerializeField] float slideJumpMaxMult = 1.4f;
 
 
     private float currentSlideForce;
@@ -362,7 +364,7 @@ public class PlayerMovement : MonoBehaviour
         {
             float differenceForce = ((-springForce) - 20f) / 20f;
             float clamp = Mathf.Clamp(0f, 1f, differenceForce);
-            compressedJumpForce = Mathf.Lerp(jumpForce * 0.8f, jumpForce * 1.3f, clamp);
+            compressedJumpForce = Mathf.Lerp(jumpForce * 0.8f, jumpForce * compressedJumpMult, clamp);
         }
         else
         {
@@ -371,7 +373,9 @@ public class PlayerMovement : MonoBehaviour
 
         //Debug.DrawRay(transform.position, Vector3.down * floatHeight , Color.red);
 
-        rb.AddForce(rayDirection * springForce, ForceMode.Acceleration);
+        if(state != MovementState.air){
+            rb.AddForce(rayDirection * springForce, ForceMode.Acceleration);
+        }
 
         if (hitbody != null)
         {
@@ -578,13 +582,13 @@ public class PlayerMovement : MonoBehaviour
 
             stateHandler.isJumping = true;
             float forwardForce = currentSlideForce * 0.05f;
-            float jumpForceMultiplier = Mathf.Lerp(1f, 1.4f, currentSlideForce / maxSlideForce);
+            float jumpForceMultiplier = Mathf.Lerp(1f, slideJumpMaxMult, currentSlideForce / maxSlideForce);
 
             SlideEnd(); // Ends a slide if it is currently happening
 
             rb.AddForce(orientation.forward * forwardForce, ForceMode.Impulse);
 
-            if (compressedJumpForce > 0)
+            if (isOnGround && compressedJumpForce > 0)
             {
                 rb.AddForce(transform.up * compressedJumpForce * jumpForceMultiplier, ForceMode.Impulse);
             }
@@ -601,7 +605,6 @@ public class PlayerMovement : MonoBehaviour
             currentSpringStrength = 0f;
             currentDamperStrength = 0f;
             //currentSpringStrength = 0f;
-
             coyoteJumpReady = false;
             coyoteJumpTimer = 0;
 
@@ -610,8 +613,9 @@ public class PlayerMovement : MonoBehaviour
             SlideEnd(); // Ends a slide if it is currently happening
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.angularVelocity = Vector3.zero;
 
-            if (compressedJumpForce > 0)
+            if (isOnGround && compressedJumpForce > 0)
             {
                 rb.AddForce(transform.up * compressedJumpForce, ForceMode.Impulse);
             }
@@ -619,6 +623,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
             }
+
         }
         
         if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
