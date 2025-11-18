@@ -44,7 +44,18 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float damperStrength = 5f;
     [SerializeField] float downwardForceOnSlope = 5f;
     [SerializeField] float upwardForceOnSlope = 3f;
-    [SerializeField] float compressedJumpMult = 1.3f;
+
+
+    [SerializeField] AnimationCurve compressedJumpCurve;
+
+    private float compressedJumpForce;
+
+    [Header("Ledge Grab")]
+    [SerializeField] AnimationCurve forwardVault;
+    [SerializeField] AnimationCurve upwardsVault;
+
+    private float grabLength;
+    private float currentGrabTime;
 
     [Header("Jump")]
     [SerializeField] float jumpForce;
@@ -54,14 +65,13 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float coyoteJumpWindow;
 
-    private float compressedJumpForce;
     private float coyoteJumpTimer;
     private bool coyoteJumpReady;
     private float jumpBuffer = 0.5f;
     private float currentJumpBuffer = 0f;
     // [SerializeField] float currentSpeed; //Debugging purposes
     private bool isAccelerating;
-    private bool isKeepingMomentum;
+    // private bool isKeepingMomentum;
 
 
     [Header("Ground Check")]
@@ -76,7 +86,6 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float initialSlideForce;
     [SerializeField] float constantSlideForce;
     [SerializeField] float maxSlideForce;
-    [SerializeField] float slideDuration;
     [SerializeField] float slideCooldown;
     [SerializeField] float slideMaxSpeed;
     [SerializeField] float slideFloatHeight = 1;
@@ -180,6 +189,8 @@ public class PlayerMovement : MonoBehaviour
         slideHeld = false;
         slideReady = true;
 
+        grabLength = forwardVault.keys[forwardVault.length - 1].time;
+
         Time.timeScale = 1;
 
         // slideTimer = 0f;
@@ -229,6 +240,12 @@ public class PlayerMovement : MonoBehaviour
         // Wall Running
         WallRunCheck();
 
+        // Check if the player is grabbing a ledge
+        if(state != MovementState.ledgeGrab)
+        {
+            LedgeGrabCheck();
+        }
+
         if (slideTimer > 0f)
         {
             slideTimer -= Time.deltaTime;
@@ -254,6 +271,10 @@ public class PlayerMovement : MonoBehaviour
         {
             MovePlayer();
         }
+        else if(state == MovementState.ledgeGrab)
+        {
+            LedgeGrabMotion();
+        }
 
         // Speed Control
         SetAirExitSpeed();
@@ -266,6 +287,39 @@ public class PlayerMovement : MonoBehaviour
 
 
     #region Basic Movement
+
+    void LedgeGrabMotion()
+    {
+        if(currentGrabTime < grabLength)
+        {
+            float currentForwardForce = forwardVault.Evaluate(currentGrabTime);
+            float currentUpForce = upwardsVault.Evaluate(currentGrabTime);
+            rb.AddForce(orientation.forward * currentForwardForce + orientation.up*currentUpForce,ForceMode.Acceleration);
+
+            currentGrabTime += Time.deltaTime;
+        }
+        else
+        {
+            rb.useGravity = true;
+            stateHandler.isLedgeGrabbing = false;
+        }
+    }
+    void LedgeGrabCheck()
+    {
+        Debug.DrawRay(transform.position + (orientation.up * 0.65f) , orientation.forward, Color.red);
+        Debug.DrawRay(transform.position + (orientation.up * -0.2f), orientation.forward, Color.red);
+
+        Ray rayUpper = new Ray(transform.position + (orientation.up * 0.65f) , orientation.forward);
+        Ray rayLower = new Ray(transform.position + (orientation.up * -0.2f) , orientation.forward);
+
+        if(Physics.Raycast(rayLower, out RaycastHit lowerHit, 1f, groundLayer) == true && Physics.Raycast(rayUpper, out RaycastHit upperHit, 1f, groundLayer) == false)
+        {
+            currentGrabTime = 0;
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.useGravity = false;
+            stateHandler.isLedgeGrabbing = true;
+        }
+    }
 
     void FloatPlayer()
     {
@@ -360,11 +414,12 @@ public class PlayerMovement : MonoBehaviour
 
         float x = hit.distance - (floatHeight * 0.3f);
         float springForce = (x * currentSpringStrength) - (relativeVelocity * currentDamperStrength);
-        if (-springForce > 20f)
+        //Debug.Log(springForce);
+        if (springForce < -20f)
         {
-            float differenceForce = ((-springForce) - 20f) / 20f;
-            float clamp = Mathf.Clamp(0f, 1f, differenceForce);
-            compressedJumpForce = Mathf.Lerp(jumpForce * 0.8f, jumpForce * compressedJumpMult, clamp);
+            float differenceForce = ((-springForce) - 20f) / 30f;
+            float clamp = Mathf.Clamp(differenceForce, 0, 1f);
+            compressedJumpForce = jumpForce * compressedJumpCurve.Evaluate(clamp);
         }
         else
         {

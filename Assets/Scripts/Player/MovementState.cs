@@ -6,6 +6,7 @@ public enum MovementState
     sprinting,
     wallrunningleft,
     wallrunningright,
+    ledgeGrab,
     sliding,
     air,
     dashing,
