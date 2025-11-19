@@ -331,12 +331,103 @@ MonoBehaviour:
   sprintSpeed: 18
   maxSpeed: 25
   groundDrag: 5
+  moveSpeed: 0
   setFloatHeight: 4.5
   groundDetectionHeight: 6
   springStrength: 50
   damperStrength: 2
   downwardForceOnSlope: 20
   upwardForceOnSlope: 7
+  compressedJumpCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0.87972564
+      outSlope: 0.87972564
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.03430233
+    - serializedVersion: 3
+      time: 1
+      value: 1.2999992
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  forwardVault:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.19942415
+      value: 34.38662
+      inSlope: -0.23514092
+      outSlope: -0.23514092
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.27723563
+    - serializedVersion: 3
+      time: 0.29999998
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  upwardsVault:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 20
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.058189712
+      value: 33.545845
+      inSlope: -0.23514092
+      outSlope: -0.23514092
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.27723563
+    - serializedVersion: 3
+      time: 0.29999998
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
   jumpForce: 50
   jumpTurningForce: 2
   coyoteJumpWindow: 0.1
@@ -347,15 +438,15 @@ MonoBehaviour:
   initialSlideForce: 50
   constantSlideForce: 5
   maxSlideForce: 120
-  slideDuration: 1
   slideCooldown: 0.5
   slideMaxSpeed: 45
   slideFloatHeight: 1.8
   slideColliderHeight: 0.7
+  slideJumpMaxMult: 1.4
   wallLayer:
     serializedVersion: 2
     m_Bits: 1024
-  wallRunForce: 15
+  wallRunForce: 2500
   wallUpwardForce: 20
   wallJumpForceUp: 40
   wallJumpForceDirection: 40
