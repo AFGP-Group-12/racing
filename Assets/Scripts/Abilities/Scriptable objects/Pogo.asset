@@ -16,13 +16,13 @@ MonoBehaviour:
   icon: {fileID: -1944665421, guid: e31fe9447e3bc3841934e117dec39c86, type: 3}
   cooldown: 0.3
   duration: 0.1
-  abilityIndex: -1
+  abilityIndex: 0
   canAbility: 1
   usingAbility: 0
-  isPreview: 0
+  isPreview: 1
   pogoLayer:
     serializedVersion: 2
     m_Bits: 8
-  pogoJumpForce: 35
-  sphereRadius: 2
+  pogoJumpForce: 45
+  sphereRadius: 3
   pogoDistance: 4
