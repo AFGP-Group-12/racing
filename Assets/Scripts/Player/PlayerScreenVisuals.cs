@@ -85,15 +85,7 @@ public class PlayerScreenVisuals : MonoBehaviour
 
         transparency = moveDifference / speedDifference;
 
-        if (transparency < 0)
-        {
-            transparency = 0;
-        }
-
-        if (transparency > 100)
-        {
-            transparency = 100;
-        }
+        transparency = Mathf.Clamp(transparency, 0, 100);
 
         speedLineRawImage.material.SetFloat("_Transparency", transparency);
 
