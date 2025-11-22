@@ -375,8 +375,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.19942415
-      value: 34.38662
+      time: 0.19999999
+      value: 10
       inSlope: -0.23514092
       outSlope: -0.23514092
       tangentMode: 0
@@ -384,8 +384,8 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.27723563
     - serializedVersion: 3
-      time: 0.29999998
-      value: 0
+      time: 0.5
+      value: 9.000011
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -400,7 +400,7 @@ MonoBehaviour:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 20
+      value: 0
       inSlope: 2
       outSlope: 2
       tangentMode: 0
@@ -408,8 +408,8 @@ MonoBehaviour:
       inWeight: 0
       outWeight: 0
     - serializedVersion: 3
-      time: 0.058189712
-      value: 33.545845
+      time: 0.049999997
+      value: 10.063755
       inSlope: -0.23514092
       outSlope: -0.23514092
       tangentMode: 0
@@ -417,7 +417,7 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.27723563
     - serializedVersion: 3
-      time: 0.29999998
+      time: 0.5
       value: 0
       inSlope: 0
       outSlope: 0
@@ -448,8 +448,8 @@ MonoBehaviour:
     m_Bits: 1024
   wallRunForce: 2500
   wallUpwardForce: 20
-  wallJumpForceUp: 40
-  wallJumpForceDirection: 40
+  wallJumpForceUp: 50
+  wallJumpForceDirection: 70
   maxGravityForce: 40
   wallFovChange: 1
   gravityForce: 0

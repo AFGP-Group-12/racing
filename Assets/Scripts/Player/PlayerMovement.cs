@@ -311,15 +311,15 @@ public class PlayerMovement : MonoBehaviour
     }
     void LedgeGrabCheck()
     {
-        Debug.DrawRay(transform.position + (orientation.up * 0.65f) , orientation.forward, Color.red);
-        Debug.DrawRay(transform.position + (orientation.up * 0.1f), orientation.forward, Color.yellow);
-        Debug.DrawRay(transform.position + (orientation.up * -0.3f), orientation.forward, Color.green);
+        // Debug.DrawRay(transform.position + (orientation.up * 0.65f) , orientation.forward, Color.red);
+        // Debug.DrawRay(transform.position + (orientation.up * 0.1f), orientation.forward, Color.yellow);
+        // Debug.DrawRay(transform.position + (orientation.up * -0.3f), orientation.forward, Color.green);
 
         Ray rayUpper = new Ray(transform.position + (orientation.up * 0.65f) , orientation.forward);
         Ray rayLower = new Ray(transform.position + (orientation.up * 0.3f) , orientation.forward);
         Ray rayBottom = new Ray(transform.position + (orientation.up * -0.3f) , orientation.forward);
 
-        if(!isOnSlope && (Physics.Raycast(rayBottom, 1f, groundLayer) == true || Physics.Raycast(rayLower, 1f, groundLayer) == true) && Physics.Raycast(rayUpper,1f, groundLayer) == false)
+        if(currentJumpBuffer <=0 && !isOnGround && (Physics.Raycast(rayBottom, 1f, groundLayer) == true || Physics.Raycast(rayLower, 1f, groundLayer) == true) && Physics.Raycast(rayUpper,1f, groundLayer) == false)
         {
             currentGrabTime = 0;
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
@@ -332,6 +332,8 @@ public class PlayerMovement : MonoBehaviour
 
     void SlopeCheck()
     {
+        //Debug.DrawRay(transform.position + (orientation.forward * 0.65f * 1.5f) , -orientation.up, Color.red);
+        //Debug.DrawRay(transform.position + (orientation.forward * 0.35f * 1.5f), -orientation.up, Color.yellow);
         
         Ray rayFront = new Ray(transform.position + (orientation.forward * 0.65f) , Vector3.down);
         Ray rayBack = new Ray(transform.position + (orientation.forward * 0.35f) , Vector3.down);
@@ -603,8 +605,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (currentJumpBuffer > 0f)
         {
+            // Might remove these later I dont know if they are even doing anything
             currentSpringStrength = 0f;
             currentDamperStrength = 0f;
+
+            // Will keep the jump buffer though this is useful
             currentJumpBuffer -= Time.deltaTime;
         }
         else

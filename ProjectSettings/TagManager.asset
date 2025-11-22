@@ -17,8 +17,8 @@ TagManager:
   - GrappleSurface
   - Ground
   - Wall
-  - 
-  - 
+  - OuterWall
+  - Obstacle
   - 
   - 
   - 
