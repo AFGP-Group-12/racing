@@ -46,6 +46,7 @@ public class MeshCombiner : MonoBehaviour
     [MenuItem("GameObject/Export to OBJ")]
     static void ExportToOBJ()
     {
+
         GameObject obj = Selection.activeObject as GameObject;
         if (obj == null)
         {
@@ -59,6 +60,15 @@ public class MeshCombiner : MonoBehaviour
             Debug.Log("No mesh found in selected GameObject.");
             return;
         }
+
+        MeshCombiner meshCombiner = obj.GetComponent<MeshCombiner>();
+        if (meshFilter == null)
+        {
+            Debug.Log("No mesh combiner found in selected GameObject.");
+            return;
+        }
+
+        meshCombiner.combine();
 
         string path = EditorUtility.SaveFilePanel("Export OBJ", "", obj.name, "obj");
         if (string.IsNullOrEmpty(path)) return;
@@ -92,27 +102,50 @@ public class MeshCombiner : MonoBehaviour
         Debug.Log("Mesh exported to: " + path);
     }
 
-    void Start()
+    // Function to check if a given layer index is part of a LayerMask
+    bool IsInLayerMask(int layer, LayerMask layerMask)
+    {
+        // Shift 1 by the layer index to get a bitmask for that specific layer
+        // Then perform a bitwise AND with the targetLayerMask
+        // If the result is non-zero, the layer is included in the mask
+        return ((1 << layer) & layerMask) != 0;
+    }
+
+    public LayerMask layersToGenerateMeshFrom;
+    public bool makeChildrenInactive;
+
+    public void combine()
     {
         MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
         CombineInstance[] instances = new CombineInstance[meshFilters.Length];
 
         for (int i = 0; i < meshFilters.Length; i++)
         {
-            var meshFilter = meshFilters[i];
+            MeshFilter meshFilter = meshFilters[i];
+            // Check if the specific layer is in the LayerMask
+            if (!IsInLayerMask(meshFilter.gameObject.layer, layersToGenerateMeshFrom))
+            {
+                continue;
+            }
 
             instances[i] = new CombineInstance
             {
                 mesh = meshFilter.sharedMesh,
                 transform = meshFilter.transform.localToWorldMatrix,
             };
-
-            meshFilter.gameObject.SetActive(false);
+            if (makeChildrenInactive)
+                meshFilter.gameObject.SetActive(false);
         }
 
         Mesh combinedMesh = new Mesh();
         combinedMesh.CombineMeshes(instances);
         gameObject.GetComponent<MeshFilter>().sharedMesh = combinedMesh;
+        Debug.Log("Combined " + meshFilters.Length + " meshes into one.");
         gameObject.SetActive(true);
+    }
+
+    void Start()
+    {
+        
     }
 }
