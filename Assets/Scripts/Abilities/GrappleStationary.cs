@@ -97,25 +97,16 @@ public class GrappleStationary : Ability
 
                 joint.autoConfigureConnectedAnchor = false;
                 joint.connectedAnchor = grappleLocation;
+                joint.anchor = Vector3.zero;
 
                 float d = Vector3.Distance(playerObject.transform.position, grappleLocation);
 
-                // start taut
-                // joint.maxDistance = d * 0.9f;   // 90% of initial distance
-                // joint.minDistance = d * Mathf.Clamp(minGrappleExtend, 0f, 0.85f);
                 joint.maxDistance = d;
                 joint.minDistance = d;
 
-                joint.spring = grappleSpringForce;
-                joint.damper = grappleDamper;
-                joint.massScale = grappleMassScale;
-
-                joint.spring = 150f;   // tune for your scale
-                joint.damper =  12f;
-                joint.massScale = 1f;      
-
-                rb.solverIterations = 12;            // position solver
-                rb.solverVelocityIterations = 4;     // velocity solver       
+                joint.spring = grappleSpringForce;   // tune for your scale
+                joint.damper =  grappleDamper;
+                joint.massScale = grappleMassScale;           
 
                 if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrappleStationary(grappleLocation);
                 abilityManager.StartAbilityDuration(abilityIndex, duration);
@@ -138,8 +129,11 @@ public class GrappleStationary : Ability
 
     public override void DeActivate(PlayerContext ctx)
     {
-        abilityManager.EndAbilityEarly(abilityIndex);
-        GrappleEnd();
+        if (usingAbility)
+        {
+            abilityManager.EndAbilityEarly(abilityIndex);
+            GrappleEnd();
+        }
     }
 
     private void GrappleEnd()
