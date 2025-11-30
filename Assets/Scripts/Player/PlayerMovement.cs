@@ -665,17 +665,17 @@ public class PlayerMovement : MonoBehaviour
 
             if (isOnGround && compressedJumpForce > 0)
             {
-                Debug.Log("Slide COmpressed: " + compressedJumpForce + "jump force mult:" + jumpForceMultiplier);
+                //Debug.Log("Slide COmpressed: " + compressedJumpForce + "jump force mult:" + jumpForceMultiplier);
                 rb.AddForce(transform.up * compressedJumpForce * jumpForceMultiplier, ForceMode.Impulse);
             }
             else
             {
-                Debug.Log("Slide normal: " + jumpForce + "jump force mult:" + jumpForceMultiplier);
+                //Debug.Log("Slide normal: " + jumpForce + "jump force mult:" + jumpForceMultiplier);
                 rb.AddForce(transform.up * jumpForce * jumpForceMultiplier * 1.5f, ForceMode.Impulse);
             }
 
         }
-        else if (isOnGround || coyoteJumpReady)
+        else if (isOnGround)
         {
             currentJumpBuffer = jumpBuffer;
 
@@ -692,7 +692,7 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             rb.angularVelocity = Vector3.zero;
 
-            if (isOnGround && compressedJumpForce > 0)
+            if (compressedJumpForce > 0)
             {
                 rb.AddForce(transform.up * compressedJumpForce, ForceMode.Impulse);
             }
@@ -700,6 +700,26 @@ public class PlayerMovement : MonoBehaviour
             {
                 rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
             }
+
+        }
+        else if (coyoteJumpReady)
+        {
+            currentJumpBuffer = jumpBuffer;
+
+            currentSpringStrength = 0f;
+            currentDamperStrength = 0f;
+            //currentSpringStrength = 0f;
+            coyoteJumpReady = false;
+            coyoteJumpTimer = 0;
+
+            stateHandler.isJumping = true;
+
+            SlideEnd(); // Ends a slide if it is currently happening
+
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.angularVelocity = Vector3.zero;
+
+            rb.AddForce(transform.up * jumpForce * 0.8f, ForceMode.Impulse);
 
         }
         
