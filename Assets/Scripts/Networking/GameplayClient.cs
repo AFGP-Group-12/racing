@@ -23,6 +23,7 @@ public class GameplayClient : MonoBehaviour
 
     private List<Vector3> navmeshnodes = new List<Vector3>();
     private List<int> navmeshtypes = new List<int>();
+    private int totalNodes = 0;
 
     public MovementState CurrentState { get; set; }
 
@@ -108,10 +109,15 @@ public class GameplayClient : MonoBehaviour
         {
             for (int i = 0; i < navmeshnodes.Count; i++)
             {
+                totalNodes++;
                 if (navmeshtypes[i] == 0)
                     Instantiate(navMeshNode, navmeshnodes[i], Quaternion.identity);
                 else
                     Instantiate(navMeshBounds, navmeshnodes[i], Quaternion.identity);
+            }
+            if (navmeshnodes.Count > 0)
+            {
+                Debug.Log("Total Navmesh Nodes Received: " + totalNodes);
             }
             navmeshnodes.Clear();
             navmeshtypes.Clear();
@@ -142,7 +148,7 @@ public class GameplayClient : MonoBehaviour
         // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
         // a sceneBuildIndex of 1 as shown in Build Settings.
 
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("PlaytestScene");
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Set1Level1");
 
         // Wait until the asynchronous scene fully loads
         while (!asyncLoad.isDone)
@@ -324,8 +330,6 @@ public class GameplayClient : MonoBehaviour
     private unsafe void HandleNavmeshData(generic_m message)
     {
         navmesh_data_m nav_mes = message.navmesh_data;
-
-        Debug.Log("Got " + nav_mes.n + " nodes");
         const int positions_offset = 4;
         const int scale = 1000;
 

@@ -57,11 +57,7 @@ public class PlayerAbilityManager : MonoBehaviour
         };
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
+    
 
     void FixedUpdate()
     {

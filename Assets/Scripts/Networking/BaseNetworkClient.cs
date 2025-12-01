@@ -247,7 +247,7 @@ public class BaseNetworkClient
 
                 if (message_len == -1)
                 {
-                    Debug.Log("Type not registered: " + m_type + " of size " + n);
+                    Debug.LogError("Type not registered: " + m_type + " of size " + n);
                     fragment_leftover = 0;
                     readAgainTcp();
                     return;
@@ -261,7 +261,7 @@ public class BaseNetworkClient
                         leftoverBufferTcp[fragment_leftover + i] = receiveBufferTcp[i + read_offset];
 
                     fragment_leftover += n;
-                    readAgainTcp(message_len - n);
+                    readAgainTcp(message_len - fragment_leftover);
                     return;
                 }
 

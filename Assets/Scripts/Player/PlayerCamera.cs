@@ -20,6 +20,8 @@ public class PlayerCamera : MonoBehaviour
     private Vector3 shakeAmount;
 
     [SerializeField] InputActionReference mouse;
+    [SerializeField] InputActionReference mouseX;
+    [SerializeField] InputActionReference mouseY;
 
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -33,21 +35,38 @@ public class PlayerCamera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float mouseX = mouse.action.ReadValue<Vector2>().x * Time.deltaTime * sensitivityX;
-        float mouseY = mouse.action.ReadValue<Vector2>().y * Time.deltaTime * sensitivityY;
+        // float mouseX = mouse.action.ReadValue<Vector2>().x * Time.deltaTime * sensitivityX;
+        // float mouseY = mouse.action.ReadValue<Vector2>().y * Time.deltaTime * sensitivityY;
 
-        yRotation += mouseX;
+        // yRotation += mouseX;
+        // yRotation = Mathf.Repeat(yRotation, 360f);
 
-        xRotation -= mouseY;
+        // xRotation -= mouseY;
+        // xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+
+
+        // // rotate the camera
+        // transform.rotation = Quaternion.Euler(xRotation + xRotationOffset, yRotation, zRotation);
+        // // transform.rotation = Quaternion.Euler(xRotation + shakeAmount.x, yRotation + shakeAmount.y, zRotation + shakeAmount.z);
+        // transform.position = parentTransform.position + ((transform.right * shakeAmount.x) + (transform.up * shakeAmount.y) + (transform.up * yPositionOffset));
+        // //transform.localPosition = shakeAmount; // new Vector3(parentTransform.position.x + shakeAmount.x, parentTransform.position.y + shakeAmount.y, parentTransform.position.z);
+        // orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+
+
+        float mouseXValue= mouseX.action.ReadValue<float>()/100 * sensitivityX;
+        float mouseYValue= mouseY.action.ReadValue<float>()/100 * sensitivityY;
+
+        yRotation += mouseXValue;
+        yRotation = Mathf.Repeat(yRotation, 360f);
+
+        xRotation -= mouseYValue;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
 
-        // rotate the camera
         transform.rotation = Quaternion.Euler(xRotation + xRotationOffset, yRotation, zRotation);
-        // transform.rotation = Quaternion.Euler(xRotation + shakeAmount.x, yRotation + shakeAmount.y, zRotation + shakeAmount.z);
         transform.position = parentTransform.position + ((transform.right * shakeAmount.x) + (transform.up * shakeAmount.y) + (transform.up * yPositionOffset));
-        //transform.localPosition = shakeAmount; // new Vector3(parentTransform.position.x + shakeAmount.x, parentTransform.position.y + shakeAmount.y, parentTransform.position.z);
         orientation.rotation = Quaternion.Euler(0, yRotation, 0);
+
     }
 
     public void LockCursor()

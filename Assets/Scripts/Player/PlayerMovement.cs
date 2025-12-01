@@ -30,7 +30,7 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float groundDrag;
 
     private float acceleration; // Make this private its only like this for debugging purposes
-    private float moveSpeed; // Make this private its only like this for debugging purposes
+    public float moveSpeed; // Make this private its only like this for debugging purposes
     private float accelerationIncrement = 2f; // Amount the acceleration will be incremented by
     private float horizontalInput;
     private float verticalInput;
@@ -45,6 +45,21 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float downwardForceOnSlope = 5f;
     [SerializeField] float upwardForceOnSlope = 3f;
 
+
+    [SerializeField] AnimationCurve compressedJumpCurve;
+
+    private bool isOnSlope;
+    private float slopeRayDifference;
+    private float compressedJumpForce;
+
+    [Header("Ledge Grab")]
+    [SerializeField] AnimationCurve forwardVault;
+    [SerializeField] AnimationCurve upwardsVault;
+
+    private Vector3 ledgeGrabPoint;
+    private float grabLength;
+    private float currentGrabTime;
+
     [Header("Jump")]
     [SerializeField] float jumpForce;
 
@@ -53,14 +68,13 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField] float coyoteJumpWindow;
 
-    private float compressedJumpForce;
     private float coyoteJumpTimer;
     private bool coyoteJumpReady;
     private float jumpBuffer = 0.5f;
     private float currentJumpBuffer = 0f;
     // [SerializeField] float currentSpeed; //Debugging purposes
     private bool isAccelerating;
-    private bool isKeepingMomentum;
+    // private bool isKeepingMomentum;
 
 
     [Header("Ground Check")]
@@ -75,11 +89,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float initialSlideForce;
     [SerializeField] float constantSlideForce;
     [SerializeField] float maxSlideForce;
-    [SerializeField] float slideDuration;
     [SerializeField] float slideCooldown;
     [SerializeField] float slideMaxSpeed;
     [SerializeField] float slideFloatHeight = 1;
     [SerializeField] float slideColliderHeight = 1.5f;
+    [SerializeField] float slideJumpMaxMult = 1.4f;
 
 
     private float currentSlideForce;
@@ -178,6 +192,8 @@ public class PlayerMovement : MonoBehaviour
         slideHeld = false;
         slideReady = true;
 
+        grabLength = forwardVault.keys[forwardVault.length - 1].time;
+
         Time.timeScale = 1;
 
         // slideTimer = 0f;
@@ -220,12 +236,19 @@ public class PlayerMovement : MonoBehaviour
         Accelerate();
         JumpBuffer();
         CoyoteTimerCheck();
+        SlopeCheck();
 
         // Slide
         SlideCheck();
 
         // Wall Running
         WallRunCheck();
+
+        // Check if the player is grabbing a ledge
+        if(state != MovementState.ledgeGrab)
+        {
+            LedgeGrabCheck();
+        }
 
         if (slideTimer > 0f)
         {
@@ -252,6 +275,10 @@ public class PlayerMovement : MonoBehaviour
         {
             MovePlayer();
         }
+        else if(state == MovementState.ledgeGrab)
+        {
+            LedgeGrabMotion();
+        }
 
         // Speed Control
         SetAirExitSpeed();
@@ -265,26 +292,73 @@ public class PlayerMovement : MonoBehaviour
 
     #region Basic Movement
 
+    void LedgeGrabMotion()
+    {
+        if(currentGrabTime < grabLength)
+        {
+            float currentForwardForce = forwardVault.Evaluate(currentGrabTime);
+            float currentUpForce = upwardsVault.Evaluate(currentGrabTime);
+            // rb.AddForce(orientation.forward * currentForwardForce + orientation.up*currentUpForce,ForceMode.Acceleration);
+            rb.MovePosition(rb.position + (ledgeGrabPoint * currentForwardForce + orientation.up * currentUpForce) * Time.fixedDeltaTime);
+            currentGrabTime += Time.deltaTime;
+        }
+        else
+        {
+            rb.useGravity = true;
+            rb.isKinematic = false;
+            stateHandler.isLedgeGrabbing = false;
+        }
+    }
+    void LedgeGrabCheck()
+    {
+        // Debug.DrawRay(transform.position + (orientation.up * 0.65f) , orientation.forward, Color.red);
+        // Debug.DrawRay(transform.position + (orientation.up * 0.1f), orientation.forward, Color.yellow);
+        // Debug.DrawRay(transform.position + (orientation.up * -0.3f), orientation.forward, Color.green);
+
+        Ray rayUpper = new Ray(transform.position + (orientation.up * 0.65f) , orientation.forward);
+        Ray rayLower = new Ray(transform.position + (orientation.up * 0.3f) , orientation.forward);
+        Ray rayBottom = new Ray(transform.position + (orientation.up * -0.3f) , orientation.forward);
+
+        if(currentJumpBuffer <=0 && !isOnGround && (Physics.Raycast(rayBottom, 1f, groundLayer) == true || Physics.Raycast(rayLower, 1f, groundLayer) == true) && Physics.Raycast(rayUpper,1f, groundLayer) == false)
+        {
+            currentGrabTime = 0;
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            ledgeGrabPoint = orientation.forward;
+            rb.isKinematic = true;
+            rb.useGravity = false;
+            stateHandler.isLedgeGrabbing = true;
+        }
+    }
+
+    void SlopeCheck()
+    {
+        //Debug.DrawRay(transform.position + (orientation.forward * 0.65f * 1.5f) , -orientation.up, Color.red);
+        //Debug.DrawRay(transform.position + (orientation.forward * 0.35f * 1.5f), -orientation.up, Color.yellow);
+        
+        Ray rayFront = new Ray(transform.position + (orientation.forward * 0.65f) , Vector3.down);
+        Ray rayBack = new Ray(transform.position + (orientation.forward * 0.35f) , Vector3.down);
+
+        if (Physics.Raycast(rayFront, out RaycastHit frontHit, 1.5f, groundLayer) && Physics.Raycast(rayBack, out RaycastHit backHit, 1.5f, groundLayer))
+        {
+            isOnSlope = true;
+            slopeRayDifference = frontHit.distance - backHit.distance;
+        }
+        else
+        {
+            isOnSlope = false;
+            slopeRayDifference = 0;
+        }
+    }
+
     void FloatPlayer()
     {
 
         Ray ray = new Ray(transform.position, Vector3.down);
-        //Debug.DrawRay(transform.position + (orientation.forward * 0.65f) , Vector3.down, Color.red);
-        //Debug.DrawRay(transform.position + (orientation.forward * 0.35f), Vector3.down, Color.red);
-
-        // This is how you lower the detection rays if they are needed
-        // Ray rayFront = new Ray(transform.position + (orientation.forward * 0.65f) - (Vector3.up * 0.2f), Vector3.down);
-        // Ray rayBack = new Ray(transform.position + (orientation.forward * 0.35f) - (Vector3.up * 0.2f), Vector3.down);
-
-        Ray rayFront = new Ray(transform.position + (orientation.forward * 0.65f) , Vector3.down);
-        Ray rayBack = new Ray(transform.position + (orientation.forward * 0.35f) , Vector3.down);
 
         // Slide movement based on the float collider
         if (state == MovementState.sliding && Physics.Raycast(ray, out RaycastHit slideHit, groundDetectionHeight, groundLayer))
         {
-            if (Physics.Raycast(rayFront, out RaycastHit frontHit, 1.5f, groundLayer) && Physics.Raycast(rayBack, out RaycastHit backHit, 1.5f, groundLayer))
-            {
-                if (frontHit.distance > backHit.distance)
+                if (isOnSlope && slopeRayDifference > 0)
                 {
                     // Debug.Log(frontHit.distance + " > " + backHit.distance);
                     rb.AddForce(orientation.forward * currentSlideForce, ForceMode.Force);
@@ -299,12 +373,11 @@ public class PlayerMovement : MonoBehaviour
                         currentSlideForce += 0.2f;
                     }
                 }
-                else if (frontHit.distance < backHit.distance)
+                else if (isOnSlope && slopeRayDifference < 0)
                 {
                     // Debug.Log(frontHit.distance + " > " + backHit.distance);
                     rb.AddForce(Vector3.up * upwardForceOnSlope, ForceMode.Impulse);
                 }
-            }
             FloatVelocity(slideHit);
         }
 
@@ -312,22 +385,22 @@ public class PlayerMovement : MonoBehaviour
         else if (isOnGround && Physics.Raycast(ray, out RaycastHit hit, floatHeight, groundLayer))
         {
 
-            if ((horizontalInput != 0 || verticalInput != 0) && Physics.Raycast(rayFront, out RaycastHit frontHit, 1.5f, groundLayer) && Physics.Raycast(rayBack, out RaycastHit backHit, 1.5f, groundLayer))
+            if (horizontalInput != 0 || verticalInput != 0)
             {
 
-                if (frontHit.distance > backHit.distance)
+                if (isOnSlope && slopeRayDifference > 0)
                 {
                     // Debug.Log(frontHit.distance + " > " + backHit.distance);
-                    float difference = frontHit.distance - backHit.distance;
+                    float difference = slopeRayDifference;
                     difference /= 0.35f;
                     difference = math.clamp(difference, 0, 1);
                     difference = math.lerp(0, downwardForceOnSlope, difference);
                     rb.AddForce(Vector3.down * difference, ForceMode.Impulse);
                 }
-                else if (frontHit.distance < backHit.distance)
+                else if (isOnSlope && slopeRayDifference < 0)
                 {
                     // Debug.Log(frontHit.distance + " < " + backHit.distance);
-                    float difference = backHit.distance - frontHit.distance;
+                    float difference = -slopeRayDifference;
                     difference /= 0.35f;
                     difference = math.clamp(difference, 0, 1);
                     difference = math.lerp(0, upwardForceOnSlope, difference);
@@ -358,11 +431,12 @@ public class PlayerMovement : MonoBehaviour
 
         float x = hit.distance - (floatHeight * 0.3f);
         float springForce = (x * currentSpringStrength) - (relativeVelocity * currentDamperStrength);
-        if (-springForce > 20f)
+        //Debug.Log(springForce);
+        if (springForce < -20f)
         {
-            float differenceForce = ((-springForce) - 20f) / 20f;
-            float clamp = Mathf.Clamp(0f, 1f, differenceForce);
-            compressedJumpForce = Mathf.Lerp(jumpForce * 0.8f, jumpForce * 1.3f, clamp);
+            float differenceForce = ((-springForce) - 20f) / 30f;
+            float clamp = Mathf.Clamp(differenceForce, 0, 1f);
+            compressedJumpForce = jumpForce * compressedJumpCurve.Evaluate(clamp);
         }
         else
         {
@@ -371,7 +445,9 @@ public class PlayerMovement : MonoBehaviour
 
         //Debug.DrawRay(transform.position, Vector3.down * floatHeight , Color.red);
 
-        rb.AddForce(rayDirection * springForce, ForceMode.Acceleration);
+        if(state != MovementState.air){
+            rb.AddForce(rayDirection * springForce, ForceMode.Acceleration);
+        }
 
         if (hitbody != null)
         {
@@ -418,6 +494,18 @@ public class PlayerMovement : MonoBehaviour
         {
             accelerationIncrement = -math.abs(accelerationIncrement);
             isAccelerating = false;      
+        }
+        else if (stateHandler.isSprinting == true)
+        {
+            acceleration = 100;
+            accelerationIncrement = math.abs(accelerationIncrement);
+            isAccelerating = true;
+        }
+        else if (stateHandler.isSprinting == false)
+        {
+            acceleration = 0;
+            accelerationIncrement = -math.abs(accelerationIncrement);
+            isAccelerating = false;
         }
     }
     void SetMovementSpeed()
@@ -505,6 +593,7 @@ public class PlayerMovement : MonoBehaviour
         {
             Vector3 hv = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
             airEntryMaxSpeed = Mathf.Max(hv.magnitude, moveSpeed);
+            // airEntryMaxSpeed = Mathf.Clamp(airEntryMaxSpeed,moveSpeed,maxSpeed);
         }
     }
 
@@ -516,8 +605,11 @@ public class PlayerMovement : MonoBehaviour
     {
         if (currentJumpBuffer > 0f)
         {
+            // Might remove these later I dont know if they are even doing anything
             currentSpringStrength = 0f;
             currentDamperStrength = 0f;
+
+            // Will keep the jump buffer though this is useful
             currentJumpBuffer -= Time.deltaTime;
         }
         else
@@ -562,33 +654,34 @@ public class PlayerMovement : MonoBehaviour
             //currentSpringStrength = 0f;
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
-
+            stateHandler.isSliding = false;
             stateHandler.isJumping = true;
             float forwardForce = currentSlideForce * 0.05f;
-            float jumpForceMultiplier = Mathf.Lerp(1f, 1.4f, currentSlideForce / maxSlideForce);
+            float jumpForceMultiplier = Mathf.Lerp(1f, slideJumpMaxMult, currentSlideForce / maxSlideForce);
 
             SlideEnd(); // Ends a slide if it is currently happening
 
             rb.AddForce(orientation.forward * forwardForce, ForceMode.Impulse);
 
-            if (compressedJumpForce > 0)
+            if (isOnGround && compressedJumpForce > 0)
             {
+                //Debug.Log("Slide COmpressed: " + compressedJumpForce + "jump force mult:" + jumpForceMultiplier);
                 rb.AddForce(transform.up * compressedJumpForce * jumpForceMultiplier, ForceMode.Impulse);
             }
             else
             {
-                rb.AddForce(transform.up * jumpForce * jumpForceMultiplier, ForceMode.Impulse);
+                //Debug.Log("Slide normal: " + jumpForce + "jump force mult:" + jumpForceMultiplier);
+                rb.AddForce(transform.up * jumpForce * jumpForceMultiplier * 1.5f, ForceMode.Impulse);
             }
 
         }
-        else if (isOnGround || coyoteJumpReady)
+        else if (isOnGround)
         {
             currentJumpBuffer = jumpBuffer;
 
             currentSpringStrength = 0f;
             currentDamperStrength = 0f;
             //currentSpringStrength = 0f;
-
             coyoteJumpReady = false;
             coyoteJumpTimer = 0;
 
@@ -597,6 +690,7 @@ public class PlayerMovement : MonoBehaviour
             SlideEnd(); // Ends a slide if it is currently happening
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.angularVelocity = Vector3.zero;
 
             if (compressedJumpForce > 0)
             {
@@ -606,6 +700,27 @@ public class PlayerMovement : MonoBehaviour
             {
                 rb.AddForce(transform.up * jumpForce, ForceMode.Impulse);
             }
+
+        }
+        else if (coyoteJumpReady)
+        {
+            currentJumpBuffer = jumpBuffer;
+
+            currentSpringStrength = 0f;
+            currentDamperStrength = 0f;
+            //currentSpringStrength = 0f;
+            coyoteJumpReady = false;
+            coyoteJumpTimer = 0;
+
+            stateHandler.isJumping = true;
+
+            SlideEnd(); // Ends a slide if it is currently happening
+
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
+            rb.angularVelocity = Vector3.zero;
+
+            rb.AddForce(transform.up * jumpForce * 0.8f, ForceMode.Impulse);
+
         }
         
         if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
@@ -726,7 +841,7 @@ public class PlayerMovement : MonoBehaviour
 
         wallForward = new Vector3(0, 0, 0);
 
-        runArc = new Vector3(0f, gravityForce, 0f);
+        runArc = new Vector3(rb.linearVelocity.x, gravityForce, rb.linearVelocity.z);
 
         if (isWallRight && state == MovementState.wallrunningright)
         {
@@ -739,7 +854,7 @@ public class PlayerMovement : MonoBehaviour
                 wallForward = -wallForward;
             }
 
-            rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
+            rb.AddForce((wallForward * wallRunForce) + runArc, ForceMode.Force);
             //Debug.Log("WallRight");
         }
 
@@ -753,7 +868,7 @@ public class PlayerMovement : MonoBehaviour
             {
                 wallForward = -wallForward;
             }
-            rb.AddForce(wallForward * wallRunForce + runArc, ForceMode.Force);
+            rb.AddForce((wallForward * wallRunForce) + runArc, ForceMode.Force);
             //Debug.Log("WallLeft");
         }
 
