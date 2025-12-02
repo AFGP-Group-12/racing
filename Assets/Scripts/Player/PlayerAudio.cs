@@ -32,7 +32,6 @@ public class PlayerAudio : MonoBehaviour
     public AudioClip jumpStart;
     public AudioClip landImpact;
 
-    // --- internals ---
     MovementState _state = MovementState.idle;
     float _speed;
     float _stepTimer;
