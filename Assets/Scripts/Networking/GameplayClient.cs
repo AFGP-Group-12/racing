@@ -28,7 +28,7 @@ public class GameplayClient : MonoBehaviour
     public MovementState CurrentState { get; set; }
 
     // Networking
-    private Vector3 MaxWorldBounds = new Vector3(100, 100, 100);
+    private Vector3 MaxWorldBounds = new Vector3(Int32.MaxValue / 100.0f, Int32.MaxValue / 100.0f, Int32.MaxValue / 100.0f);
     public BaseNetworkClient client = null;
     bool hasReceivedConnectionReply = false;
 
@@ -345,7 +345,7 @@ public class GameplayClient : MonoBehaviour
     {
         navmesh_data_m nav_mes = message.navmesh_data;
         const int positions_offset = 4;
-        const int scale = 1000;
+        const int scale = 100;
 
         generic_m p = new generic_m();
         
@@ -357,7 +357,7 @@ public class GameplayClient : MonoBehaviour
                 tmp[j] = message.bytes[positions_offset + i * position_sm.size + j];
             }
             p.from(tmp, position_sm.size);
-            Vector3 pos = Helpers.readPosition(p.position, new Vector3(scale, scale, scale));
+            Vector3 pos = Helpers.readPosition(p.position, MaxWorldBounds);
             navmeshnodes.Add(pos);
             navmeshtypes.Add(nav_mes.node_types[i]);
         }
