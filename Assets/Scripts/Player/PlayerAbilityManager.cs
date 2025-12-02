@@ -48,6 +48,9 @@ public class PlayerAbilityManager : MonoBehaviour
             emptyAbility,
             emptyAbility
         };
+        abilityList[0].abilityName = "Empty";
+        abilityList[1].abilityName = "Empty";
+        abilityList[2].abilityName = "Empty";
 
         abilityDurationList = new List<Coroutine>
         {
@@ -165,20 +168,34 @@ public class PlayerAbilityManager : MonoBehaviour
             return;
         }
 
-        if (abilityList[abilityIndex].abilityIndex == -1)
+        else if (abilityList[abilityIndex].abilityIndex == -1)
         {
-            abilityList[abilityIndex] = ability;
-            abilityList[abilityIndex].abilityIndex = abilityIndex;
-            abilityList[abilityIndex].OnInstantiate();
-            OnAbilityChanged?.Invoke(abilityIndex, abilityList[abilityIndex]);
-            abilityIndex += 1;
+            if(abilityList[0].abilityName.CompareTo(ability.abilityName) == 0 || abilityList[1].abilityName.CompareTo(ability.abilityName) == 0 || abilityList[2].abilityName.CompareTo(ability.abilityName) == 0)
+            {
+                Debug.Log("already have ability");
+            }
+            else
+            {
+                abilityList[abilityIndex] = ability;
+                abilityList[abilityIndex].abilityIndex = abilityIndex;
+                abilityList[abilityIndex].OnInstantiate();
+                OnAbilityChanged?.Invoke(abilityIndex, abilityList[abilityIndex]);
+                abilityIndex += 1;
+            }
         }
         else if(isChangeAbility)
         {
-            abilityList[abilityIndex] = ability;
-            abilityList[abilityIndex].abilityIndex = abilityIndex;
-            abilityList[abilityIndex].OnInstantiate();
-            OnAbilityChanged?.Invoke(abilityIndex, abilityList[abilityIndex]);
+            if(abilityList[0].abilityName.CompareTo(ability.abilityName) == 0 || abilityList[1].abilityName.CompareTo(ability.abilityName) == 0 || abilityList[2].abilityName.CompareTo(ability.abilityName) == 0)
+            {
+                Debug.Log("already have ability");
+            }
+            else
+            {
+                abilityList[abilityIndex] = ability;
+                abilityList[abilityIndex].abilityIndex = abilityIndex;
+                abilityList[abilityIndex].OnInstantiate();
+                OnAbilityChanged?.Invoke(abilityIndex, abilityList[abilityIndex]);
+            }
         }
     }
     public void debugAdd(Ability ability) // Delete this once done
