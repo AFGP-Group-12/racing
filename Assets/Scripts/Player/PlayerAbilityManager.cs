@@ -27,6 +27,7 @@ public class PlayerAbilityManager : MonoBehaviour
     public event Action<int> OnAbilityDurationStart;
     public event Action<int> OnAbilityDurationEnd;
     public event Action<int, Ability> OnAbilityChanged;
+    public event Action<int> OnIndexChange;
 
     #endregion Variables
 
@@ -61,7 +62,6 @@ public class PlayerAbilityManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        IndexCheck();
         AbilityPreviewUpdate();
         AbilityInUseUpdate();
     }
@@ -94,20 +94,11 @@ public class PlayerAbilityManager : MonoBehaviour
 
     #region Functions
 
-    void IndexCheck()
-    {
-        if (abilityIndex > 2)
-        {
-            abilityIndex = 0;
-        }
-        else if (abilityIndex < 0)
-        {
-            abilityIndex = 2;
-        }
-    }
     public void SwitchActiveIndex(int indexAdditive)
     {
         abilityIndex += indexAdditive;
+        abilityIndex = (int) Mathf.Repeat(abilityIndex, 3);
+        OnIndexChange?.Invoke(abilityIndex);
     }
 
     public void ChangeAbility(bool isChangeAbility)

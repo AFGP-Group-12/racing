@@ -54,8 +54,73 @@ public class PlayerUIController : MonoBehaviour
         abilityManager.OnAbilityCooldownEnd += EndCooldownVisual;
         abilityManager.OnAbilityDurationStart += StartDurationVisual;
         abilityManager.OnAbilityDurationEnd += EndDurationVisual;
+        abilityManager.OnIndexChange += MoveIndicator;
 
     }
+
+    private void MoveIndicator(int abilityIndex)
+    {
+        // This method can be implemented to move an indicator on the UI
+        // to show which ability is currently selected.
+        // Implementation depends on the specific UI design.
+        Color yellow = new Color(1f, 1f, 0f);
+        Color black = new Color(0f, 0f, 0f);
+        switch (abilityIndex)
+        {
+            case 0:
+                //if (abilitySlot1 != null)
+                //{
+                    abilitySlot1.style.borderTopColor = yellow;
+                    abilitySlot1.style.borderBottomColor = yellow;
+                    abilitySlot1.style.borderLeftColor = yellow;
+                    abilitySlot1.style.borderRightColor = yellow;
+                    abilitySlot2.style.borderTopColor = black;
+                    abilitySlot2.style.borderBottomColor = black;
+                    abilitySlot2.style.borderLeftColor = black;
+                    abilitySlot2.style.borderRightColor = black;
+                    abilitySlot3.style.borderTopColor = black;
+                    abilitySlot3.style.borderBottomColor = black;
+                    abilitySlot3.style.borderLeftColor = black;
+                    abilitySlot3.style.borderRightColor = black;
+                //}
+                break;
+            case 1:
+                //if (abilitySlot2 != null)
+                //{
+                    abilitySlot2.style.borderTopColor = yellow;
+                    abilitySlot2.style.borderBottomColor = yellow;
+                    abilitySlot2.style.borderLeftColor = yellow;
+                    abilitySlot2.style.borderRightColor = yellow;
+                abilitySlot1.style.borderTopColor = black;
+                abilitySlot1.style.borderBottomColor = black;
+                abilitySlot1.style.borderLeftColor = black;
+                abilitySlot1.style.borderRightColor = black;
+                abilitySlot3.style.borderTopColor = black;
+                abilitySlot3.style.borderBottomColor = black;
+                abilitySlot3.style.borderLeftColor = black;
+                abilitySlot3.style.borderRightColor = black;
+                //}
+                break;
+            case 2:
+                //if (abilitySlot3 != null)
+                //{
+                    abilitySlot3.style.borderTopColor = yellow;
+                    abilitySlot3.style.borderBottomColor = yellow;
+                    abilitySlot3.style.borderLeftColor = yellow;
+                    abilitySlot3.style.borderRightColor = yellow;
+                abilitySlot2.style.borderTopColor = black;
+                abilitySlot2.style.borderBottomColor = black;
+                abilitySlot2.style.borderLeftColor = black;
+                abilitySlot2.style.borderRightColor = black;
+                abilitySlot1.style.borderTopColor = black;
+                abilitySlot1.style.borderBottomColor = black;
+                abilitySlot1.style.borderLeftColor = black;
+                abilitySlot1.style.borderRightColor = black;
+                //}
+                break;
+        }
+
+        }
 
     void OnDestroy()
     {
@@ -67,6 +132,7 @@ public class PlayerUIController : MonoBehaviour
             abilityManager.OnAbilityCooldownEnd -= EndCooldownVisual;
             abilityManager.OnAbilityDurationStart -= StartDurationVisual;
             abilityManager.OnAbilityDurationEnd -= EndDurationVisual;
+            abilityManager.OnIndexChange -= MoveIndicator;
         }
     }
 
@@ -111,12 +177,15 @@ public class PlayerUIController : MonoBehaviour
         equippedAbilities[abilityIndex] = ability;
 
         Sprite icon = ability.icon;
+        Color yellow = new Color(1f, 1f, 0f);
 
         switch (abilityIndex)
         {
             case 0:
                 if (abilityIcon1 != null)
+
                     abilityIcon1.sprite = icon;
+      
                 break;
             case 1:
                 if (abilityIcon2 != null)
@@ -180,72 +249,72 @@ public class PlayerUIController : MonoBehaviour
     {
         // Change the ability slot border color to yellow when ability is active
         Color yellow = new Color(1f, 1f, 0f);
-        switch (abilityIndex)
-        {
-            case 0:
-                if (abilitySlot1 != null)
-                {
-                    abilitySlot1.style.borderTopColor = yellow;
-                    abilitySlot1.style.borderBottomColor = yellow;
-                    abilitySlot1.style.borderLeftColor = yellow;
-                    abilitySlot1.style.borderRightColor = yellow;
-                }
-                break;
-            case 1:
-                if (abilitySlot2 != null)
-                {
-                    abilitySlot2.style.borderTopColor = yellow;
-                    abilitySlot2.style.borderBottomColor = yellow;
-                    abilitySlot2.style.borderLeftColor = yellow;
-                    abilitySlot2.style.borderRightColor = yellow;
-                }
-                break;
-            case 2:
-                if (abilitySlot3 != null)
-                {
-                    abilitySlot3.style.borderTopColor = yellow;
-                    abilitySlot3.style.borderBottomColor = yellow;
-                    abilitySlot3.style.borderLeftColor = yellow;
-                    abilitySlot3.style.borderRightColor = yellow;
-                }
-                break;
-        }
+        //switch (abilityIndex)
+        //{
+        //    case 0:
+        //        if (abilitySlot1 != null)
+        //        {
+        //            abilitySlot1.style.borderTopColor = yellow;
+        //            abilitySlot1.style.borderBottomColor = yellow;
+        //            abilitySlot1.style.borderLeftColor = yellow;
+        //            abilitySlot1.style.borderRightColor = yellow;
+        //        }
+        //        break;
+        //    case 1:
+        //        if (abilitySlot2 != null)
+        //        {
+        //            abilitySlot2.style.borderTopColor = yellow;
+        //            abilitySlot2.style.borderBottomColor = yellow;
+        //            abilitySlot2.style.borderLeftColor = yellow;
+        //            abilitySlot2.style.borderRightColor = yellow;
+        //        }
+        //        break;
+        //    case 2:
+        //        if (abilitySlot3 != null)
+        //        {
+        //            abilitySlot3.style.borderTopColor = yellow;
+        //            abilitySlot3.style.borderBottomColor = yellow;
+        //            abilitySlot3.style.borderLeftColor = yellow;
+        //            abilitySlot3.style.borderRightColor = yellow;
+        //        }
+        //        break;
+        //}
     }
 
     private void EndDurationVisual(int abilityIndex)
     {
         // Reset the ability slot border color back to black when duration ends
         Color black = new Color(0f, 0f, 0f);
-        switch (abilityIndex)
-        {
-            case 0:
-                if (abilitySlot1 != null)
-                {
-                    abilitySlot1.style.borderTopColor = black;
-                    abilitySlot1.style.borderBottomColor = black;
-                    abilitySlot1.style.borderLeftColor = black;
-                    abilitySlot1.style.borderRightColor = black;
-                }
-                break;
-            case 1:
-                if (abilitySlot2 != null)
-                {
-                    abilitySlot2.style.borderTopColor = black;
-                    abilitySlot2.style.borderBottomColor = black;
-                    abilitySlot2.style.borderLeftColor = black;
-                    abilitySlot2.style.borderRightColor = black;
-                }
-                break;
-            case 2:
-                if (abilitySlot3 != null)
-                {
-                    abilitySlot3.style.borderTopColor = black;
-                    abilitySlot3.style.borderBottomColor = black;
-                    abilitySlot3.style.borderLeftColor = black;
-                    abilitySlot3.style.borderRightColor = black;
-                }
-                break;
-        }
+        //switch (abilityIndex)
+        //{
+        //    case 0:
+        //        if (abilitySlot1 != null)
+        //        {
+        //            abilitySlot1.style.borderTopColor = black;
+        //            abilitySlot1.style.borderBottomColor = black;
+        //            abilitySlot1.style.borderLeftColor = black;
+        //            abilitySlot1.style.borderRightColor = black;
+        //        }
+        //        break;
+        //    case 1:
+        //        if (abilitySlot2 != null)
+        //        {
+        //            abilitySlot2.style.borderTopColor = black;
+        //            abilitySlot2.style.borderBottomColor = black;
+        //            abilitySlot2.style.borderLeftColor = black;
+        //            abilitySlot2.style.borderRightColor = black;
+        //        }
+        //        break;
+        //    case 2:
+        //        if (abilitySlot3 != null)
+        //        {
+        //            abilitySlot3.style.borderTopColor = black;
+        //            abilitySlot3.style.borderBottomColor = black;
+        //            abilitySlot3.style.borderLeftColor = black;
+        //            abilitySlot3.style.borderRightColor = black;
+        //        }
+        //        break;
+        //}
     }
 
     private IEnumerator AnimateCooldown(VisualElement overlay, float duration)
