@@ -1,0 +1,72 @@
+{
+  version: 2,
+  mediaFileName: 'footstepmega.wav',
+  cutSegments: [
+    {
+      start: 0,
+      end: 0.247434,
+      name: '',
+      selected: true,
+    },
+    {
+      start: 0.270159,
+      end: 0.550856,
+      name: '',
+      selected: true,
+    },
+    {
+      start: 0.550856,
+      end: 0.891646,
+      name: '',
+      selected: true,
+    },
+    {
+      start: 0.891646,
+      end: 1.230371,
+      name: '',
+      selected: true,
+    },
+    {
+      start: 1.230371,
+      end: 1.573271,
+      name: '',
+      selected: true,
+    },
+    {
+      start: 1.573271,
+      end: 1.86305,
+      name: '',
+      selected: true,
+    },
+    {
+      start: 1.86305,
+      end: 2.158154,
+      name: '',
+      selected: true,
+    },
+    {
+      start: 2.158154,
+      end: 2.493594,
+      name: '',
+      selected: true,
+    },
+    {
+      start: 2.493594,
+      end: 2.918057,
+      name: '',
+      selected: true,
+    },
+    {
+      start: 2.918057,
+      end: 3.249407,
+      name: '',
+      selected: true,
+    },
+    {
+      start: 3.249407,
+      end: 3.512502,
+      name: '',
+      selected: true,
+    },
+  ],
+}
