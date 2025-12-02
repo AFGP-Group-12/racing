@@ -16,6 +16,7 @@ public class DeathboxHandler : MonoBehaviour
     {
         // OnPlayerDeath?.Invoke(levelIndex);
         transform.SetPositionAndRotation(respawnPoint.position, respawnPoint.rotation);
+        GetComponent<Rigidbody>().linearVelocity = Vector3.zero;
     }
 
     public void HandleLevelComplete(int levelIndex)
