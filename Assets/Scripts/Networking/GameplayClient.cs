@@ -162,6 +162,13 @@ public class GameplayClient : MonoBehaviour
         player = GameObject.Find("Player");
         mainCamera = GameObject.Find("Main Camera");
 
+        player.SetActive(false);
+
+        yield return new WaitForSeconds(0.1f);
+
+        player.SetActive(true);
+
+
         StartCoroutine(SendPeriodicMessageCoroutine());
     }
 
@@ -314,8 +321,15 @@ public class GameplayClient : MonoBehaviour
             playerById.Remove(id);
         }
         string othername = LobbyClient.instance.GetPlayerName(id);
-        if (othername != "404")
-            playerById[id] = new OtherPlayer(otherPlayerPrefab, othername, mainCamera.GetComponent<Camera>(), id);
+
+        if (othername == "404")
+        {
+            othername = "bot_" + UnityEngine.Random.Range(1000, 9999);
+        }
+
+        //if (othername != "404")
+        playerById[id] = new OtherPlayer(otherPlayerPrefab, othername, mainCamera.GetComponent<Camera>(), id);
+        Debug.Log("Player Joined: " + othername + " with id: " + id);
     }
     private void OnPlayerLeave(int id, string username)
     {
