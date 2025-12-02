@@ -345,7 +345,6 @@ public class GameplayClient : MonoBehaviour
     {
         navmesh_data_m nav_mes = message.navmesh_data;
         const int positions_offset = 4;
-        const int scale = 100;
 
         generic_m p = new generic_m();
         
