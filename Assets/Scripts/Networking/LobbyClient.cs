@@ -40,6 +40,7 @@ public class LobbyClient : MonoBehaviour
     int currentHost = -1;
 
     bool gameStarted = false;
+    private int botCount = 0;
 
     private void Awake()
     {
@@ -270,6 +271,11 @@ public class LobbyClient : MonoBehaviour
         OnPlayerLeaveLobby.Invoke(player_username);
     }
 
+    public void SetBots(int botCount)
+    {
+        this.botCount = botCount;
+    }
+
     public unsafe void StartGame()
     {
         if (gameStarted) return;
@@ -277,6 +283,7 @@ public class LobbyClient : MonoBehaviour
         racing_lobby_action_m message;
         message.type = (ushort)message_t.racing_lobby_action;
         message.action = 5;
+        message.ping = (ushort)botCount;
         client.SendDataTcp(message.bytes, racing_lobby_action_m.size);
         gameStarted = true;
     }

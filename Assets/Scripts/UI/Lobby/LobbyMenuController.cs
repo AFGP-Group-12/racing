@@ -81,6 +81,8 @@ public class LobbyMenuController : MonoBehaviour
         if (botCountLabel != null)
         {
             botCountLabel.text = botCount.ToString();
+            if (LobbyClient.instance != null) LobbyClient.instance.SetBots(botCount);
+            UpdateStartGameButton();
         }
     }
 
@@ -235,6 +237,6 @@ public class LobbyMenuController : MonoBehaviour
     }
     private void UpdateStartGameButton()
     {
-        startGameButton.SetEnabled(isHost && playerCount > 1);
+        startGameButton.SetEnabled(isHost && (playerCount + botCount) > 1);
     }
 }
