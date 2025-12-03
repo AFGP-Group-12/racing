@@ -64,7 +64,7 @@ public class Dash : Ability
 
         if (canAbility)
         {
-            stateHandler.isDashing = true;
+            //stateHandler.isDashing = true;
             rb.useGravity = false;
 
             rb.linearVelocity = new Vector3(rb.linearVelocity.x, 0, rb.linearVelocity.z);
@@ -114,7 +114,7 @@ public class Dash : Ability
         visualScript.StopScreenShake();
         rb.useGravity = true;
         usingAbility = false;
-        stateHandler.isDashing = false;
+        //stateHandler.isDashing = false;
 
         abilityManager.StartAbilityCooldown(abilityIndex, cooldown);
     }
