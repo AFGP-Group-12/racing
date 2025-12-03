@@ -127,10 +127,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1623561593}
     m_Modifications:
-    - target: {fileID: 1606015225994084181, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 8a658f8647621f74486fea59997b28ee, type: 2}
     - target: {fileID: 6828810965219891885, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
       propertyPath: m_Name
       value: Ground (33)
@@ -898,10 +894,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1623561593}
     m_Modifications:
-    - target: {fileID: 1606015225994084181, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 8a658f8647621f74486fea59997b28ee, type: 2}
     - target: {fileID: 6828810965219891885, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
       propertyPath: m_Name
       value: Ground (4)
@@ -1450,10 +1442,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1623561593}
     m_Modifications:
-    - target: {fileID: 1606015225994084181, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 8a658f8647621f74486fea59997b28ee, type: 2}
     - target: {fileID: 6828810965219891885, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
       propertyPath: m_Name
       value: Ground (3)
@@ -3170,6 +3158,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cc2b14c94bb968042bddebb60c55b389, type: 3}
+--- !u!1 &1065984329
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1065984331}
+  - component: {fileID: 1065984330}
+  m_Layer: 0
+  m_Name: LevelInfo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1065984330
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065984329}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a9eb85f25bdc44793bf903ddc451ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicPath: Audio/Music/Waiting
+--- !u!4 &1065984331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1065984329}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 51.01124, y: -8.9635315, z: 2.9972055}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &1115832667 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2000609202079375345, guid: 95c95ef8d0c2722439fa4612eb9448e4, type: 3}
@@ -3427,10 +3460,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1623561593}
     m_Modifications:
-    - target: {fileID: 1606015225994084181, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 8a658f8647621f74486fea59997b28ee, type: 2}
     - target: {fileID: 6828810965219891885, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
       propertyPath: m_Name
       value: Ground (2)
@@ -4284,10 +4313,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1623561593}
     m_Modifications:
-    - target: {fileID: 1606015225994084181, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 8a658f8647621f74486fea59997b28ee, type: 2}
     - target: {fileID: 6828810965219891885, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
       propertyPath: m_Name
       value: Ground (32)
@@ -6512,10 +6537,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1623561593}
     m_Modifications:
-    - target: {fileID: 1606015225994084181, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: 8a658f8647621f74486fea59997b28ee, type: 2}
     - target: {fileID: 6828810965219891885, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
       propertyPath: m_Name
       value: Ground
@@ -6614,3 +6635,4 @@ SceneRoots:
   - {fileID: 1181745986}
   - {fileID: 129939376}
   - {fileID: 1518143865}
+  - {fileID: 1065984331}

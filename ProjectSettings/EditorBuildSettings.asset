@@ -8,7 +8,7 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/MainScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/MainMenuNetworkingTest.unity
     guid: 13c9b46657451964fafcf00cb83bec90
   - enabled: 0
@@ -17,12 +17,24 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/Test Scenes/DashTestScene.unity
     guid: 19294ec49f6f51d40940cf649937af23
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/PlaytestScene.unity
     guid: 3ae1cabf1ee4c844fb6949d8cfa05c4b
   - enabled: 1
+    path: Assets/Scenes/ActualLevels/MainMenuREAL.unity
+    guid: 2cb4e569ea736e24c8d5dea519d55805
+  - enabled: 1
     path: Assets/Scenes/ActualLevels/Set1Level1.unity
     guid: c8683ab6dc0a28a4d900c7f17743e679
+  - enabled: 1
+    path: Assets/Scenes/ActualLevels/Set1Level2.unity
+    guid: c59b36943256eda4c86a8aff8073d060
+  - enabled: 1
+    path: Assets/Scenes/ActualLevels/Set1Level3.unity
+    guid: cf5f3e5e26b613c43ace8015ee029b03
+  - enabled: 1
+    path: Assets/Scenes/ActualLevels/Tutorial2.unity
+    guid: 4da656a64a4c680438b48f623052af7b
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

@@ -13,17 +13,81 @@ public class ScribbleBorderSimple : MonoBehaviour
     public Color inkColor = new Color(0.12f, 0.12f, 0.12f, 1f);
     public float jitterAmplitude = 4f;
 
-    private VisualElement target;
+    private readonly List<VisualElement> subscribedElements = new();
 
     void Awake()
     {
-        if (!uiDocument) uiDocument = GetComponent<UIDocument>();
+        if (!uiDocument)
+            uiDocument = GetComponent<UIDocument>();
+    }
+
+    void OnEnable()
+    {
+        RegisterPanelCallbacks();
+        TryBindTargets();
+    }
+
+    void OnDisable()
+    {
+        UnregisterPanelCallbacks();
+        UnbindTargets();
+    }
+
+    private void RegisterPanelCallbacks()
+    {
+        if (uiDocument == null || uiDocument.rootVisualElement == null) return;
+
         var root = uiDocument.rootVisualElement;
+        root.RegisterCallback<AttachToPanelEvent>(OnPanelAttached);
+        root.RegisterCallback<DetachFromPanelEvent>(OnPanelDetached);
+    }
+
+    private void UnregisterPanelCallbacks()
+    {
+        if (uiDocument == null || uiDocument.rootVisualElement == null) return;
+
+        var root = uiDocument.rootVisualElement;
+        root.UnregisterCallback<AttachToPanelEvent>(OnPanelAttached);
+        root.UnregisterCallback<DetachFromPanelEvent>(OnPanelDetached);
+    }
+
+    private void OnPanelAttached(AttachToPanelEvent evt)
+    {
+        TryBindTargets();
+    }
+
+    private void OnPanelDetached(DetachFromPanelEvent evt)
+    {
+        UnbindTargets();
+    }
+
+    private void TryBindTargets()
+    {
+        if (uiDocument == null) return;
+
+        var root = uiDocument.rootVisualElement;
+        if (root == null || root.panel == null) return;
+
+
+        UnbindTargets();
+
         foreach (var name in targetElementName)
         {
             var t = root.Q<VisualElement>(name);
-            if (t != null) t.generateVisualContent += PaintMarkerThick;
+            if (t == null) continue;
+
+            t.generateVisualContent += PaintMarkerThick;
+            subscribedElements.Add(t);
         }
+    }
+
+    private void UnbindTargets()
+    {
+        foreach (var element in subscribedElements)
+            if (element != null)
+                element.generateVisualContent -= PaintMarkerThick;
+
+        subscribedElements.Clear();
     }
 
     private void PaintMarkerThick(MeshGenerationContext ctx)

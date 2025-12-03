@@ -46,20 +46,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteSetsList:
-  - state: 8
+  - state: 9
     spriteSet: {fileID: 11400000, guid: 693dbf50fea05a44ea059df9bc71e96b, type: 2}
-  - state: 0
-    spriteSet: {fileID: 11400000, guid: d29f5f7ab29de4531a40b04715c1ddc7, type: 2}
   - state: 1
-    spriteSet: {fileID: 11400000, guid: d29f5f7ab29de4531a40b04715c1ddc7, type: 2}
+    spriteSet: {fileID: 11400000, guid: 1730bc7751b3fcd4f9646260a2c42ba6, type: 2}
   - state: 5
-    spriteSet: {fileID: 11400000, guid: 3063d2f170f4342589c05a3f5044e0e5, type: 2}
-  - state: 4
     spriteSet: {fileID: 11400000, guid: 322166cfd4179fe42880a0fdb7afaf8f, type: 2}
+  - state: 4
+    spriteSet: {fileID: 11400000, guid: 3063d2f170f4342589c05a3f5044e0e5, type: 2}
   - state: 3
     spriteSet: {fileID: 11400000, guid: b9f1c428b59e35142b3437deee27f82f, type: 2}
   - state: 2
     spriteSet: {fileID: 11400000, guid: b2ccb497cd87798498077bfe7ccf9b92, type: 2}
+  - state: 0
+    spriteSet: {fileID: 11400000, guid: d29f5f7ab29de4531a40b04715c1ddc7, type: 2}
+  - state: 6
+    spriteSet: {fileID: 11400000, guid: 3063d2f170f4342589c05a3f5044e0e5, type: 2}
+  - state: 8
+    spriteSet: {fileID: 11400000, guid: 95460dff5b249674dae554186df38dd4, type: 2}
+  - state: 7
+    spriteSet: {fileID: 11400000, guid: 095a2f8d38c617e4682eaff04c02f7f2, type: 2}
   targetRenderer: {fileID: 4878177146054576323}
   viewer: {fileID: 0}
   playerStateHandler: {fileID: 0}

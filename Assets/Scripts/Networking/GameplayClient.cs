@@ -28,7 +28,7 @@ public class GameplayClient : MonoBehaviour
     public MovementState CurrentState { get; set; }
 
     // Networking
-    private Vector3 MaxWorldBounds = new Vector3(100, 100, 100);
+    private Vector3 MaxWorldBounds = new Vector3(Int32.MaxValue / 100.0f, Int32.MaxValue / 100.0f, Int32.MaxValue / 100.0f);
     public BaseNetworkClient client = null;
     bool hasReceivedConnectionReply = false;
 
@@ -82,8 +82,8 @@ public class GameplayClient : MonoBehaviour
                     HandleRecievedPlayerMovement(message.movement_reply);
                     break;
                 case message_t.racing_game_start:
-                    Debug.Log("Game Start!");
-                    StartCoroutine(LoadGameScene());
+                    Debug.Log("Game Start! Level: " + message.racing_game_start.level);
+                    StartCoroutine(LoadGameScene(message.racing_game_start.level));
                     break;
                 case message_t.racing_ability_action:
                     HandleRecievedAbilityAction(message.racing_ability_action);
@@ -124,7 +124,12 @@ public class GameplayClient : MonoBehaviour
         }
     }
 
-    public IEnumerator LoadSceneSinglePlayer(string scene)
+    public void LoadSceneSinglePlayer(string scene)
+    {
+        StartCoroutine(LoadSceneSinglePlayerRoutine(scene));
+    }
+
+    private static IEnumerator LoadSceneSinglePlayerRoutine(string scene)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scene);
 
@@ -139,16 +144,41 @@ public class GameplayClient : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         player = GameObject.Find("Player");
+
+        player.SetActive(false);
+
+        yield return new WaitForSeconds(0.1f);
+
+        player.SetActive(true);
     }
 
-    IEnumerator LoadGameScene()
+    IEnumerator LoadGameScene(int level)
     {
         // The Application loads the Scene in the background as the current Scene runs.
         // This is particularly good for creating loading screens.
         // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
         // a sceneBuildIndex of 1 as shown in Build Settings.
 
-        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync("Set1Level1");
+        
+        StopCoroutine(SendPeriodicMessageCoroutine());
+
+        string sceneName = "Set1Level1";
+        switch (level)
+        {
+            case 0:
+                sceneName = "Set1Level1";
+                break;
+            case 1:
+                sceneName = "Set1Level2";
+                break;
+            case 2:
+                sceneName = "Set1Level3";
+                break;
+            default:
+                sceneName = "Set1Level1";
+                break;
+        }
+        AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(sceneName);
 
         // Wait until the asynchronous scene fully loads
         while (!asyncLoad.isDone)
@@ -167,7 +197,6 @@ public class GameplayClient : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         player.SetActive(true);
-
 
         StartCoroutine(SendPeriodicMessageCoroutine());
     }
@@ -345,7 +374,6 @@ public class GameplayClient : MonoBehaviour
     {
         navmesh_data_m nav_mes = message.navmesh_data;
         const int positions_offset = 4;
-        const int scale = 1000;
 
         generic_m p = new generic_m();
         
@@ -357,9 +385,23 @@ public class GameplayClient : MonoBehaviour
                 tmp[j] = message.bytes[positions_offset + i * position_sm.size + j];
             }
             p.from(tmp, position_sm.size);
-            Vector3 pos = Helpers.readPosition(p.position, new Vector3(scale, scale, scale));
+            Vector3 pos = Helpers.readPosition(p.position, MaxWorldBounds);
             navmeshnodes.Add(pos);
             navmeshtypes.Add(nav_mes.node_types[i]);
         }
+    }
+
+    public int GetPlayerCount()
+    {
+        return playerById.Count;
+    }
+    public unsafe void PlayerReachedEndPoint()
+    {
+        Debug.Log("Notifying server of reaching endpoint");
+        if (client == null) return;
+        racing_game_reach_checkpoint_m m;
+        m.type = (UInt16)message_t.racing_game_reach_checkpoint;
+
+        client.SendDataTcp(m.bytes, racing_game_reach_checkpoint_m.size);
     }
 }

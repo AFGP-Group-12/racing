@@ -82,8 +82,6 @@ public class MainMenuController : MonoBehaviour
             if (evt.keyCode == KeyCode.Escape && !optionsOverlay.ClassListContains("hidden"))
                 HideOptions();
         });
-
-        TestSubscribeEvents();
     }
 
     public void Start()
@@ -126,8 +124,7 @@ public class MainMenuController : MonoBehaviour
 
         tutorialButton.clicked += () =>
         {
-            StartCoroutine(GameplayClient.instance.LoadSceneSinglePlayer("BasicMovementTestScene"));
-            Debug.Log("Tutorial Button Pressed");
+            GameplayClient.instance.LoadSceneSinglePlayer("Tutorial2");
         };
     }
 
@@ -153,13 +150,5 @@ public class MainMenuController : MonoBehaviour
     private void HideOptions()
     {
         optionsController.Hide();
-    }
-
-    public void TestSubscribeEvents()
-    {
-        OnCreateLobbyPressed += () => Debug.Log("Create Lobby button pressed (test)");
-        OnJoinLobbyPressed += () => Debug.Log("Join Lobby button pressed (test)");
-        OnOptionsPressed += () => Debug.Log("Options button pressed (test)");
-        OnExitGamePressed += () => Debug.Log("Exit Game button pressed (test)");
     }
 }
