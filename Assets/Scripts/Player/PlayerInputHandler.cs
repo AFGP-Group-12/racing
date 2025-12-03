@@ -26,6 +26,27 @@ public class PlayerInputHandler : MonoBehaviour
 
     private UIDocument playerUI;
     private VisualElement pauseMenuOverlay;
+    private bool uiInitialized;
+
+    void Awake()
+    {
+        if (playerUI == null)
+        {
+            playerUI = GetComponent<UIDocument>();
+        }
+    }
+
+    void OnEnable()
+    {
+        RegisterPanelCallbacks();
+        TryInitializePauseOverlay();
+    }
+
+    void OnDisable()
+    {
+        ResetPauseOverlayReference();
+        UnregisterPanelCallbacks();
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -39,19 +60,8 @@ public class PlayerInputHandler : MonoBehaviour
         stateHandler = contextScript.stateHandler;
         abilityManager = contextScript.abilityManager;
 
-        // Get the UI Document and pause menu overlay
-        playerUI = GetComponent<UIDocument>();
-        if (playerUI != null)
-        {
-            var root = playerUI.rootVisualElement;
-            pauseMenuOverlay = root.Q<VisualElement>("PauseMenuOverlay");
-
-            // Ensure pause menu starts hidden
-            if (pauseMenuOverlay != null && !pauseMenuOverlay.ClassListContains("hidden"))
-            {
-                pauseMenuOverlay.AddToClassList("hidden");
-            }
-        }
+        // Ensure overlay reference exists even if Start runs before OnEnable initialization
+        TryInitializePauseOverlay();
 
         // Start in Player action map
         input.SwitchCurrentActionMap("Player");
@@ -258,4 +268,52 @@ public class PlayerInputHandler : MonoBehaviour
     }
 
     #endregion Input Functions
+
+    private void RegisterPanelCallbacks()
+    {
+        if (playerUI == null || playerUI.rootVisualElement == null) return;
+
+        var root = playerUI.rootVisualElement;
+        root.RegisterCallback<AttachToPanelEvent>(OnPanelAttached);
+        root.RegisterCallback<DetachFromPanelEvent>(OnPanelDetached);
+    }
+
+    private void UnregisterPanelCallbacks()
+    {
+        if (playerUI == null || playerUI.rootVisualElement == null) return;
+
+        var root = playerUI.rootVisualElement;
+        root.UnregisterCallback<AttachToPanelEvent>(OnPanelAttached);
+        root.UnregisterCallback<DetachFromPanelEvent>(OnPanelDetached);
+    }
+
+    private void OnPanelAttached(AttachToPanelEvent evt)
+    {
+        TryInitializePauseOverlay();
+    }
+
+    private void OnPanelDetached(DetachFromPanelEvent evt)
+    {
+        ResetPauseOverlayReference();
+    }
+
+    private void TryInitializePauseOverlay()
+    {
+        if (uiInitialized || playerUI == null) return;
+        var root = playerUI.rootVisualElement;
+        if (root == null || root.panel == null) return;
+
+        pauseMenuOverlay = root.Q<VisualElement>("PauseMenuOverlay");
+
+        if (pauseMenuOverlay != null && !pauseMenuOverlay.ClassListContains("hidden"))
+            pauseMenuOverlay.AddToClassList("hidden");
+
+        uiInitialized = true;
+    }
+
+    private void ResetPauseOverlayReference()
+    {
+        uiInitialized = false;
+        pauseMenuOverlay = null;
+    }
 }

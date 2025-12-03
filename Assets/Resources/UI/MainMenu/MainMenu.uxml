@@ -12,7 +12,7 @@
             <ui:Label text="HAYWIRE" name="title" class="title" />
             <ui:GroupBox name="buttonBox" class="button-box">
                 <ui:Button name="tutorialButton" selectable="false" double-click-selects-word="false" class="mainbutton">
-                    <ui:Label text="TEST" class="wobble-text" />
+                    <ui:Label text="TUTORIAL" class="wobble-text" />
                 </ui:Button>
                 <ui:Button name="joinLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
                     <ui:Label text="JOIN" class="wobble-text" />
@@ -163,9 +163,19 @@
                 <ui:VisualElement name="mapSelectionBox" style="flex-grow: 1; background-color: rgba(255, 255, 255, 0); width: 100%; height: 57%; align-items: center; align-self: auto; flex-basis: 0; position: absolute;">
                     <ui:VisualElement style="flex-grow: 1; top: 30px; position: absolute; background-color: rgb(205, 125, 125); height: 400px; width: 1000px;" />
                     <ui:GroupBox style="top: 415px; flex-direction: row;">
-                        <ui:Button text="&lt;-" style="background-color: rgba(255, 255, 255, 0); font-size: 41px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
-                        <ui:Label text="MAPNAME" style="top: 0; position: relative; font-size: 41px; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;); -unity-text-align: middle-center;" />
-                        <ui:Button text="-&gt;" style="background-color: rgba(255, 255, 255, 0); font-size: 41px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                        <ui:Button text="&lt;-" class="hidden" style="background-color: rgba(255, 255, 255, 0); font-size: 41px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                        <ui:Label text="LABRATORY" style="top: 0; position: relative; font-size: 41px; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;); -unity-text-align: middle-center;" />
+                        <ui:Button text="-&gt;" class="hidden" style="background-color: rgba(255, 255, 255, 0); font-size: 41px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                    </ui:GroupBox>
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 1; width: 100%; height: 43%; position: absolute; top: 494px;">
+                    <ui:GroupBox style="width: 50%; height: 100%;">
+                        <ui:Label text="NUMBER OF BOTS" style="top: 0; position: relative; font-size: 41px; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;); -unity-text-align: middle-center;" />
+                        <ui:GroupBox name="numBotsBox" style="flex-direction: row; justify-content: center; align-self: center; top: -32px;">
+                            <ui:Button text="&lt;-" name="lessBotsButton" style="background-color: rgba(255, 255, 255, 0); font-size: 41px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                            <ui:Label text="3" name="botCountLabel" style="top: 0; position: relative; font-size: 41px; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;); -unity-text-align: middle-center;" />
+                            <ui:Button text="-&gt;" name="moreBotsButton" style="background-color: rgba(255, 255, 255, 0); font-size: 41px; border-top-width: 0; border-right-width: 0; border-bottom-width: 0; border-left-width: 0; -unity-font-definition: resource(&apos;UI/Fonts/PatrickHand-Regular&apos;);" />
+                        </ui:GroupBox>
                     </ui:GroupBox>
                 </ui:VisualElement>
             </ui:GroupBox>

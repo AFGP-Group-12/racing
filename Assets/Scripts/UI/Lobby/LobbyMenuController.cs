@@ -12,11 +12,15 @@ public class LobbyMenuController : MonoBehaviour
     private Label playerCountLabel;
     private Label lobbyNameLabel;
     private Label joinCodeLabel;
+    private Label botCountLabel;
 
     private Button exitLobbyButton;
     private Button startGameButton;
+    private Button moreBotsButton;
+    private Button lessBotsButton;
 
     private int playerCount = 0;
+    public int botCount = 0;
     private Dictionary<string, int> index_by_username = new Dictionary<string, int>();
     private string host = "";
     private bool isHost = false;
@@ -35,12 +39,16 @@ public class LobbyMenuController : MonoBehaviour
         playerCountLabel = root.Q<Label>("playerCountLabel");
         lobbyNameLabel = root.Q<Label>("lobbyNameLabel");
         joinCodeLabel = root.Q<Label>("joinCodeLabel");
+        botCountLabel = root.Q<Label>("botCountLabel");
 
         exitLobbyButton = root.Q<Button>("exitLobbyButton");
         startGameButton = root.Q<Button>("startGameButton");
+        moreBotsButton = root.Q<Button>("moreBotsButton");
+        lessBotsButton = root.Q<Button>("lessBotsButton");
 
         ClearPlayers();
         UpdateStartGameButton();
+        UpdateBotCountUI();
     }
 
     public void Start()
@@ -50,11 +58,68 @@ public class LobbyMenuController : MonoBehaviour
         exitLobbyButton.clicked += LobbyClient.instance.LeaveLobby;
         exitLobbyButton.clicked += ClearPlayers;
 
+        // Wire bot buttons if present
+        if (moreBotsButton != null) moreBotsButton.clicked += OnMoreBots;
+        if (lessBotsButton != null) lessBotsButton.clicked += OnLessBots;
+
         LobbyClient.instance.OnPlayerJoinLobby += OnPlayerJoin;
         LobbyClient.instance.OnPlayerLeaveLobby += OnPlayerLeave;
         LobbyClient.instance.SetPlayerPing += SetPlayerPing;
         LobbyClient.instance.SetLobbyCode += SetLobbyCode;
         LobbyClient.instance.UpdateHost += SetHost;
+    }
+
+    private int MaxBots()
+    {
+        // Maximum bots is 4 - playerCount, minimum 0
+        int max = 4 - playerCount;
+        return Mathf.Clamp(max, 0, 4);
+    }
+
+    private void UpdateBotCountUI()
+    {
+        if (botCountLabel != null)
+        {
+            botCountLabel.text = botCount.ToString();
+        }
+    }
+
+    private void ClampBotsToMax()
+    {
+        int max = MaxBots();
+        if (botCount > max)
+        {
+            botCount = max;
+            UpdateBotCountUI();
+        }
+    }
+
+    private void OnMoreBots()
+    {
+        int max = MaxBots();
+        if (max <= 0)
+        {
+            botCount = 0;
+            UpdateBotCountUI();
+            return;
+        }
+        // Increment with wrap-around from max to 0
+        botCount = (botCount + 1) > max ? 0 : (botCount + 1);
+        UpdateBotCountUI();
+    }
+
+    private void OnLessBots()
+    {
+        int max = MaxBots();
+        if (max <= 0)
+        {
+            botCount = 0;
+            UpdateBotCountUI();
+            return;
+        }
+        // Decrement with wrap-around from 0 to max
+        botCount = (botCount - 1) < 0 ? max : (botCount - 1);
+        UpdateBotCountUI();
     }
 
     private void SetPlayerPing(int ping_ms, string username)
@@ -73,6 +138,7 @@ public class LobbyMenuController : MonoBehaviour
         }
         index_by_username.Clear();
         playerCount = 0;
+        ClampBotsToMax();
         SetHost("", false);
     }
 
@@ -81,6 +147,10 @@ public class LobbyMenuController : MonoBehaviour
         index_by_username[username] = playerCount;
         UpdatePlayerName(username, playerCount++);
         playerCountLabel.text = playerCount.ToString() + "/4";
+
+        // Ensure bots do not exceed new max when a player joins
+        ClampBotsToMax();
+        UpdateBotCountUI();
 
         UpdateStartGameButton();
     }
@@ -106,6 +176,11 @@ public class LobbyMenuController : MonoBehaviour
 
         playerCountLabel.text = playerCount.ToString() + "/4";
         index_by_username.Remove(username);
+
+        // Player left, max bots may increase; keep current botCount as is
+        // but still ensure clamp (in case we were at 0 max)
+        ClampBotsToMax();
+        UpdateBotCountUI();
 
         UpdateStartGameButton();
     }

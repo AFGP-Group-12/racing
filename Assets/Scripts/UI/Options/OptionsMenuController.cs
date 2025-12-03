@@ -79,12 +79,17 @@ public class OptionsMenuController : MonoBehaviour
         closeButton.clicked += () => optionsOverlay.AddToClassList("hidden");
     }
 
+    void Start()
+    {
+        ApplySavedVolumes();
+    }
+
     // Called by MainMenuController when opening
     public void Show()
     {
         optionsOverlay.RemoveFromClassList("hidden");
-        LoadSavedIntoUI();  // refresh UI to saved
-        ApplySavedVolumes(); // ensure engine matches saved
+        LoadSavedIntoUI(); 
+        ApplySavedVolumes(); 
         applyButton.Focus();
     }
 

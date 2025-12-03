@@ -2198,6 +2198,51 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eca824619976ed14dab60f081dff28a1, type: 3}
+--- !u!1 &71506354
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 71506356}
+  - component: {fileID: 71506355}
+  m_Layer: 0
+  m_Name: LevelInfo
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &71506355
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71506354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 91a9eb85f25bdc44793bf903ddc451ad, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  musicPath: Audio/Music/Track2
+--- !u!4 &71506356
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 71506354}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 51.01124, y: -8.9635315, z: 2.9972055}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &71572469
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -48929,14 +48974,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 2944645000193119512, guid: 1be35a6acaa39a14b98b36a4d0f267f7, type: 3}
-      propertyPath: 'm_Materials.Array.data[0]'
-      value: 
-      objectReference: {fileID: 2100000, guid: c7ab3a098e9bd4a418a6aee3f7f88dea, type: 2}
     - target: {fileID: 1690446495108377031, guid: 1be35a6acaa39a14b98b36a4d0f267f7, type: 3}
       propertyPath: m_Name
       value: EndPoint
       objectReference: {fileID: 0}
+    - target: {fileID: 2944645000193119512, guid: 1be35a6acaa39a14b98b36a4d0f267f7, type: 3}
+      propertyPath: 'm_Materials.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2100000, guid: c7ab3a098e9bd4a418a6aee3f7f88dea, type: 2}
     - target: {fileID: 6244328644214208661, guid: 1be35a6acaa39a14b98b36a4d0f267f7, type: 3}
       propertyPath: m_LocalScale.x
       value: 22.627058
@@ -50360,3 +50405,4 @@ SceneRoots:
   - {fileID: 1623561593}
   - {fileID: 2090539624}
   - {fileID: 1293793245}
+  - {fileID: 71506356}

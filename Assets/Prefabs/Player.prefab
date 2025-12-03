@@ -804,6 +804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 143f394cc85766d49a48ec77a7d0b4a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  respawnPoint: {fileID: 0}
 --- !u!114 &843077158305749316
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -830,7 +831,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 0}
   buttonClass: pausebutton
-  resourcesFolder: UI/Textures/SquiggleFrames
+  resourcesFolder: UI/Textures/Squiggle
   fps: 8
   animateOnHoverOnly: 1
   textJitterPixels: 0.8
