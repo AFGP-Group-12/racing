@@ -102,8 +102,48 @@ public class MeshCombiner : MonoBehaviour
         Debug.Log("Mesh exported to: " + path);
     }
 
+    public static void ExportToOBJ(Mesh mesh, string path)
+    {
+        if (mesh == null)
+        {
+            Debug.LogError("No mesh provided.");
+            return;
+        }
+
+        if (string.IsNullOrEmpty(path)) 
+            path = EditorUtility.SaveFilePanel("Export OBJ", "", "combinedMesh", "obj");
+        if (string.IsNullOrEmpty(path)) return;
+
+        StringBuilder sb = new StringBuilder();
+
+        foreach (Vector3 v in mesh.vertices)
+        {
+            sb.Append(string.Format("v {0} {1} {2}\n", v.x, v.y, v.z));
+        }
+        foreach (Vector3 v in mesh.normals)
+        {
+            sb.Append(string.Format("vn {0} {1} {2}\n", v.x, v.y, v.z));
+        }
+
+        for (int material = 0; material < mesh.subMeshCount; material++)
+        {
+            sb.Append(string.Format("\ng {0}\n", "obj.name")); // Group name
+            int[] triangles = mesh.GetTriangles(material);
+            for (int i = 0; i < triangles.Length; i += 3)
+            {
+                sb.Append(string.Format("f {0}/{0} {1}/{1} {2}/{2}\n", triangles[i] + 1, triangles[i + 1] + 1, triangles[i + 2] + 1));
+            }
+        }
+
+        StreamWriter writer = new StreamWriter(path);
+        writer.Write(sb.ToString());
+        writer.Close();
+
+        Debug.Log("Mesh exported to: " + path);
+    }
+
     // Function to check if a given layer index is part of a LayerMask
-    bool IsInLayerMask(int layer, LayerMask layerMask)
+    private static bool IsInLayerMask(int layer, LayerMask layerMask)
     {
         // Shift 1 by the layer index to get a bitmask for that specific layer
         // Then perform a bitwise AND with the targetLayerMask
@@ -114,9 +154,9 @@ public class MeshCombiner : MonoBehaviour
     public LayerMask layersToGenerateMeshFrom;
     public bool makeChildrenInactive;
 
-    public void combine()
+    public static Mesh combine(GameObject obj, LayerMask layersToGenerateMeshFrom, bool makeChildrenInactive)
     {
-        MeshFilter[] meshFilters = GetComponentsInChildren<MeshFilter>();
+        MeshFilter[] meshFilters = obj.GetComponentsInChildren<MeshFilter>();
         CombineInstance[] instances = new CombineInstance[meshFilters.Length];
 
         for (int i = 0; i < meshFilters.Length; i++)
@@ -139,9 +179,14 @@ public class MeshCombiner : MonoBehaviour
 
         Mesh combinedMesh = new Mesh();
         combinedMesh.CombineMeshes(instances);
-        gameObject.GetComponent<MeshFilter>().sharedMesh = combinedMesh;
+        //gameObject.GetComponent<MeshFilter>().sharedMesh = combinedMesh;
         Debug.Log("Combined " + meshFilters.Length + " meshes into one.");
-        gameObject.SetActive(true);
+        return combinedMesh;
+    }
+
+    public void combine()
+    {
+        combine(this.gameObject, layersToGenerateMeshFrom, makeChildrenInactive);
     }
 
     void Start()
