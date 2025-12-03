@@ -31,6 +31,7 @@ namespace Messages
 		racing_lobby_update,
 		racing_send_lobby_data,
 		racing_game_start,
+		racing_game_reach_checkpoint,
 		racing_ability_action,
 
     };
@@ -90,6 +91,8 @@ namespace Messages
 					return racing_send_lobby_data_m.size;
 				case message_t.racing_game_start:
 					return racing_game_start_m.size;
+				case message_t.racing_game_reach_checkpoint:
+					return racing_game_reach_checkpoint_m.size;
 				case message_t.racing_ability_action:
 					return racing_ability_action_m.size;
 
@@ -201,6 +204,7 @@ namespace Messages
 		[FieldOffset(0)] public racing_lobby_update_m racing_lobby_update;
 		[FieldOffset(0)] public racing_send_lobby_data_m racing_send_lobby_data;
 		[FieldOffset(0)] public racing_game_start_m racing_game_start;
+		[FieldOffset(0)] public racing_game_reach_checkpoint_m racing_game_reach_checkpoint;
 		[FieldOffset(0)] public racing_ability_action_m racing_ability_action;
 		[FieldOffset(0)] public position_sm position;
 		[FieldOffset(0)] public username_sm username;
@@ -532,17 +536,28 @@ namespace Messages
 	[StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
 	public unsafe struct racing_send_lobby_data_m
 	{
-		public const int size = 22;
+		public const int size = 24;
 		[FieldOffset(0)] public fixed byte bytes[size];
 		[FieldOffset(0)] public UInt16 type;
 
 		[FieldOffset(2)] public UInt16 total_players;
 		[FieldOffset(4)] public UInt16 host;
-		[FieldOffset(6)] public fixed UInt16 other_players[8];
+		[FieldOffset(6)] public UInt16 botCount;
+		[FieldOffset(8)] public fixed UInt16 other_players[8];
 	};
 
 	[StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
 	public unsafe struct racing_game_start_m
+	{
+		public const int size = 4;
+		[FieldOffset(0)] public fixed byte bytes[size];
+		[FieldOffset(0)] public UInt16 type;
+
+		[FieldOffset(2)] public UInt16 level;
+	};
+
+	[StructLayout(LayoutKind.Explicit, Size = size, CharSet = CharSet.Ansi)]
+	public unsafe struct racing_game_reach_checkpoint_m
 	{
 		public const int size = 2;
 		[FieldOffset(0)] public fixed byte bytes[size];
