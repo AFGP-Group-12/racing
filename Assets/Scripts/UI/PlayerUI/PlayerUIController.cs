@@ -21,22 +21,97 @@ public class PlayerUIController : MonoBehaviour
     private VisualElement cooldownOverlay3;
 
     // Store currently equipped abilities
-    private Ability[] equippedAbilities = new Ability[3];
+    private readonly Ability[] equippedAbilities = new Ability[3];
 
     // Cooldown coroutines
     private Coroutine cooldownCoroutine1;
     private Coroutine cooldownCoroutine2;
     private Coroutine cooldownCoroutine3;
 
-    void Start()
+    private bool uiInitialized;
+    private bool abilityEventsHooked;
+
+    void Awake()
     {
         if (uiDocument == null)
+        {
             uiDocument = GetComponent<UIDocument>();
+        }
 
-        // Get the root visual element
+        if (abilityManager == null)
+        {
+            abilityManager = GetComponentInParent<PlayerAbilityManager>();
+        }
+    }
+
+    void OnEnable()
+    {
+        RegisterPanelCallbacks();
+        TryInitializeUI();
+    }
+
+    void Start()
+    {
+        if (abilityManager == null)
+            abilityManager = GetComponentInParent<PlayerAbilityManager>();
+
+        if (abilityManager == null)
+        {
+            Debug.LogError("PlayerUIController could not locate PlayerAbilityManager.", this);
+            return;
+        }
+
+        SubscribeToAbilityEvents();
+    }
+
+    void OnDisable()
+    {
+        ResetCachedUI();
+        UnregisterPanelCallbacks();
+    }
+
+    void OnDestroy()
+    {
+        UnsubscribeFromAbilityEvents();
+        ResetCachedUI();
+        UnregisterPanelCallbacks();
+    }
+
+    private void RegisterPanelCallbacks()
+    {
+        if (uiDocument == null || uiDocument.rootVisualElement == null) return;
+
+        var rootElement = uiDocument.rootVisualElement;
+        rootElement.RegisterCallback<AttachToPanelEvent>(OnPanelAttached);
+        rootElement.RegisterCallback<DetachFromPanelEvent>(OnPanelDetached);
+    }
+
+    private void UnregisterPanelCallbacks()
+    {
+        if (uiDocument == null || uiDocument.rootVisualElement == null) return;
+
+        var rootElement = uiDocument.rootVisualElement;
+        rootElement.UnregisterCallback<AttachToPanelEvent>(OnPanelAttached);
+        rootElement.UnregisterCallback<DetachFromPanelEvent>(OnPanelDetached);
+    }
+
+    private void OnPanelAttached(AttachToPanelEvent evt)
+    {
+        TryInitializeUI();
+    }
+
+    private void OnPanelDetached(DetachFromPanelEvent evt)
+    {
+        ResetCachedUI();
+    }
+
+    private void TryInitializeUI()
+    {
+        if (uiInitialized || uiDocument == null) return;
+
         root = uiDocument.rootVisualElement;
+        if (root == null || root.panel == null) return;
 
-        // Get references to the ability slots and icons
         abilitySlot1 = root.Q<VisualElement>("AbilitySlot1");
         abilitySlot2 = root.Q<VisualElement>("AbilitySlot2");
         abilitySlot3 = root.Q<VisualElement>("AbilitySlot3");
@@ -45,125 +120,66 @@ public class PlayerUIController : MonoBehaviour
         abilityIcon2 = root.Q<Image>("AbilityIcon2");
         abilityIcon3 = root.Q<Image>("AbilityIcon3");
 
-        // Create cooldown overlays
         CreateCooldownOverlays();
+        uiInitialized = true;
 
-        // Subscribe to ability manager events
+        RefreshAbilityIcons();
+
+        if (abilityManager != null)
+            MoveIndicator(abilityManager.abilityIndex);
+    }
+
+    private void SubscribeToAbilityEvents()
+    {
+        if (abilityEventsHooked || abilityManager == null) return;
+
         abilityManager.OnAbilityChanged += UpdateAbilityIcon;
         abilityManager.OnAbilityCooldownStart += StartCooldownVisual;
         abilityManager.OnAbilityCooldownEnd += EndCooldownVisual;
         abilityManager.OnAbilityDurationStart += StartDurationVisual;
         abilityManager.OnAbilityDurationEnd += EndDurationVisual;
         abilityManager.OnIndexChange += MoveIndicator;
+        abilityEventsHooked = true;
+    }
 
+    private void UnsubscribeFromAbilityEvents()
+    {
+        if (!abilityEventsHooked || abilityManager == null) return;
+
+        abilityManager.OnAbilityChanged -= UpdateAbilityIcon;
+        abilityManager.OnAbilityCooldownStart -= StartCooldownVisual;
+        abilityManager.OnAbilityCooldownEnd -= EndCooldownVisual;
+        abilityManager.OnAbilityDurationStart -= StartDurationVisual;
+        abilityManager.OnAbilityDurationEnd -= EndDurationVisual;
+        abilityManager.OnIndexChange -= MoveIndicator;
+        abilityEventsHooked = false;
     }
 
     private void MoveIndicator(int abilityIndex)
     {
-        // This method can be implemented to move an indicator on the UI
-        // to show which ability is currently selected.
-        // Implementation depends on the specific UI design.
+        if (!uiInitialized) return;
+
         Color yellow = new Color(1f, 1f, 0f);
         Color black = new Color(0f, 0f, 0f);
+
         switch (abilityIndex)
         {
             case 0:
-                //if (abilitySlot1 != null)
-                //{
-                    abilitySlot1.style.borderTopColor = yellow;
-                    abilitySlot1.style.borderBottomColor = yellow;
-                    abilitySlot1.style.borderLeftColor = yellow;
-                    abilitySlot1.style.borderRightColor = yellow;
-                    abilitySlot2.style.borderTopColor = black;
-                    abilitySlot2.style.borderBottomColor = black;
-                    abilitySlot2.style.borderLeftColor = black;
-                    abilitySlot2.style.borderRightColor = black;
-                    abilitySlot3.style.borderTopColor = black;
-                    abilitySlot3.style.borderBottomColor = black;
-                    abilitySlot3.style.borderLeftColor = black;
-                    abilitySlot3.style.borderRightColor = black;
-                //}
+                SetSlotBorderColor(abilitySlot1, yellow);
+                SetSlotBorderColor(abilitySlot2, black);
+                SetSlotBorderColor(abilitySlot3, black);
                 break;
             case 1:
-                //if (abilitySlot2 != null)
-                //{
-                    abilitySlot2.style.borderTopColor = yellow;
-                    abilitySlot2.style.borderBottomColor = yellow;
-                    abilitySlot2.style.borderLeftColor = yellow;
-                    abilitySlot2.style.borderRightColor = yellow;
-                abilitySlot1.style.borderTopColor = black;
-                abilitySlot1.style.borderBottomColor = black;
-                abilitySlot1.style.borderLeftColor = black;
-                abilitySlot1.style.borderRightColor = black;
-                abilitySlot3.style.borderTopColor = black;
-                abilitySlot3.style.borderBottomColor = black;
-                abilitySlot3.style.borderLeftColor = black;
-                abilitySlot3.style.borderRightColor = black;
-                //}
+                SetSlotBorderColor(abilitySlot2, yellow);
+                SetSlotBorderColor(abilitySlot1, black);
+                SetSlotBorderColor(abilitySlot3, black);
                 break;
             case 2:
-                //if (abilitySlot3 != null)
-                //{
-                    abilitySlot3.style.borderTopColor = yellow;
-                    abilitySlot3.style.borderBottomColor = yellow;
-                    abilitySlot3.style.borderLeftColor = yellow;
-                    abilitySlot3.style.borderRightColor = yellow;
-                abilitySlot2.style.borderTopColor = black;
-                abilitySlot2.style.borderBottomColor = black;
-                abilitySlot2.style.borderLeftColor = black;
-                abilitySlot2.style.borderRightColor = black;
-                abilitySlot1.style.borderTopColor = black;
-                abilitySlot1.style.borderBottomColor = black;
-                abilitySlot1.style.borderLeftColor = black;
-                abilitySlot1.style.borderRightColor = black;
-                //}
+                SetSlotBorderColor(abilitySlot3, yellow);
+                SetSlotBorderColor(abilitySlot2, black);
+                SetSlotBorderColor(abilitySlot1, black);
                 break;
         }
-
-        }
-
-    void OnDestroy()
-    {
-        // Unsubscribe from events when destroyed
-        if (abilityManager != null)
-        {
-            abilityManager.OnAbilityChanged -= UpdateAbilityIcon;
-            abilityManager.OnAbilityCooldownStart -= StartCooldownVisual;
-            abilityManager.OnAbilityCooldownEnd -= EndCooldownVisual;
-            abilityManager.OnAbilityDurationStart -= StartDurationVisual;
-            abilityManager.OnAbilityDurationEnd -= EndDurationVisual;
-            abilityManager.OnIndexChange -= MoveIndicator;
-        }
-    }
-
-    private void CreateCooldownOverlays()
-    {
-        // Create overlay for ability 1
-        cooldownOverlay1 = new VisualElement();
-        cooldownOverlay1.style.position = Position.Absolute;
-        cooldownOverlay1.style.width = Length.Percent(100);
-        cooldownOverlay1.style.height = Length.Percent(100);
-        cooldownOverlay1.style.backgroundColor = new Color(0, 0, 0, 0.7f);
-        cooldownOverlay1.style.display = DisplayStyle.None;
-        abilitySlot1?.Add(cooldownOverlay1);
-
-        // Create overlay for ability 2
-        cooldownOverlay2 = new VisualElement();
-        cooldownOverlay2.style.position = Position.Absolute;
-        cooldownOverlay2.style.width = Length.Percent(100);
-        cooldownOverlay2.style.height = Length.Percent(100);
-        cooldownOverlay2.style.backgroundColor = new Color(0, 0, 0, 0.7f);
-        cooldownOverlay2.style.display = DisplayStyle.None;
-        abilitySlot2?.Add(cooldownOverlay2);
-
-        // Create overlay for ability 3
-        cooldownOverlay3 = new VisualElement();
-        cooldownOverlay3.style.position = Position.Absolute;
-        cooldownOverlay3.style.width = Length.Percent(100);
-        cooldownOverlay3.style.height = Length.Percent(100);
-        cooldownOverlay3.style.backgroundColor = new Color(0, 0, 0, 0.7f);
-        cooldownOverlay3.style.display = DisplayStyle.None;
-        abilitySlot3?.Add(cooldownOverlay3);
     }
 
     private void UpdateAbilityIcon(int abilityIndex, Ability ability)
@@ -175,17 +191,20 @@ public class PlayerUIController : MonoBehaviour
         }
 
         equippedAbilities[abilityIndex] = ability;
+        ApplyAbilityIcon(abilityIndex, ability);
+    }
+
+    private void ApplyAbilityIcon(int abilityIndex, Ability ability)
+    {
+        if (!uiInitialized || ability == null) return;
 
         Sprite icon = ability.icon;
-        Color yellow = new Color(1f, 1f, 0f);
 
         switch (abilityIndex)
         {
             case 0:
                 if (abilityIcon1 != null)
-
                     abilityIcon1.sprite = icon;
-      
                 break;
             case 1:
                 if (abilityIcon2 != null)
@@ -201,9 +220,24 @@ public class PlayerUIController : MonoBehaviour
         }
     }
 
+    private void RefreshAbilityIcons()
+    {
+        if (!uiInitialized) return;
+
+        for (int i = 0; i < equippedAbilities.Length; i++)
+        {
+            if (equippedAbilities[i] != null)
+                ApplyAbilityIcon(i, equippedAbilities[i]);
+        }
+    }
+
     private void StartCooldownVisual(int abilityIndex)
     {
-        // Get the cooldown duration from the equipped ability
+        if (!uiInitialized)
+        {
+            return;
+        }
+
         if (abilityIndex < 0 || abilityIndex >= equippedAbilities.Length || equippedAbilities[abilityIndex] == null)
         {
             Debug.LogWarning($"No ability equipped at index {abilityIndex}");
@@ -231,6 +265,8 @@ public class PlayerUIController : MonoBehaviour
 
     private void EndCooldownVisual(int abilityIndex)
     {
+        if (!uiInitialized) return;
+
         switch (abilityIndex)
         {
             case 0:
@@ -247,81 +283,72 @@ public class PlayerUIController : MonoBehaviour
 
     private void StartDurationVisual(int abilityIndex)
     {
-        // Change the ability slot border color to yellow when ability is active
+        if (!uiInitialized) return;
+
         Color yellow = new Color(1f, 1f, 0f);
-        //switch (abilityIndex)
-        //{
-        //    case 0:
-        //        if (abilitySlot1 != null)
-        //        {
-        //            abilitySlot1.style.borderTopColor = yellow;
-        //            abilitySlot1.style.borderBottomColor = yellow;
-        //            abilitySlot1.style.borderLeftColor = yellow;
-        //            abilitySlot1.style.borderRightColor = yellow;
-        //        }
-        //        break;
-        //    case 1:
-        //        if (abilitySlot2 != null)
-        //        {
-        //            abilitySlot2.style.borderTopColor = yellow;
-        //            abilitySlot2.style.borderBottomColor = yellow;
-        //            abilitySlot2.style.borderLeftColor = yellow;
-        //            abilitySlot2.style.borderRightColor = yellow;
-        //        }
-        //        break;
-        //    case 2:
-        //        if (abilitySlot3 != null)
-        //        {
-        //            abilitySlot3.style.borderTopColor = yellow;
-        //            abilitySlot3.style.borderBottomColor = yellow;
-        //            abilitySlot3.style.borderLeftColor = yellow;
-        //            abilitySlot3.style.borderRightColor = yellow;
-        //        }
-        //        break;
-        //}
+
+        switch (abilityIndex)
+        {
+            case 0:
+                SetSlotBorderColor(abilitySlot1, yellow);
+                break;
+            case 1:
+                SetSlotBorderColor(abilitySlot2, yellow);
+                break;
+            case 2:
+                SetSlotBorderColor(abilitySlot3, yellow);
+                break;
+        }
     }
 
     private void EndDurationVisual(int abilityIndex)
     {
-        // Reset the ability slot border color back to black when duration ends
+        if (!uiInitialized) return;
         Color black = new Color(0f, 0f, 0f);
-        //switch (abilityIndex)
-        //{
-        //    case 0:
-        //        if (abilitySlot1 != null)
-        //        {
-        //            abilitySlot1.style.borderTopColor = black;
-        //            abilitySlot1.style.borderBottomColor = black;
-        //            abilitySlot1.style.borderLeftColor = black;
-        //            abilitySlot1.style.borderRightColor = black;
-        //        }
-        //        break;
-        //    case 1:
-        //        if (abilitySlot2 != null)
-        //        {
-        //            abilitySlot2.style.borderTopColor = black;
-        //            abilitySlot2.style.borderBottomColor = black;
-        //            abilitySlot2.style.borderLeftColor = black;
-        //            abilitySlot2.style.borderRightColor = black;
-        //        }
-        //        break;
-        //    case 2:
-        //        if (abilitySlot3 != null)
-        //        {
-        //            abilitySlot3.style.borderTopColor = black;
-        //            abilitySlot3.style.borderBottomColor = black;
-        //            abilitySlot3.style.borderLeftColor = black;
-        //            abilitySlot3.style.borderRightColor = black;
-        //        }
-        //        break;
-        //}
+
+        switch (abilityIndex)
+        {
+            case 0:
+                SetSlotBorderColor(abilitySlot1, black);
+                break;
+            case 1:
+                SetSlotBorderColor(abilitySlot2, black);
+                break;
+            case 2:
+                SetSlotBorderColor(abilitySlot3, black);
+                break;
+        }
+    }
+
+    private void CreateCooldownOverlays()
+    {
+        CreateOrResetOverlay(ref cooldownOverlay1, abilitySlot1);
+        CreateOrResetOverlay(ref cooldownOverlay2, abilitySlot2);
+        CreateOrResetOverlay(ref cooldownOverlay3, abilitySlot3);
+    }
+
+    private void CreateOrResetOverlay(ref VisualElement overlay, VisualElement slot)
+    {
+        if (slot == null) return;
+
+        if (overlay == null)
+        {
+            overlay = new VisualElement();
+            overlay.style.position = Position.Absolute;
+            overlay.style.width = Length.Percent(100);
+            overlay.style.backgroundColor = new Color(0, 0, 0, 0.7f);
+        }
+
+        overlay.style.height = Length.Percent(100);
+        overlay.style.display = DisplayStyle.None;
+        overlay.RemoveFromHierarchy();
+        slot.Add(overlay);
     }
 
     private IEnumerator AnimateCooldown(VisualElement overlay, float duration)
     {
         if (overlay == null) yield break;
 
-        // Show the overlay
         overlay.style.display = DisplayStyle.Flex;
         overlay.style.height = Length.Percent(100);
 
@@ -332,13 +359,53 @@ public class PlayerUIController : MonoBehaviour
             elapsed += Time.deltaTime;
             float progress = elapsed / duration;
 
-            // Shrink the overlay from bottom to top (100% to 0%)
             overlay.style.height = Length.Percent((1f - progress) * 100f);
 
             yield return null;
         }
 
-        // Ensure it's fully hidden at the end
         overlay.style.display = DisplayStyle.None;
+    }
+
+    private void ResetCachedUI()
+    {
+        uiInitialized = false;
+
+        if (cooldownCoroutine1 != null)
+        {
+            StopCoroutine(cooldownCoroutine1);
+            cooldownCoroutine1 = null;
+        }
+        if (cooldownCoroutine2 != null)
+        {
+            StopCoroutine(cooldownCoroutine2);
+            cooldownCoroutine2 = null;
+        }
+        if (cooldownCoroutine3 != null)
+        {
+            StopCoroutine(cooldownCoroutine3);
+            cooldownCoroutine3 = null;
+        }
+
+        root = null;
+        abilitySlot1 = null;
+        abilitySlot2 = null;
+        abilitySlot3 = null;
+        abilityIcon1 = null;
+        abilityIcon2 = null;
+        abilityIcon3 = null;
+        cooldownOverlay1 = null;
+        cooldownOverlay2 = null;
+        cooldownOverlay3 = null;
+    }
+
+    private static void SetSlotBorderColor(VisualElement slot, Color color)
+    {
+        if (slot == null) return;
+
+        slot.style.borderTopColor = color;
+        slot.style.borderBottomColor = color;
+        slot.style.borderLeftColor = color;
+        slot.style.borderRightColor = color;
     }
 }
