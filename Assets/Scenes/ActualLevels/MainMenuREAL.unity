@@ -169,6 +169,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   uiDocument: {fileID: 101107473}
+  botCount: 0
 --- !u!114 &101107468
 MonoBehaviour:
   m_ObjectHideFlags: 0
