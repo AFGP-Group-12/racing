@@ -120,6 +120,7 @@ GameObject:
   - component: {fileID: 3796741406605459019}
   - component: {fileID: 5876665491428883907}
   - component: {fileID: 6452046157636527831}
+  - component: {fileID: 5350785677478809381}
   m_Layer: 3
   m_Name: Sphere
   m_TagString: Untagged
@@ -173,7 +174,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 01b2c11fd0ab0f84991c34bee40f04fc, type: 2}
+  - {fileID: 2100000, guid: 50ecfcf24f2758d49ae74d53d5a7b68a, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -216,6 +217,19 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &5350785677478809381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6197853082177871916}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f6b81814610eda4ca9f48619bba2914, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  tilingPerUnit: 0
 --- !u!1 &7470549762193403220
 GameObject:
   m_ObjectHideFlags: 0
