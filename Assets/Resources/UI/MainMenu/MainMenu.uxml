@@ -12,7 +12,7 @@
             <ui:Label text="HAYWIRE" name="title" class="title" />
             <ui:GroupBox name="buttonBox" class="button-box">
                 <ui:Button name="tutorialButton" selectable="false" double-click-selects-word="false" class="mainbutton">
-                    <ui:Label text="TEST" class="wobble-text" />
+                    <ui:Label text="TUTORIAL" class="wobble-text" />
                 </ui:Button>
                 <ui:Button name="joinLobbyButton" selectable="false" double-click-selects-word="false" class="mainbutton">
                     <ui:Label text="JOIN" class="wobble-text" />

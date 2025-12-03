@@ -124,7 +124,12 @@ public class GameplayClient : MonoBehaviour
         }
     }
 
-    public IEnumerator LoadSceneSinglePlayer(string scene)
+    public void LoadSceneSinglePlayer(string scene)
+    {
+        StartCoroutine(LoadSceneSinglePlayerRoutine(scene));
+    }
+
+    private static IEnumerator LoadSceneSinglePlayerRoutine(string scene)
     {
         AsyncOperation asyncLoad = SceneManager.LoadSceneAsync(scene);
 
@@ -139,6 +144,12 @@ public class GameplayClient : MonoBehaviour
         yield return new WaitForSeconds(0.1f);
 
         player = GameObject.Find("Player");
+
+        player.SetActive(false);
+
+        yield return new WaitForSeconds(0.1f);
+
+        player.SetActive(true);
     }
 
     IEnumerator LoadGameScene()
