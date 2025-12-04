@@ -158,6 +158,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Any",
+                    "type": "Button",
+                    "id": "3d0da2b6-3867-459a-8524-4c7f5532df42",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -686,6 +695,17 @@
                     "processors": "",
                     "groups": "",
                     "action": "DebugButton",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "d10e788a-a367-4c55-ae95-077c042863b5",
+                    "path": "<Keyboard>/anyKey",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Any",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

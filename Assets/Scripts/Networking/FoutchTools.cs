@@ -1,3 +1,4 @@
+#if UNITY_EDITOR
 using System;
 using UnityEngine;
 using System.Collections;
@@ -26,10 +27,9 @@ public class FoutchTools : EditorWindow
     static List<GameObject> playerNodes = new List<GameObject>();
     private static void SetPlayerNodeButton()
     {
-      
         setPlayerNode_FoldoutShowing = EditorGUILayout.Foldout(setPlayerNode_FoldoutShowing, "Set Player Node");
         if (!setPlayerNode_FoldoutShowing) return;
-      
+
         navObject = EditorGUILayout.ObjectField(navObject, typeof(GameObject), true) as GameObject;
 
         if (GUILayout.Button("Set Player Node")) {
@@ -94,7 +94,7 @@ public class FoutchTools : EditorWindow
     private static void PrintPathMarkers_Button()
     {
         if (!GUILayout.Button("Print Path Markers")) { return; }
-        
+
         List<BotGoalMarkerScript> markers = getPathMarkers();
         markers.Sort((a, b) => a.PathNumber.CompareTo(b.PathNumber));
         string output = "Path Markers:\n{";
@@ -126,7 +126,7 @@ public class FoutchTools : EditorWindow
                 return;
             }
             Debug.Log("Generating server-side meshes...");
-            
+
             GenerateMeshForLayer(meshParent, 3, "Pogo");
             GenerateMeshForLayer(meshParent, 8, "Grapple");
             GenerateMeshForLayer(meshParent, 9, "Ground");
@@ -148,3 +148,4 @@ public class FoutchTools : EditorWindow
         return new List<BotGoalMarkerScript>(GameObject.FindObjectsByType<BotGoalMarkerScript>(FindObjectsSortMode.None));
     }
 }
+#endif

@@ -31,6 +31,7 @@ public class GameplayClient : MonoBehaviour
     private Vector3 MaxWorldBounds = new Vector3(Int32.MaxValue / 100.0f, Int32.MaxValue / 100.0f, Int32.MaxValue / 100.0f);
     public BaseNetworkClient client = null;
     bool hasReceivedConnectionReply = false;
+    bool isDead = false;
 
     // Abilities
     public Platform platformAbility;
@@ -166,7 +167,7 @@ public class GameplayClient : MonoBehaviour
         switch (level)
         {
             case 0:
-                sceneName = "Set1Level1";
+                sceneName = "TEST";
                 break;
             case 1:
                 sceneName = "Set1Level2";
@@ -313,9 +314,26 @@ public class GameplayClient : MonoBehaviour
             case 4: // Any Grapple End
                 playerById[message.from_id].EndGrapple();
                 break;
+            case 5: // Dead
+                killPlayer(message.target_player_id);
+                break;
             default:
                 Debug.Log("Got Unexpected ability action: " + message.action);
                 break;
+        }
+    }
+    private void killPlayer(int id)
+    {
+        if (id == LobbyClient.instance.self_id)
+        {
+            isDead = true;
+            player.GetComponent<PlayerMovement>().isGhosted = true;
+        } else if (playerById.ContainsKey(id))
+        {
+            playerById[id].turnGhost();
+        } else
+        {
+            Debug.Log("Tried to kill non existent player with id: " + id);
         }
     }
 
