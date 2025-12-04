@@ -1014,6 +1014,10 @@ public class PlayerMovement : MonoBehaviour
     
     private void SlideEnd()
     {
+        if (playerCollider == null)
+        {
+            return;
+        }
         //Debug.Log("Slide Ended");
         slideHeld = false;
         floatHeight = setFloatHeight;

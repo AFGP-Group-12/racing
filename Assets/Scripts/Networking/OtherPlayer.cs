@@ -19,6 +19,7 @@ public class OtherPlayer
     private float averageMovementDelayInFrames = 15;
 
     private const float frameAdjustmentWeight = 0.3f;
+    private bool isGhost = false;
 
     public OtherPlayer(GameObject prefab, string name, Camera camera, int id)
     {
@@ -54,6 +55,11 @@ public class OtherPlayer
 
         OtherPlayerIdHolder idHolder = playerObj.GetComponent<OtherPlayerIdHolder>();
         idHolder.Id = player_id;
+
+        if (isGhost)
+        {
+            turnGhost(prefab, camera);
+        }
     }
 
     public void turnGhost()
