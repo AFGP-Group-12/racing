@@ -5533,6 +5533,24 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 7663989152434786547, guid: eca824619976ed14dab60f081dff28a1, type: 3}
   m_PrefabInstance: {fileID: 517786010}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &230261373 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7651006634576081692, guid: a75c566014284484da8486c321e02eec, type: 3}
+  m_PrefabInstance: {fileID: 1320820708}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &230261392
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 230261373}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8a8e628066409b94b82236b459cd38d6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SetMarkerAction: {fileID: 0}
 --- !u!1001 &231939351
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -31169,10 +31187,33 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 27
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[25].m_ActionId
+      value: 571a1854-ff74-40b4-9343-9fe6af54103a
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[26].m_ActionId
+      value: 996b995b-ab61-41f2-838c-e4c98300f781
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[25].m_ActionName
+      value: 'Player/MouseX[/Mouse/delta/x]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[26].m_ActionName
+      value: 'Player/MouseY[/Mouse/delta/y]'
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7651006634576081692, guid: a75c566014284484da8486c321e02eec, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 230261392}
   m_SourcePrefab: {fileID: 100100000, guid: a75c566014284484da8486c321e02eec, type: 3}
 --- !u!1001 &1324014116
 PrefabInstance:
