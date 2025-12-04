@@ -2,6 +2,7 @@ using UnityEngine;
 
 public enum MovementState
 {
+    ghosted,
     walking,
     sprinting,
     wallrunningleft,

@@ -16,9 +16,16 @@ public class PlayerMovement : MonoBehaviour
     private PlayerStateHandler stateHandler;
     private CapsuleCollider playerCollider;
 
+    [SerializeField] GameObject playerObject;
+    [SerializeField] GameObject ghostObject;
+
+    [Header("Ghost Movement")]
+    public bool isGhosted = false;
+    [SerializeField] float ghostBasicSpeed = 25f;
+    [SerializeField] float ghostSprintSpeed = 100f; // Should always be greater than moveSpeed
+
 
     [Header("Movement")]
-    bool isGhosted = false;
 
     [SerializeField] float basicSpeed;
     [SerializeField] float sprintSpeed; // Should always be greater than moveSpeed
@@ -205,28 +212,57 @@ public class PlayerMovement : MonoBehaviour
     }
     void SetGhostMovementSpeed()
     {
-        moveDirection = Camera.forward * verticalInput + orientation.right * horizontalInput;
-        MovementForce(rb.linearDamping);
+        if (stateHandler.isSprinting == true)
+        {
+            moveSpeed = ghostSprintSpeed;
+        }
+        else
+        {
+            moveSpeed = ghostBasicSpeed;
+        }
     }
     void MoveGhostPlayer()
     {
-        
+        moveDirection = Camera.forward * verticalInput + orientation.right * horizontalInput;
+        MovementForce(rb.linearDamping);
     }
     void GhostSpeedControl()
     {
-        
+        Vector3 curVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, rb.linearVelocity.z);
+
+        if (curVelocity.magnitude > moveSpeed)
+        {
+            Vector3 limitedVel = curVelocity.normalized * moveSpeed;
+            rb.linearVelocity = new Vector3(limitedVel.x, limitedVel.y, limitedVel.z);
+        }
+    }
+    void CheckGhosted()
+    {
+        if (isGhosted)
+        {
+            stateHandler.isGhosted = true;
+        }
+        else
+        {
+            stateHandler.isGhosted = false;
+        }
     }
 
     void FixedUpdate()
     {
-        if (isGhosted)
+        CheckGhosted();
+
+        if (state == MovementState.ghosted)
         {
             rb.linearDamping = groundDrag;
+            rb.useGravity = false;
+            playerObject.SetActive(false);
+            ghostObject.SetActive(true);
 
             // Movement
-            SetMovementSpeed();
-            MovePlayer();
-            SpeedControl();
+            SetGhostMovementSpeed();
+            MoveGhostPlayer();
+            GhostSpeedControl();
         }
         else
         {
