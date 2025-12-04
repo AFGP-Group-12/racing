@@ -1,3 +1,5 @@
+#if UNITY_EDITOR
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -20,3 +22,5 @@ public class DebuggingScript : MonoBehaviour
         FoutchTools.SetPlayerNode();
     }
 }
+
+#endif
