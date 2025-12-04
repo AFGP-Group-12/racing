@@ -5245,6 +5245,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0bcecfbbf0a94604998acab8b24ea24b, type: 3}
+--- !u!1 &407892641 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8345210003301544610, guid: ac57fc6a5a99c8645a43a3c4ad181afb, type: 3}
+  m_PrefabInstance: {fileID: 809553284}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -11618,6 +11623,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8651344640243158229, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
+      propertyPath: windowObject
+      value: 
+      objectReference: {fileID: 407892641}
     - target: {fileID: 9049167781156297867, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
       propertyPath: m_Name
       value: ScreenVisuals
@@ -15703,6 +15712,34 @@ PrefabInstance:
     - target: {fileID: 7651006634576081692, guid: a75c566014284484da8486c321e02eec, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.size
+      value: 28
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[25].m_ActionId
+      value: 571a1854-ff74-40b4-9343-9fe6af54103a
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[26].m_ActionId
+      value: 996b995b-ab61-41f2-838c-e4c98300f781
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[27].m_ActionId
+      value: c1dca4b2-6f12-4c2a-907f-871cddc99657
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[25].m_ActionName
+      value: 'Player/MouseX[/Mouse/delta/x]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[26].m_ActionName
+      value: 'Player/MouseY[/Mouse/delta/y]'
+      objectReference: {fileID: 0}
+    - target: {fileID: 8566347814016398955, guid: a75c566014284484da8486c321e02eec, type: 3}
+      propertyPath: m_ActionEvents.Array.data[27].m_ActionName
+      value: 'Player/DebugButton[/Mouse/middleButton,/Keyboard/c,/Keyboard/1]'
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
