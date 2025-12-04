@@ -167,7 +167,7 @@ public class GameplayClient : MonoBehaviour
         switch (level)
         {
             case 0:
-                sceneName = "TEST";
+                sceneName = "Set1Level1";
                 break;
             case 1:
                 sceneName = "Set1Level2";
@@ -199,11 +199,22 @@ public class GameplayClient : MonoBehaviour
 
         player.SetActive(true);
 
-        foreach (int id in playerById.Keys)
-        {
+        //create a copy of the keys to avoid modification during iteration
+        List<int> ghosts = new List<int>();
+        var playerIds = new List<int>(playerById.Keys);
+        foreach (int id in playerIds) {
+            if (playerById[id].isGhost)
+                ghosts.Add(id);
             OnPlayerLeave(id, "");
+        }
+
+        foreach (int id in playerIds) {
             OnPlayerJoin(id);
         }
+        foreach (int id in ghosts) {
+            playerById[id].turnGhost();
+        }
+
 
         StartCoroutine(SendPeriodicMessageCoroutine());
     }
@@ -363,6 +374,22 @@ public class GameplayClient : MonoBehaviour
 
         MovementState state = (MovementState)message.state;
 
+        if (otherPlayerPrefab == null)
+        {
+            Debug.LogError("Other Player Prefab is not assigned in GameplayClient!");
+            return;
+        }
+        if (mainCamera == null)
+        {
+            Debug.LogError("Main Camera is not found in GameplayClient!");
+            mainCamera = GameObject.Find("Main Camera");
+            if (mainCamera == null)
+            {
+                Debug.LogError("Main Camera is still not found in GameplayClient!");
+                return;
+            }
+        }
+
         if (!playerById[id].AddMovementReply(pos, vel, rotation, state))
         {
             playerById[id].resetBot(otherPlayerPrefab, mainCamera.GetComponent<Camera>());
@@ -382,7 +409,16 @@ public class GameplayClient : MonoBehaviour
         {
             othername = "bot_" + UnityEngine.Random.Range(1000, 9999);
         }
-
+        if (otherPlayerPrefab == null)
+        {
+            Debug.LogError("Other Player Prefab is not assigned in GameplayClient!");
+            return;
+        }
+        if (mainCamera == null)
+        {
+            Debug.LogError("Main Camera is not found in GameplayClient!");
+            return;
+        }
         //if (othername != "404")
         playerById[id] = new OtherPlayer(otherPlayerPrefab, othername, mainCamera.GetComponent<Camera>(), id);
         Debug.Log("Player Joined: " + othername + " with id: " + id);
