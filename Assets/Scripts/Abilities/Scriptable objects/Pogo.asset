@@ -23,6 +23,6 @@ MonoBehaviour:
   pogoLayer:
     serializedVersion: 2
     m_Bits: 8
-  pogoJumpForce: 60
+  pogoJumpForce: 45
   sphereRadius: 3
   pogoDistance: 4
