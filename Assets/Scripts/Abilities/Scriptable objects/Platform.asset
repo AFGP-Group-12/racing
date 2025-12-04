@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   abilityName: Platform
   icon: {fileID: 21300000, guid: a0c4e0f10f28a964a8fa5df4d632e893, type: 3}
-  cooldown: 3
+  cooldown: 8
   duration: 20
   abilityIndex: -1
   canAbility: 1
