@@ -192,3 +192,126 @@ Button.pausebutton:hover {
 .hidden {
     display: none;
 }
+
+.modal-panel {
+    width: 710px;
+    min-height: 300px;
+    padding: 16px;
+    background-color: white;
+    border-radius: 12px;
+    position: relative;
+    overflow: visible;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+    align-items: center;
+}
+
+.overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.25);
+    justify-content: center;
+    align-items: center;
+}
+
+.title-row {
+    margin-bottom: 12px;
+}
+
+.marker-title {
+    position: relative;
+    font-size: 28px;
+    -unity-font-style: bold;
+    padding: 4px 6px;
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+}
+
+.modal-panel * {
+    -unity-font-definition: resource('UI/Fonts/PatrickHand-Regular');
+    color: rgb(34, 34, 34);
+    font-size: 20px;
+}
+
+.marker-title {
+    -unity-font-definition: resource('UI/Fonts/GloriaHallelujah-Regular');
+    -unity-font-style: bold;
+    font-size: 38px;
+    margin-bottom: 8px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    align-self: stretch;
+    align-content: flex-start;
+}
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.form-label {
+    flex: 0 0 200px;
+    -unity-text-align: middle-left;
+    letter-spacing: 0.2px;
+    flex-basis: 140px;
+}
+
+.form-field {
+    flex: 1 1 auto;
+    max-width: 360px;
+}
+
+DropdownField.form-field {
+    min-height: 36px;
+}
+
+DropdownField.form-field .unity-base-field__input {
+    padding: 6px 10px;
+    font-size: 20px;
+}
+
+DropdownField.form-field .unity-popup-field__input {
+    padding: 6px 10px;
+    font-size: 20px;
+}
+
+Slider.form-field {
+    min-height: 36px;
+    padding: 6px 0;
+}
+
+Slider.form-field .unity-base-slider__tracker {
+    height: 10px;
+    border-radius: 6px;
+}
+
+Slider.form-field .unity-base-slider__dragger {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    align-items: stretch;
+    justify-content: space-evenly;
+    align-self: auto;
+    align-content: auto;
+    top: 15px;
+}
+
+.row.buttons {
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.row.buttons > Button {
+    min-height: 36px;
+    padding: 6px 12px;
+    font-size: 20px;
+}

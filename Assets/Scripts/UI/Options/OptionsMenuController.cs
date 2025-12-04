@@ -7,9 +7,8 @@ using UnityEngine.Audio;
 public class OptionsMenuController : MonoBehaviour
 {
     [SerializeField] private UIDocument uiDocument;
-    [SerializeField] private AudioMixer masterMixer;   // Expose these params in the mixer!
+    [SerializeField] private AudioMixer masterMixer;
 
-    // Mixer parameter names (must match exposed params on your AudioMixer)
     private const string MIXER_MASTER_PARAM   = "MasterVolume";
     private const string MIXER_MUSIC_PARAM    = "MusicVolume";
     private const string MIXER_SFX_PARAM      = "SFXVolume";
@@ -34,6 +33,9 @@ public class OptionsMenuController : MonoBehaviour
     private Button applyButton;
     private Button closeButton;
 
+    // Lifecycle flags
+    private bool uiInitialized;
+
     // Data
     private readonly List<Resolution> _resolutions = new();
     private readonly (string label, FullScreenMode mode)[] _modes = new[]
@@ -46,7 +48,96 @@ public class OptionsMenuController : MonoBehaviour
     void Awake()
     {
         if (!uiDocument) uiDocument = GetComponent<UIDocument>();
+    }
+
+    void OnEnable()
+    {
+        RegisterPanelCallbacks();
+        TryInitializeUI();
+    }
+
+    void OnDisable()
+    {
+        UnregisterButtonCallbacks();
+        ResetCachedUI();
+        UnregisterPanelCallbacks();
+    }
+
+    void Start()
+    {
+        ApplySavedVolumes();
+    }
+
+    public void Show()
+    {
+        TryInitializeUI();
+        if (optionsOverlay == null)
+        {
+            Debug.LogWarning("Options overlay not initialized; UI panel may not be attached yet.");
+            return;
+        }
+        optionsOverlay.RemoveFromClassList("hidden");
+        LoadSavedIntoUI();
+        ApplySavedVolumes();
+        applyButton?.Focus();
+    }
+
+    public void Hide() => optionsOverlay.AddToClassList("hidden");
+
+    private void BindVolumeSlider(Slider slider, string prefKey, string mixerParam)
+    {
+        if (slider == null) return;
+
+        slider.RegisterValueChangedCallback(evt =>
+        {
+            float normalized = Mathf.Clamp01(evt.newValue / 100f);
+            SetVolume(mixerParam, normalized);
+            PlayerPrefs.SetFloat(prefKey, normalized);
+            PlayerPrefs.Save();
+        });
+    }
+
+    private void OnApplyClicked()
+    {
+
+        ApplyDisplaySettings(applyToEngine: true, save: true);
+        Hide();
+    }
+
+    private void RegisterPanelCallbacks()
+    {
+        if (uiDocument == null || uiDocument.rootVisualElement == null) return;
+
+        var rootElement = uiDocument.rootVisualElement;
+        rootElement.RegisterCallback<AttachToPanelEvent>(OnPanelAttached);
+        rootElement.RegisterCallback<DetachFromPanelEvent>(OnPanelDetached);
+    }
+
+    private void UnregisterPanelCallbacks()
+    {
+        if (uiDocument == null || uiDocument.rootVisualElement == null) return;
+
+        var rootElement = uiDocument.rootVisualElement;
+        rootElement.UnregisterCallback<AttachToPanelEvent>(OnPanelAttached);
+        rootElement.UnregisterCallback<DetachFromPanelEvent>(OnPanelDetached);
+    }
+
+    private void OnPanelAttached(AttachToPanelEvent evt)
+    {
+        TryInitializeUI();
+    }
+
+    private void OnPanelDetached(DetachFromPanelEvent evt)
+    {
+        ResetCachedUI();
+    }
+
+    private void TryInitializeUI()
+    {
+        if (uiInitialized || uiDocument == null) return;
+
         var root = uiDocument.rootVisualElement;
+        if (root == null || root.panel == null) return;
 
         optionsOverlay      = root.Q<VisualElement>("optionsOverlay");
         masterSlider        = root.Q<Slider>("masterSlider");
@@ -74,45 +165,40 @@ public class OptionsMenuController : MonoBehaviour
         BindVolumeSlider(sfxSlider,      PP_VOL_SFX,      MIXER_SFX_PARAM);
         BindVolumeSlider(ambienceSlider, PP_VOL_AMBIENCE, MIXER_AMBIENCE_PARAM);
 
-        // Apply (display only) and close
-        applyButton.clicked += OnApplyClicked;
-        closeButton.clicked += () => optionsOverlay.AddToClassList("hidden");
+        UnregisterButtonCallbacks();
+        RegisterButtonCallbacks();
+
+        uiInitialized = true;
     }
 
-    void Start()
+    private void RegisterButtonCallbacks()
     {
-        ApplySavedVolumes();
+        if (applyButton != null)
+            applyButton.clicked += OnApplyClicked;
+
+        if (closeButton != null)
+            closeButton.clicked += () => optionsOverlay?.AddToClassList("hidden");
     }
 
-    // Called by MainMenuController when opening
-    public void Show()
+    private void UnregisterButtonCallbacks()
     {
-        optionsOverlay.RemoveFromClassList("hidden");
-        LoadSavedIntoUI(); 
-        ApplySavedVolumes(); 
-        applyButton.Focus();
+        if (applyButton != null)
+            applyButton.clicked -= OnApplyClicked;
     }
 
-    public void Hide() => optionsOverlay.AddToClassList("hidden");
-
-    private void BindVolumeSlider(Slider slider, string prefKey, string mixerParam)
+    private void ResetCachedUI()
     {
-        if (slider == null) return;
+        uiInitialized = false;
 
-        slider.RegisterValueChangedCallback(evt =>
-        {
-            float normalized = Mathf.Clamp01(evt.newValue / 100f);
-            SetVolume(mixerParam, normalized);      // live preview
-            PlayerPrefs.SetFloat(prefKey, normalized); // save immediately
-            PlayerPrefs.Save();
-        });
-    }
-
-    private void OnApplyClicked()
-    {
-        // Only apply + save DISPLAY settings
-        ApplyDisplaySettings(applyToEngine: true, save: true);
-        Hide();
+        optionsOverlay = null;
+        masterSlider = null;
+        musicSlider = null;
+        sfxSlider = null;
+        ambienceSlider = null;
+        resolutionDropdown = null;
+        displayModeDropdown = null;
+        applyButton = null;
+        closeButton = null;
     }
 
     private void PopulateResolutions()
@@ -208,13 +294,11 @@ public class OptionsMenuController : MonoBehaviour
 
         if (masterMixer)
         {
-            // Map 0..1 to ~-80dB..0dB (avoid -Infinity at 0)
             float db = normalized01 <= 0f ? -80f : Mathf.Log10(Mathf.Max(0.0001f, normalized01)) * 20f;
             masterMixer.SetFloat(mixerParam, db);
         }
         else
         {
-            // Fallback: only Master affects AudioListener
             if (mixerParam == MIXER_MASTER_PARAM)
                 AudioListener.volume = normalized01;
         }
