@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,7 +17,73 @@ public class FoutchTools : EditorWindow
     {
         GUILayout.Label("Foutch Tools", EditorStyles.boldLabel);
         PrintPathMarkers_Button();
+        SetPlayerNodeButton();
         GenerateServerSideMeshes_Foldout();
+    }
+
+    static GameObject navObject = null;
+    static bool setPlayerNode_FoldoutShowing = false;
+    static List<GameObject> playerNodes = new List<GameObject>();
+    private static void SetPlayerNodeButton()
+    {
+      
+        setPlayerNode_FoldoutShowing = EditorGUILayout.Foldout(setPlayerNode_FoldoutShowing, "Set Player Node");
+        if (!setPlayerNode_FoldoutShowing) return;
+      
+        navObject = EditorGUILayout.ObjectField(navObject, typeof(GameObject), true) as GameObject;
+
+        if (GUILayout.Button("Set Player Node")) {
+            GameObject player = GameObject.Find("Player");
+            if (player == null)
+            {
+                Debug.LogError("Player object not found in the scene.");
+                return;
+            }
+            if (navObject == null)
+            {
+                Debug.LogError("Please assign a navigation object.");
+                return;
+            }
+            playerNodes.Add(Instantiate(navObject, player.transform.position, Quaternion.identity));
+        }
+        if (GUILayout.Button("Remove Last Player Node")) {
+            removeLastNode();
+        }
+        if (GUILayout.Button("Print All Player Nodes")) {
+            printAllPlayerNodes();
+        }
+        if (GUILayout.Button("Teleport To Last Node"))
+        {
+            if (playerNodes.Count == 0) return;
+            GameObject lastNode = playerNodes[playerNodes.Count - 1];
+            GameObject player = GameObject.Find("Player");
+            if (player == null)
+            {
+                Debug.LogError("Player object not found in the scene.");
+                return;
+            }
+            player.transform.position = lastNode.transform.position;
+        }
+    }
+
+    private static void removeLastNode()
+    {
+        if (playerNodes.Count == 0) return;
+        GameObject lastNode = playerNodes[playerNodes.Count - 1];
+        playerNodes.RemoveAt(playerNodes.Count - 1);
+        DestroyImmediate(lastNode);
+    }
+
+    private static void printAllPlayerNodes()
+    {
+        string output = "Player Nodes:\n{";
+        foreach (GameObject node in playerNodes)
+        {
+            output += "vec3" + node.transform.position.ToString("F3") + ", ";
+        }
+        output = output.TrimEnd(',', ' ');
+        output += "}";
+        Debug.Log(output);
     }
 
     private static void PrintPathMarkers_Button()
@@ -73,6 +140,6 @@ public class FoutchTools : EditorWindow
 
     private static List<BotGoalMarkerScript> getPathMarkers()
     {
-        return new List<BotGoalMarkerScript>(Object.FindObjectsByType<BotGoalMarkerScript>(FindObjectsSortMode.None));
+        return new List<BotGoalMarkerScript>(GameObject.FindObjectsByType<BotGoalMarkerScript>(FindObjectsSortMode.None));
     }
 }
