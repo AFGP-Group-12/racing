@@ -194,10 +194,17 @@ public class LobbyMenuController : MonoBehaviour
         if (newName.Length == 0) playerNameLabel[playerIndex].AddToClassList("hidden");
         else playerNameLabel[playerIndex].RemoveFromClassList("hidden");
 
-        if (host == newName)
-            newName += " (host)";
+        var displayName = newName;
+        int maxLen = (host == newName) ? 10 : 14;
+        if (!string.IsNullOrEmpty(displayName) && displayName.Length > maxLen)
+        {
+            displayName = displayName[..maxLen] + "...";
+        }
 
-        playerNameLabel[playerIndex].text = newName;
+        if (host == newName)
+            displayName += " (host)";
+
+        playerNameLabel[playerIndex].text = displayName;
     }
 
     public void UpdatePlayerPing(int newPing, int playerIndex)
@@ -232,6 +239,13 @@ public class LobbyMenuController : MonoBehaviour
 
         if (index_by_username.ContainsKey(host))
             UpdatePlayerName(host, index_by_username[host]);
+
+        var hostDisplayName = host;
+        if (!string.IsNullOrEmpty(hostDisplayName) && hostDisplayName.Length > 10)
+        {
+            hostDisplayName = hostDisplayName[..10] + "...";
+        }
+        lobbyNameLabel.text = hostDisplayName + "'s Lobby";
 
         UpdateStartGameButton();
     }

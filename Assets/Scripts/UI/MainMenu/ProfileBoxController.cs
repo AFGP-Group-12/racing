@@ -23,6 +23,7 @@ public class ProfileBoxController : MonoBehaviour
         profileButton = root.Q<Button>("profileButton");
         profileEditor = root.Q<VisualElement>("profileOverlay");
         profileNameField = root.Q<TextField>("profileNameField");
+        profileNameField.maxLength = 20;
         applyBtn = root.Q<Button>("profileApply");
         cancelBtn = root.Q<Button>("profileCancel");
         nameLabel = root.Q<Label>("profileName");

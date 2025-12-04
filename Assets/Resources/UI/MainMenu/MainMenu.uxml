@@ -127,8 +127,8 @@
             <ui:GroupBox name="playerListPanel" class="player-list-panel">
                 <ui:VisualElement name="playerListScribble" class="scribble-layer" style="flex-grow: 1;" />
                 <ui:GroupBox class="player-list-title-row">
-                    <ui:Label text="Austin&apos;saa Lobby" name="lobbyNameLabel" emoji-fallback-support="true" double-click-selects-word="false" />
-                    <ui:Label text="0/4" name="playerCountLabel" />
+                    <ui:Label text="Austin&apos;saa Lobby" name="lobbyNameLabel" emoji-fallback-support="true" double-click-selects-word="false" style="width: 243px; padding-right: 0; margin-right: 0;" />
+                    <ui:Label text="0/4" name="playerCountLabel" style="margin-left: 0; padding-left: 0;" />
                 </ui:GroupBox>
                 <ui:GroupBox class="player-list-join-code-row">
                     <ui:Label text="Join Code:" emoji-fallback-support="true" double-click-selects-word="false" style="margin-left: 25px;" />
