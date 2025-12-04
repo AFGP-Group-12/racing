@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using Messages;
+﻿using Messages;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -168,7 +167,7 @@ public class GameplayClient : MonoBehaviour
         switch (level)
         {
             case 0:
-                sceneName = "Set1Level1";
+                sceneName = "TEST";
                 break;
             case 1:
                 sceneName = "Set1Level2";
