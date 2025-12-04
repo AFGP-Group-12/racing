@@ -58,7 +58,7 @@ public class OtherPlayer
 
         if (isGhost)
         {
-            turnGhost(prefab, camera);
+            turnGhost();
         }
     }
 
