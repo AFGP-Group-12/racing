@@ -172,6 +172,7 @@ public class PlayerAbilityManager : MonoBehaviour
                 abilityList[abilityIndex].OnInstantiate();
                 OnAbilityChanged?.Invoke(abilityIndex, abilityList[abilityIndex]);
                 abilityIndex += 1;
+                abilityIndex = (int) Mathf.Repeat(abilityIndex, 3);
             }
         }
         else if(isChangeAbility)
