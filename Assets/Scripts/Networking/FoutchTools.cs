@@ -33,18 +33,7 @@ public class FoutchTools : EditorWindow
         navObject = EditorGUILayout.ObjectField(navObject, typeof(GameObject), true) as GameObject;
 
         if (GUILayout.Button("Set Player Node")) {
-            GameObject player = GameObject.Find("Player");
-            if (player == null)
-            {
-                Debug.LogError("Player object not found in the scene.");
-                return;
-            }
-            if (navObject == null)
-            {
-                Debug.LogError("Please assign a navigation object.");
-                return;
-            }
-            playerNodes.Add(Instantiate(navObject, player.transform.position, Quaternion.identity));
+            SetPlayerNode();
         }
         if (GUILayout.Button("Remove Last Player Node")) {
             removeLastNode();
@@ -64,6 +53,22 @@ public class FoutchTools : EditorWindow
             }
             player.transform.position = lastNode.transform.position;
         }
+    }
+
+    private static void SetPlayerNode()
+    {
+        GameObject player = GameObject.Find("Player");
+        if (player == null)
+        {
+            Debug.LogError("Player object not found in the scene.");
+            return;
+        }
+        if (navObject == null)
+        {
+            Debug.LogError("Please assign a navigation object.");
+            return;
+        }
+        playerNodes.Add(Instantiate(navObject, player.transform.position, Quaternion.identity));
     }
 
     private static void removeLastNode()
