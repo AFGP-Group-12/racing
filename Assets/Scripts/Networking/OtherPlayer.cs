@@ -56,6 +56,12 @@ public class OtherPlayer
         idHolder.Id = player_id;
     }
 
+    public void turnGhost()
+    {
+        playerObj.GetComponentInChildren<GhostContext>().gameObject.SetActive(true);
+        playerObj.GetComponentInChildren<SpriteController>().gameObject.SetActive(false);
+    }
+
     public bool AddMovementReply(Vector3 pos, Vector3 velocity, double rotation, MovementState state)
     {
         if (lastRecievedMovementFrame == 0) { targetMovement = pos; }
