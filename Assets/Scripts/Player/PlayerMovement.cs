@@ -16,8 +16,17 @@ public class PlayerMovement : MonoBehaviour
     private PlayerStateHandler stateHandler;
     private CapsuleCollider playerCollider;
 
+    [SerializeField] GameObject playerObject;
+    [SerializeField] GameObject ghostObject;
+
+    [Header("Ghost Movement")]
+    public bool isGhosted = false;
+    [SerializeField] float ghostBasicSpeed = 25f;
+    [SerializeField] float ghostSprintSpeed = 100f; // Should always be greater than moveSpeed
+
 
     [Header("Movement")]
+
     [SerializeField] float basicSpeed;
     [SerializeField] float sprintSpeed; // Should always be greater than moveSpeed
     [SerializeField] float maxSpeed; // The max speed. This accounts for gaining speed while in air which would be faster than the sprint speed. This is only used for the screen visuals
@@ -150,6 +159,8 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody rb;
 
+    private Transform Camera;
+
     [Header("State Machine")]
 
     private MovementState state = MovementState.walking;
@@ -176,6 +187,7 @@ public class PlayerMovement : MonoBehaviour
         rb = contextScript.rb;
         input = contextScript.input;
         visualScript = contextScript.screenVisuals;
+        Camera = contextScript.cameraTransform;
 
         rb.freezeRotation = true;
 
@@ -198,91 +210,146 @@ public class PlayerMovement : MonoBehaviour
 
         // slideTimer = 0f;
     }
-
-    void FixedUpdate()
+    void SetGhostMovementSpeed()
     {
-
-        isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
-        if (isOnGround && currentJumpBuffer <= 0f)
+        if (stateHandler.isSprinting == true)
         {
-            stateHandler.isJumping = false;
-        }
-        
-        
-        //Debug.DrawRay(transform.position, Vector3.down * (playerHeight * 0.5f + 0.2f) , Color.blue);
-        
-        stateHandler.isOnGround = isOnGround;
-        lastState = state;
-        state = stateHandler.state;
-
-        //Debug.DrawRay(transform.position, Vector3.down * 5f, Color.green);
-
-        if(state == MovementState.sliding)
-        {
-            rb.linearDamping = 1f;
-        }
-        else if (isOnGround)
-        {
-            rb.linearDamping = groundDrag;
+            moveSpeed = ghostSprintSpeed;
         }
         else
         {
-            rb.linearDamping = 0f;
+            moveSpeed = ghostBasicSpeed;
         }
+    }
+    void MoveGhostPlayer()
+    {
+        moveDirection = Camera.forward * verticalInput + orientation.right * horizontalInput;
+        MovementForce(rb.linearDamping);
+    }
+    void GhostSpeedControl()
+    {
+        Vector3 curVelocity = new Vector3(rb.linearVelocity.x, rb.linearVelocity.y, rb.linearVelocity.z);
 
-        // Movement
-        SetMovementSpeed();
-        SprintCheck();
-        Accelerate();
-        JumpBuffer();
-        CoyoteTimerCheck();
-        SlopeCheck();
-
-        // Slide
-        SlideCheck();
-
-        // Wall Running
-        WallRunCheck();
-
-        // Check if the player is grabbing a ledge
-        if(state != MovementState.ledgeGrab)
+        if (curVelocity.magnitude > moveSpeed)
         {
-            LedgeGrabCheck();
+            Vector3 limitedVel = curVelocity.normalized * moveSpeed;
+            rb.linearVelocity = new Vector3(limitedVel.x, limitedVel.y, limitedVel.z);
         }
-
-        if (slideTimer > 0f)
+    }
+    void CheckGhosted()
+    {
+        if (isGhosted)
         {
-            slideTimer -= Time.deltaTime;
+            stateHandler.isGhosted = true;
+        }
+        else
+        {
+            stateHandler.isGhosted = false;
+        }
+    }
+
+    void FixedUpdate()
+    {
+        CheckGhosted();
+
+        if (state == MovementState.ghosted)
+        {
+            rb.linearDamping = groundDrag;
+            rb.useGravity = false;
+            playerObject.SetActive(false);
+            ghostObject.SetActive(true);
+
+            // Movement
+            SetGhostMovementSpeed();
+            MoveGhostPlayer();
+            GhostSpeedControl();
+        }
+        else
+        {
+            isOnGround = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
+            if (isOnGround && currentJumpBuffer <= 0f)
+            {
+                stateHandler.isJumping = false;
+            }
+            
+            
+            //Debug.DrawRay(transform.position, Vector3.down * (playerHeight * 0.5f + 0.2f) , Color.blue);
+            
+            stateHandler.isOnGround = isOnGround;
+            lastState = state;
+            state = stateHandler.state;
+
+            //Debug.DrawRay(transform.position, Vector3.down * 5f, Color.green);
+
+            if(state == MovementState.sliding)
+            {
+                rb.linearDamping = 1f;
+            }
+            else if (isOnGround)
+            {
+                rb.linearDamping = groundDrag;
+            }
+            else
+            {
+                rb.linearDamping = 0f;
+            }
+
+            // Movement
+            SetMovementSpeed();
+            SprintCheck();
+            Accelerate();
+            JumpBuffer();
+            CoyoteTimerCheck();
+            SlopeCheck();
+
+            // Slide
+            SlideCheck();
+
+            // Wall Running
+            WallRunCheck();
+
+            // Check if the player is grabbing a ledge
+            if(state != MovementState.ledgeGrab)
+            {
+                LedgeGrabCheck();
+            }
+
+            if (slideTimer > 0f)
+            {
+                slideTimer -= Time.deltaTime;
+            }
+
+
+            // Camera
+            visualScript.SetSpeedVisuals(basicSpeed, maxSpeed, new Vector3(rb.linearVelocity.x,0,rb.linearVelocity.z).magnitude, state);
+            SetCameraRotation();
+            
+            // State Based Movement
+            if (state == MovementState.walking || state == MovementState.sprinting ||  state == MovementState.sliding || state == MovementState.idle)
+            {
+                FloatPlayer();
+            }
+
+            if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
+            {
+                WallRun();
+            }
+
+            else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air  || state == MovementState.grappling)
+            {
+                MovePlayer();
+            }
+            else if(state == MovementState.ledgeGrab)
+            {
+                LedgeGrabMotion();
+            }
+
+            // Speed Control
+            SetAirExitSpeed();
+            SpeedControl();
         }
 
-
-        // Camera
-        visualScript.SetSpeedVisuals(basicSpeed, maxSpeed, new Vector3(rb.linearVelocity.x,0,rb.linearVelocity.z).magnitude, state);
-        SetCameraRotation();
         
-        // State Based Movement
-        if (state == MovementState.walking || state == MovementState.sprinting ||  state == MovementState.sliding || state == MovementState.idle)
-        {
-            FloatPlayer();
-        }
-
-        if (state == MovementState.wallrunningright || state == MovementState.wallrunningleft)
-        {
-            WallRun();
-        }
-
-        else if (state == MovementState.walking || state == MovementState.sprinting || state == MovementState.air  || state == MovementState.grappling)
-        {
-            MovePlayer();
-        }
-        else if(state == MovementState.ledgeGrab)
-        {
-            LedgeGrabMotion();
-        }
-
-        // Speed Control
-        SetAirExitSpeed();
-        SpeedControl();
     }
 
 

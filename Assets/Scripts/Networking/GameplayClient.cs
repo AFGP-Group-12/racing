@@ -198,6 +198,12 @@ public class GameplayClient : MonoBehaviour
 
         player.SetActive(true);
 
+        foreach (int id in playerById.Keys)
+        {
+            OnPlayerLeave(id, "");
+            OnPlayerJoin(id);
+        }
+
         StartCoroutine(SendPeriodicMessageCoroutine());
     }
 
@@ -339,7 +345,10 @@ public class GameplayClient : MonoBehaviour
 
         MovementState state = (MovementState)message.state;
 
-        playerById[id].AddMovementReply(pos, vel, rotation, state);
+        if (!playerById[id].AddMovementReply(pos, vel, rotation, state))
+        {
+            playerById[id].resetBot(otherPlayerPrefab, mainCamera.GetComponent<Camera>());
+        }
     }
 
     private void OnPlayerJoin(int id)

@@ -38,11 +38,31 @@ public class OtherPlayer
         idHolder.Id = id;
     }
 
-    public void AddMovementReply(Vector3 pos, Vector3 velocity, double rotation, MovementState state)
+    public void resetBot(GameObject prefab, Camera camera)
+    {
+        if (playerObj != null)
+        {
+            UnityEngine.Object.Destroy(playerObj);
+        }
+
+        playerObj = UnityEngine.Object.Instantiate(prefab, new Vector3(0, 0, 0), Quaternion.identity);
+        canvas = playerObj.GetComponentInChildren<Canvas>();
+        spriteController = playerObj.GetComponentInChildren<SpriteController>();
+        canvas.worldCamera = camera;
+
+        spriteController.viewer = camera.transform;
+
+        OtherPlayerIdHolder idHolder = playerObj.GetComponent<OtherPlayerIdHolder>();
+        idHolder.Id = player_id;
+    }
+
+    public bool AddMovementReply(Vector3 pos, Vector3 velocity, double rotation, MovementState state)
     {
         if (lastRecievedMovementFrame == 0) { targetMovement = pos; }
         originMovement = targetMovement;
         targetMovement = pos;
+
+        if (playerObj == null) { return false; }
 
         playerObj.transform.position = originMovement;
 
@@ -57,6 +77,7 @@ public class OtherPlayer
         averageMovementDelayInFrames *= (1 - frameAdjustmentWeight);
         averageMovementDelayInFrames += (currentFrame - lastRecievedMovementFrame) * frameAdjustmentWeight;
         lastRecievedMovementFrame = currentFrame;
+        return true;
     }
 
     public void Update(bool doPrediction)
