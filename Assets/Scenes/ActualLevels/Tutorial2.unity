@@ -2901,7 +2901,8 @@ PrefabInstance:
       value: ScreenVisuals
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 4318633878670888579, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 175021ba70676114dbbe5b2a2f55f70f, type: 3}
