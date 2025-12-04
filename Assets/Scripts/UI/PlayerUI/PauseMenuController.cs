@@ -10,6 +10,10 @@ public class PauseMenuController : MonoBehaviour
     private PlayerInput playerInput;
     private VisualElement pauseMenuOverlay;
     private bool uiInitialized;
+    private OptionsMenuController optionsController;
+    private VisualElement optionsOverlay;
+    private Button optionsCloseButton;
+    private Button optionsButton;
 
     void Awake()
     {
@@ -18,6 +22,8 @@ public class PauseMenuController : MonoBehaviour
 
         if (playerInput == null)
             playerInput = GetComponent<PlayerInput>();
+
+        optionsController = GetComponent<OptionsMenuController>();
     }
 
     void OnEnable()
@@ -71,6 +77,10 @@ public class PauseMenuController : MonoBehaviour
         pauseMenuOverlay = root.Q<VisualElement>("PauseMenuOverlay");
         resumeButton = root.Q<Button>("ResumeButton");
         exitButton = root.Q<Button>("ExitButton");
+        optionsOverlay = root.Q<VisualElement>("optionsOverlay");
+        optionsCloseButton = root.Q<Button>("optionsCloseButton");
+        optionsButton = root.Q<Button>("OptionsButton");
+        
 
         UnregisterButtonCallbacks();
         RegisterButtonCallbacks();
@@ -85,6 +95,11 @@ public class PauseMenuController : MonoBehaviour
 
         if (exitButton != null)
             exitButton.clicked += OnExitClicked;
+
+        if (optionsButton != null && optionsController != null)
+            optionsButton.clicked += OnOptionsClicked;
+        else
+            Debug.LogWarning("Options button or OptionsMenuController is null in PauseMenuController.");
     }
 
     private void UnregisterButtonCallbacks()
@@ -94,6 +109,9 @@ public class PauseMenuController : MonoBehaviour
 
         if (exitButton != null)
             exitButton.clicked -= OnExitClicked;
+
+        if (optionsButton != null && optionsController != null)
+            optionsButton.clicked -= OnOptionsClicked;
     }
 
     private void OnResumeClicked()
@@ -121,6 +139,15 @@ public class PauseMenuController : MonoBehaviour
         #else
             Application.Quit();
         #endif
+    }
+
+    private void OnOptionsClicked()
+    {
+        if (optionsController != null)
+        {
+            Debug.Log("Showing Options Menu from Pause Menu");
+            optionsController.Show();
+        }
     }
 
     private void OnDestroy()

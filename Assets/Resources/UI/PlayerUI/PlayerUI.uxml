@@ -24,7 +24,7 @@
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
-        <ui:VisualElement name="PauseMenuOverlay" class="pause-overlay hidden">
+        <ui:VisualElement name="PauseMenuOverlay" class="pause-overlay">
             <ui:GroupBox name="PausePanel" class="pause-panel">
                 <ui:VisualElement name="pauseScribble" picking-mode="Ignore" class="scribble-layer" />
                 <ui:Label text="PAUSED" name="PauseTitle" class="pause-title" />
@@ -32,10 +32,55 @@
                     <ui:Button name="ResumeButton" selectable="false" double-click-selects-word="false" class="pausebutton">
                         <ui:Label text="RESUME" class="wobble-text" />
                     </ui:Button>
+                    <ui:Button name="OptionsButton" selectable="false" double-click-selects-word="false" class="pausebutton">
+                        <ui:Label text="OPTIONS" class="wobble-text" />
+                    </ui:Button>
                     <ui:Button name="ExitButton" selectable="false" double-click-selects-word="false" class="pausebutton">
                         <ui:Label text="EXIT" class="wobble-text" />
                     </ui:Button>
                 </ui:GroupBox>
+            </ui:GroupBox>
+        </ui:VisualElement>
+        <ui:VisualElement name="optionsOverlay" enabled="true" class="overlay hidden">
+            <ui:GroupBox name="optionsPanel" class="modal-panel">
+                <ui:VisualElement name="optionsScribble" picking-mode="Ignore" class="scribble-layer" />
+                <ui:VisualElement class="title-row">
+                    <ui:Label name="optionsTitle" text="OPTIONS" class="marker-title" />
+                </ui:VisualElement>
+                <ui:VisualElement style="flex-grow: 1; justify-content: flex-start; align-self: stretch; align-items: auto; flex-direction: row; align-content: auto;">
+                    <ui:VisualElement class="form" style="align-items: stretch; flex-basis: auto; width: 325px; justify-content: flex-start; align-self: stretch;">
+                        <ui:VisualElement class="row">
+                            <ui:Label text="Master Volume" name="Label" class="form-label" />
+                            <ui:Slider name="masterSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="row">
+                            <ui:Label text="Music Volume" class="form-label" />
+                            <ui:Slider name="musicSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="row">
+                            <ui:Label text="SFX Volume" class="form-label" />
+                            <ui:Slider name="sfxSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="row">
+                            <ui:Label text="Ambient Volume" class="form-label" />
+                            <ui:Slider name="ambienceSlider" low-value="0" high-value="100" value="80" class="form-field" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="form" style="width: 325px;">
+                        <ui:VisualElement class="row">
+                            <ui:Label text="Resolution" class="form-label" />
+                            <ui:DropdownField name="resolutionDropdown" class="form-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="row">
+                            <ui:Label text="Display Mode" class="form-label" />
+                            <ui:DropdownField name="displayModeDropdown" class="form-field" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="row buttons">
+                            <ui:Button name="applyButton" text="Apply" />
+                            <ui:Button name="optionsCloseButton" text="Close" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
             </ui:GroupBox>
         </ui:VisualElement>
     </ui:VisualElement>
