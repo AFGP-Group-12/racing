@@ -25,7 +25,6 @@ class AbilityBox : MonoBehaviour
 
         if (constrainToYAxis)
         {
-            // Keep sprite upright: rotate only around Y to face camera horizontally
             lookTarget = new Vector3(cameraPos.x, transform.position.y, cameraPos.z);
             Vector3 direction = (lookTarget - transform.position);
             if (direction.sqrMagnitude > 0.0001f)
@@ -36,7 +35,6 @@ class AbilityBox : MonoBehaviour
         }
         else
         {
-            // Fully face the camera (classic billboard)
             Vector3 direction = (cameraPos - transform.position);
             if (direction.sqrMagnitude > 0.0001f)
             {
