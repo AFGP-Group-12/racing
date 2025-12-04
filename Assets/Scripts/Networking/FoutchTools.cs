@@ -55,7 +55,7 @@ public class FoutchTools : EditorWindow
         }
     }
 
-    private static void SetPlayerNode()
+    public static void SetPlayerNode()
     {
         GameObject player = GameObject.Find("Player");
         if (player == null)
