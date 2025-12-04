@@ -21,7 +21,7 @@ MonoBehaviour:
   usingAbility: 0
   isPreview: 1
   previewPrefab: {fileID: 7403508374583288671, guid: 298516cbb1c20084895d6e28e2bb8521, type: 3}
-  grappleSpeed: 15
+  grappleSpeed: 25
   maxGrappleDistance: 20
   grappleSurface:
     serializedVersion: 2
