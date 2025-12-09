@@ -112,6 +112,7 @@ public class GrapplePlayer : Ability
     {
         rb.AddForce(horizontalForce, ForceMode.Impulse);
         GrappleEnd();
+        if (GameplayClient.instance != null) GameplayClient.instance.SendAbilityDataGrappleEnd();
     }
 
     public override void DeActivate(PlayerContext ctx)

@@ -207,21 +207,14 @@ public class GameplayClient : MonoBehaviour
         player.SetActive(true);
 
         //create a copy of the keys to avoid modification during iteration
-        List<int> ghosts = new List<int>();
         var playerIds = new List<int>(playerById.Keys);
         foreach (int id in playerIds) {
-            if (playerById[id].isGhost)
-                ghosts.Add(id);
             OnPlayerLeave(id, "");
         }
 
         foreach (int id in playerIds) {
             OnPlayerJoin(id);
         }
-        foreach (int id in ghosts) {
-            playerById[id].turnGhost();
-        }
-
 
         StartCoroutine(SendPeriodicMessageCoroutine());
     }
@@ -407,7 +400,7 @@ public class GameplayClient : MonoBehaviour
     {
         if (playerById.ContainsKey(id))
         {
-            playerById[id].Destroy();
+            if (playerById[id] != null) playerById[id].Destroy();
             playerById.Remove(id);
         }
         string othername = LobbyClient.instance.GetPlayerName(id);
@@ -434,7 +427,7 @@ public class GameplayClient : MonoBehaviour
     {
         if (playerById.ContainsKey(id))
         {
-            playerById[id].Destroy();
+            if (playerById[id] != null) playerById[id].Destroy();
             playerById.Remove(id);
         }
 

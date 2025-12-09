@@ -27,4 +27,12 @@ public class PlayerContext : MonoBehaviour
         grappleLine = GetComponent<PlayerGrappleLine>();
         cameraTransform = Camera.main.transform; // Change this to a regular public if something goes wrong here
     }
+
+    void Start()
+    {
+        if (cameraTransform == null)
+        {
+            cameraTransform = Camera.main.transform;
+        }   
+    }
 }

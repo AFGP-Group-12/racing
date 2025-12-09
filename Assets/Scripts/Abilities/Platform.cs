@@ -62,6 +62,15 @@ public class Platform : Ability
 
     public override void AbilityInUse(PlayerContext ctx)
     {
+        if (cameraTransform == null)
+        {
+            cameraTransform = ctx.cameraTransform;
+        }
+        if (previewScript == null)
+        {
+            return;
+        }
+
         ray = new Ray(cameraTransform.position, cameraTransform.forward);
         //Debug.DrawRay(cameraTransform.position, cameraTransform.forward * placementDistance, Color.blue);
 
