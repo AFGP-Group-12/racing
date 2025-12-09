@@ -77,6 +77,7 @@ public class GameplayClient : MonoBehaviour
             {
                 case message_t.connection_reply:
                     hasReceivedConnectionReply = true;
+                    StartCoroutine(SendPeriodicMessageCoroutine());
                     break;
                 case message_t.movement_reply:
                     HandleRecievedPlayerMovement(message.movement_reply);
@@ -167,10 +168,7 @@ public class GameplayClient : MonoBehaviour
         // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
         // a sceneBuildIndex of 1 as shown in Build Settings.
 
-        
-        StopCoroutine(SendPeriodicMessageCoroutine());
-
-        string sceneName = "Set1Level1";
+        string sceneName;
         switch (level)
         {
             case 0:
@@ -215,8 +213,6 @@ public class GameplayClient : MonoBehaviour
         foreach (int id in playerIds) {
             OnPlayerJoin(id);
         }
-
-        StartCoroutine(SendPeriodicMessageCoroutine());
     }
 
     private IEnumerator SendPeriodicMessageCoroutine()
@@ -293,7 +289,7 @@ public class GameplayClient : MonoBehaviour
         client.SendDataTcp(m.bytes, racing_ability_action_m.size);
     }
 
-    private unsafe void HandleRecievedAbilityAction(racing_ability_action_m message)
+    private void HandleRecievedAbilityAction(racing_ability_action_m message)
     {
         int id = message.from_id;
         if (!playerById.ContainsKey(id))
@@ -326,7 +322,7 @@ public class GameplayClient : MonoBehaviour
                 playerById[message.from_id].EndGrapple();
                 break;
             case 5: // Dead
-                killPlayer(message.target_player_id);
+                //killPlayer(message.target_player_id);
                 break;
             default:
                 Debug.Log("Got Unexpected ability action: " + message.action);
@@ -347,7 +343,7 @@ public class GameplayClient : MonoBehaviour
             Debug.Log("Tried to kill non existent player with id: " + id);
         }
     }
-
+    int prevFrame = 0;
     private unsafe void SendMovementData(Transform transform)
     {
         if (client == null) return;
@@ -358,8 +354,13 @@ public class GameplayClient : MonoBehaviour
         if (mainCamera != null) Helpers.fillRotation(mainCamera.transform.rotation.eulerAngles.y, out m.rotation);
         m.state = (ushort)CurrentState;
         client.SendDataUdp(m.bytes, movement_m.size);
+
+        
+        int currentFrame = Time.frameCount;
+        Debug.Log("Movement sent frame delay: " + (currentFrame - prevFrame));
+        prevFrame = currentFrame;
     }
-    private unsafe void HandleRecievedPlayerMovement(movement_m_reply message)
+    private void HandleRecievedPlayerMovement(movement_m_reply message)
     {
         int id = message.from_id;
         if (!playerById.ContainsKey(id))

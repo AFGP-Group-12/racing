@@ -84,9 +84,9 @@ public class OtherPlayer
         spriteController.HandleStateChanged(state);
 
         int currentFrame = Time.frameCount;
+        Debug.Log("Movement delay frames: " + (currentFrame - lastRecievedMovementFrame));
 
-        averageMovementDelayInFrames *= (1 - frameAdjustmentWeight);
-        averageMovementDelayInFrames += (currentFrame - lastRecievedMovementFrame) * frameAdjustmentWeight;
+        averageMovementDelayInFrames = averageMovementDelayInFrames * (1 - frameAdjustmentWeight) + (currentFrame - lastRecievedMovementFrame) * frameAdjustmentWeight;
         lastRecievedMovementFrame = currentFrame;
         return true;
     }
