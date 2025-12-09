@@ -70,8 +70,7 @@ public class OtherPlayer
 
     public bool AddMovementReply(Vector3 pos, Vector3 velocity, double rotation, MovementState state)
     {
-        if (lastRecievedMovementFrame == 0) { targetMovement = pos; }
-        originMovement = targetMovement;
+        originMovement = lastRecievedMovementFrame == 0 ? pos : targetMovement;
         targetMovement = pos;
 
         if (playerObj == null) { return false; }

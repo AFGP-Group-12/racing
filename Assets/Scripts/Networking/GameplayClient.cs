@@ -10,7 +10,6 @@ public class GameplayClient : MonoBehaviour
 {
     // Parameters
     public float playerUpdatesPerSecond = 10;
-    public bool doPrediction = false;
 
     // Unity
     public static GameplayClient instance = null;
@@ -98,31 +97,39 @@ public class GameplayClient : MonoBehaviour
             }
         }
 
-        Physics.SyncTransforms();
 
         // update players positions
         foreach (OtherPlayer p in playerById.Values)
         {
-            p.Update(doPrediction);
+            p.Update(false);
         }
 
-        if (player != null)
+        if (nodesPendingToSpawn()) spawnNodes();
+        
+        Physics.SyncTransforms();
+    }
+
+    private bool nodesPendingToSpawn()
+    {
+        return player != null && navmeshnodes.Count > 0;
+    }
+
+    private void spawnNodes()
+    {
+        for (int i = 0; i < navmeshnodes.Count; i++)
         {
-            for (int i = 0; i < navmeshnodes.Count; i++)
-            {
-                totalNodes++;
-                if (navmeshtypes[i] == 0)
-                    Instantiate(navMeshNode, navmeshnodes[i], Quaternion.identity);
-                else
-                    Instantiate(navMeshBounds, navmeshnodes[i], Quaternion.identity);
-            }
-            if (navmeshnodes.Count > 0)
-            {
-                Debug.Log("Total Navmesh Nodes Received: " + totalNodes);
-            }
-            navmeshnodes.Clear();
-            navmeshtypes.Clear();
+            totalNodes++;
+            if (navmeshtypes[i] == 0)
+                Instantiate(navMeshNode, navmeshnodes[i], Quaternion.identity);
+            else
+                Instantiate(navMeshBounds, navmeshnodes[i], Quaternion.identity);
         }
+        if (navmeshnodes.Count > 0)
+        {
+            Debug.Log("Total Navmesh Nodes Received: " + totalNodes);
+        }
+        navmeshnodes.Clear();
+        navmeshtypes.Clear();
     }
 
     public void LoadSceneSinglePlayer(string scene)

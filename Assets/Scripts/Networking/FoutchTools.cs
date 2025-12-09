@@ -20,11 +20,35 @@ public class FoutchTools : EditorWindow
         PrintPathMarkers_Button();
         SetPlayerNodeButton();
         GenerateServerSideMeshes_Foldout();
+        SetPlayerToLevelEndButton();
     }
 
     static GameObject navObject = null;
     static bool setPlayerNode_FoldoutShowing = false;
     static List<GameObject> playerNodes = new List<GameObject>();
+
+    private static void SetPlayerToLevelEndButton()
+    {
+        if (!GUILayout.Button("Set Player To Level End")) { return; }
+
+        GameObject player = GameObject.Find("Player");
+        if (player == null)
+        {
+            Debug.LogError("Player object not found in the scene.");
+            return;
+        }
+
+        GameObject levelEnd = GameObject.Find("EndPoint");
+        if (levelEnd == null)
+        {
+            Debug.LogError("EndPoint object not found in the scene.");
+            return;
+        }
+
+        player.transform.position = levelEnd.transform.position;
+        Physics.SyncTransforms();
+    }
+
     private static void SetPlayerNodeButton()
     {
         setPlayerNode_FoldoutShowing = EditorGUILayout.Foldout(setPlayerNode_FoldoutShowing, "Set Player Node");
