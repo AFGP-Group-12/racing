@@ -11,7 +11,7 @@ public class WindowTimer : MonoBehaviour
     [SerializeField] float goTimerDuration = 4f;
     private float goTimer;
 
-    [SerializeField] GameObject windowObject;
+    private GameObject windowObject; // This is found through find with tag so maybe switch it so that its faster
 
     private TextMeshProUGUI timerPlayerText;
 
@@ -19,6 +19,7 @@ public class WindowTimer : MonoBehaviour
     {
         timerPlayerText = GetComponent<TextMeshProUGUI>();
         timer = timerDuration;
+        windowObject = GameObject.FindWithTag("Window");
     }
 
     // Update is called once per frame

@@ -6,6 +6,8 @@ TagManager:
   tags:
   - AbilityBox
   - Ghost
+  - Window
+  - UnloadPoint
   layers:
   - Default
   - TransparentFX

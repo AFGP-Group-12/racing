@@ -11,7 +11,7 @@ public class Deathbox : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             // other.GetComponentInParent<DeathboxHandler>()?.HandlePlayerDeath(levelIndex);
-            other.GetComponentInParent<DeathboxHandler>()?.HandlePlayerDeath(levelIndex);
+            //other.GetComponentInParent<DeathboxHandler>()?.HandlePlayerDeath(levelIndex);
         }
     }
 }
