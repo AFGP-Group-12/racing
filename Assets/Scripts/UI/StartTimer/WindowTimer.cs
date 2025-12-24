@@ -48,4 +48,13 @@ public class WindowTimer : MonoBehaviour
         }
         
     }
+    public void RestartTimer()
+    {
+        timer = timerDuration;
+        startTimer = true;
+    }
+    public void SetObject(GameObject newWindow)
+    {
+        windowObject = newWindow;
+    }
 }

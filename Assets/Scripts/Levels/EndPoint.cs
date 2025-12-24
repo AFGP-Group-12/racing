@@ -8,7 +8,7 @@ using UnityEngine.UIElements;
 public class EndPoint : MonoBehaviour
 {
 
-    public bool moveElevator = false;
+    private bool moveElevator = false;
     [SerializeField] GameObject elavatorRoof;
 
     [SerializeField] Transform elevatorTargetPosition;
@@ -18,9 +18,16 @@ public class EndPoint : MonoBehaviour
 
     [SerializeField] String nextSceneName;
 
+    [SerializeField] GameObject window;
+    [SerializeField] GameObject closedWindow;
+
+    GameObject PlayerObject;
+
     private bool sceneUnloaded = false;
 
     private bool sceneLoaded = false;
+
+    private bool timerRestarted = false;
 
     private float floorRoofDifference;
     void Start()
@@ -33,6 +40,12 @@ public class EndPoint : MonoBehaviour
         {
             MoveElevator();
         }
+
+        if(timerRestarted == false && gameObject.transform.position == elevatorTargetPosition.position)
+        {
+            PlayerObject.GetComponent<PlayerScreenVisuals>().windowTimer.RestartTimer();
+            timerRestarted = true;
+        }
     }
     void OnTriggerEnter(Collider other)
     {
@@ -42,8 +55,10 @@ public class EndPoint : MonoBehaviour
             // GameplayClient.instance.PlayerReachedEndPoint();
 
 
-            // Debugging additive loading
-            moveElevator = true;
+            // This would all happen after everyone has entered the elevator
+            // Lmk if this is correct Im just worried that if a player enters after the main client enter it might break things
+            PlayerObject = other.transform.parent.gameObject;
+            StartCoroutine(StartElevator());
         }
         else if(other.CompareTag("UnloadPoint") && !sceneUnloaded)
         {
@@ -64,6 +79,19 @@ public class EndPoint : MonoBehaviour
         {
 
         }
+    }
+    IEnumerator StartElevator()
+    {
+        // The Application loads the Scene in the background as the current Scene runs.
+        // This is particularly good for creating loading screens.
+        // You could also load the Scene by using sceneBuildIndex. In this case Scene2 has
+        // a sceneBuildIndex of 1 as shown in Build Settings.
+
+        yield return new WaitForSeconds(2f);
+
+        PlayerObject.GetComponent<PlayerScreenVisuals>().windowTimer.SetObject(window);
+        closedWindow.SetActive(true);
+        moveElevator = true;
     }
 
     IEnumerator UnLoadYourAsyncScene()
