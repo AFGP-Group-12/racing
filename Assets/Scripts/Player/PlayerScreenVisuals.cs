@@ -47,7 +47,8 @@ public class PlayerScreenVisuals : MonoBehaviour
     [Header("Wall Running effect")]
     private float wallFovChange;
 
-
+    [Header("Timer")]
+    public WindowTimer windowTimer;
 
     private PlayerContext context;
     private PlayerMovement movement;
