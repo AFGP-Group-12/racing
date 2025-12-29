@@ -31,7 +31,14 @@ public class WindowTimer : MonoBehaviour
             timerPlayerText.text = "Time to Race Start: " + (Mathf.Round(timer * 10f) / 10f).ToString("0.0");
             if(timer <= 0)
             {
-                windowObject.SetActive(false);
+                if( windowObject != null)
+                {
+                    windowObject.SetActive(false);
+                }
+                else
+                {
+                    Debug.Log("No window set");
+                }
                 timerPlayerText.text = "GO!!!";
                 goTimer = goTimerDuration;
                 timer = 0;

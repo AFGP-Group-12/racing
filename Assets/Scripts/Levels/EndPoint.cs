@@ -32,7 +32,10 @@ public class EndPoint : MonoBehaviour
     private float floorRoofDifference;
     void Start()
     {
-        floorRoofDifference = elavatorRoof.transform.position.y - gameObject.transform.position.y;
+        if(elavatorRoof != null)
+        {
+            floorRoofDifference = elavatorRoof.transform.position.y - gameObject.transform.position.y;
+        }
     }
     void Update()
     {
@@ -41,7 +44,7 @@ public class EndPoint : MonoBehaviour
             MoveElevator();
         }
 
-        if(timerRestarted == false && gameObject.transform.position == elevatorTargetPosition.position)
+        if(timerRestarted == false && elevatorTargetPosition != null && gameObject.transform.position == elevatorTargetPosition.position)
         {
             PlayerObject.GetComponent<PlayerScreenVisuals>().windowTimer.RestartTimer();
             timerRestarted = true;
